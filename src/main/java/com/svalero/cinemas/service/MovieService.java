@@ -5,6 +5,7 @@ import com.svalero.cinemas.domain.dto.MovieInDto;
 import com.svalero.cinemas.exception.MovieNotFoundException;
 import com.svalero.cinemas.repository.MovieRepository;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
@@ -34,10 +35,34 @@ public class MovieService {
 
 
     // Obtener todas las películas
-    public List<Movie> findAll() {
-        List<Movie> movies = new ArrayList<>();
-        movieRepository.findAll().forEach(movies::add);
-        return movies;
+    public List<Movie> findAll(String title, String genre, Integer durationMinutes) {
+
+
+        List<Movie> movieList;
+
+        boolean hasTitle = !title.isEmpty();
+        boolean hasGenre = !genre.isEmpty();
+        boolean hasDurationMinutes = durationMinutes != null;
+
+        if (hasTitle && hasGenre && hasDurationMinutes) {
+            movieList = movieRepository.findByTitleAndGenreAndDurationMinutes(title, genre, durationMinutes);
+        } else if (hasTitle && hasGenre) {
+            movieList = movieRepository.findByTitleAndGenre(title,genre);
+        } else if (hasTitle && hasDurationMinutes) {
+            movieList = movieRepository.findByTitleAndDurationMinutes(title,durationMinutes);
+        } else if (hasGenre && hasDurationMinutes) {
+            movieList = movieRepository.findByGenreAndDurationMinutes(genre, durationMinutes);
+        } else if (hasTitle) {
+            movieList = movieRepository.findByTitle(title);
+        } else if (hasGenre) {
+            movieList = movieRepository.findByGenre(genre);
+        } else if (hasDurationMinutes) {
+            movieList = movieRepository.findByDurationMinutes(durationMinutes);
+        } else {
+            movieList = movieRepository.findAll();
+        }
+
+        return modelMapper.map(movieList, new TypeToken<List<Movie>>() {}.getType());
     }
 
     // Buscar por ID
@@ -46,26 +71,24 @@ public class MovieService {
     }
 
     // Buscar por título
-    public Movie findByTitle(String title) {
-        Movie movie = movieRepository.findByTitle(title);
+    public List<Movie> findByTitle(String title) {
+        List<Movie> movie = movieRepository.findByTitle(title);
         if (movie == null) {
             throw new MovieNotFoundException("Movie not found with title: " + title);
         }
         return movie;
+
     }
 
-    // Buscar por género
-    public Movie findByGenre(String genre) {
-        Movie movie = movieRepository.findByGenre(genre);
-        if (movie == null) {
-            throw new MovieNotFoundException("Movie not found with genre: " + genre);
-        }
-        return movie;
-    }
 
     public List<Movie> findByReleaseDate(LocalDate releaseDate) {
         return movieRepository.findByReleaseDate(releaseDate);
     }
+
+    public List<Movie> findBycurrentlyShowing(boolean currentlyShowing) {
+        return movieRepository.findAllMoviesByCurrentlyShowing(currentlyShowing);
+    }
+
 
 
     // Crear nueva película
@@ -86,6 +109,11 @@ public class MovieService {
         movie.setCurrentlyShowing(movieInDto.isCurrentlyShowing());
 
         return movieRepository.save(movie);
+//        No funciona no se porque, si lo muevo manualmente va bien
+//        modelMapper.map(movieInDto, movie);
+//        return movieRepository.save(movie);
+
+
 
     }
 
