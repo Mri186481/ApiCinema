@@ -1,0 +1,1935 @@
+openapi: 3.0.3
+info:
+  title: Cinema API
+  description: API description in Markdown.
+  version: 1.0.0
+tags:
+  - name: movies
+    description: Operaciones con movies
+  - name: screenings
+    description: Operaciones con scrennings
+  - name: rooms
+    description: Operaciones con rooms
+  - name: seats
+    description: Operaciones con seats
+  - name: customers
+    description: Operaciones con customers
+  - name: tickets
+    description: Operaciones con tickets
+servers:
+  - url: 'https://apicinema.com'
+paths:
+  /movies:
+    get:
+      tags:
+        - movies
+      summary: Devuelve las peliculas registrados
+      description: |
+        Devuelve un listado con las peliculas solicitados dependiendo de los filtros aplicados
+        
+        Se puede filtrar a través de cualquier de los filtros indicados: title, genre y durationMinutes incluso los tres al mismo tiempo
+         - **movieTitle**: Filtra por titulo
+         - **genre**: Filtra por genero
+         - **durationMinutes**: Filtra por duracion de la pelicula
+      parameters:
+        - name: movieTitle
+          in: query
+          description: Filtro por titulo de la pelicula
+          required: false
+          schema:
+            type: string
+        - name: genre
+          in: query
+          description: Filtro por genero de pelicula
+          required: false
+          schema:
+            type: string
+        - name: durationMinutes
+          in: query
+          description: Filtro por duracion en minutos de la pelicula
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - movies
+      summary: Registra una pelicula
+      description: Da de alta una nueva pelicula según la información facilitada
+      requestBody:
+        description: Detalles de la nueva pelicula
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Movie'
+            examples:
+              example1:
+                value:
+                  movieTitle: La Guerra De Las Galaxias, EPISODE IV
+                  genre: Scifi
+                  durationMinutes: 181
+                  filmingLatitude: 41.6516677,
+                  filmingLongitude: -0.8830512
+                  releaseDate: 1977-12-30
+                  currentlyShowing: true
+              example2:
+                value:
+                  movieTitle: Terminator 2
+                  genre: Scifi
+                  durationMinutes: 116
+                  filmingLatitude: 41.6516677,
+                  filmingLongitude: -0.8830512
+                  releaseDate: 1992-12-05
+                  currentlyShowing: true
+      responses:
+        '201':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieOutDto'
+              examples:
+                example1:
+                  value:
+                    id: 1
+                    movieTitle: La Guerra De Las Galaxias, EPISODE IV
+                    genre: Scifi
+                    durationMinutes: 181
+                    filmingLatitude: 41.6516677,
+                    filmingLongitude: -0.8830512
+                    releaseDate: 1977-12-30
+                    currentlyShowing: true
+                example2:
+                  value:
+                    id: 2
+                    movieTitle: Terminator 2
+                    genre: Scifi
+                    durationMinutes: 116
+                    filmingLatitude: 41.6516677,
+                    filmingLongitude: -0.8830512
+                    releaseDate: 1992-12-05
+                    currentlyShowing: true
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /movies/{movieId}:
+    get:
+      tags:
+        - movies
+      summary: Detalle de una Pelicula
+      description: Devuelve los detalles de una pelicula por Id
+      parameters:
+        - name: movieId
+          in: path
+          description: Identificador de la pelicula
+          required: true
+          schema:
+            type: number
+            format: int64
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieOutDto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - movies
+      summary: Elimina una pelicula
+      description: Da de baja la pelicula cuyo id se para como parámetro
+      parameters:
+        - name: movieId
+          in: path
+          description: Identificador de la pelicula
+          required: true
+          schema:
+            type: number
+            format: int64
+      responses:
+        '204':
+          description: No content
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+        - movies
+      summary: Modifica una pelicula
+      description: Permite modificar todos los detalles de una pelicula
+      parameters:
+        - name: movieId
+          in: path
+          description: Identificador de la pelicula
+          required: true
+          schema:
+            type: number
+            format: int64
+      requestBody:
+        description: Nuevos detalles de la pelicula
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovieInDto'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieOutDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    patch:
+      tags:
+        - movies
+      summary: Modifica Parcialmete  una pelicula
+      description: Permite modificar solo los detalles que se quieran modificar de una pelicula, actualizacion parcial
+      parameters:
+        - name: movieId
+          in: path
+          description: Identificador de la pelicula
+          required: true
+          schema:
+            type: number
+            format: int64
+      requestBody:
+        description: Nuevos detalles de la pelicula, actualizacion parcial
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovieInDto'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieOutDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /movieTitle/{movieTitle}:
+    get:
+      tags:
+        - movies
+      summary: Detalle de una Pelicula buscada por Titulo
+      description: Devuelve los detalles de una pelicula
+      parameters:
+        - name: movieTitle
+          in: path
+          description: Titulo de la pelicula
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieOutDto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /currentlyShowing/{currentlyShowing}:
+    get:
+      tags:
+        - movies
+      summary: Detalle de una Pelicula buscada por si se proyecya o no en estos momentos
+      description: Devuelve los detalles de una pelicula
+      parameters:
+        - name: currentlyShowing
+          in: path
+          description: proyeccion actual de la Peliculas
+          required: true
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieOutDto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /release-date/{release-date}:
+    get:
+      tags:
+        - movies
+      summary: Detalle de una Pelicula buscada por su fecha de lanzamiento
+      description: Devuelve los detalles de una pelicula
+      parameters:
+        - name: release-date
+          in: path
+          description: Fecha de lanzamiento original de la pelicula
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieOutDto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /screenings:
+    get:
+      tags:
+        - screenings
+      summary: Devuelve el listado de visionados de todas las peliculas
+      description: |
+        Devuelve un listado con todos las sesiones de todas las peliculas ordenadas por id
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScreeningOutDto'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - screenings
+      summary: Registra una sesion de una pelicula
+      description: Da de alta una sesion para una pelicula y sala
+      requestBody:
+        description: Detalles de la nueva sesion
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScreeningInDto'
+            examples:
+              example1:
+                value:
+                  screeningTime: 2025-07-30T18:45:00
+                  ticketPrice: 8
+                  subtitled: false
+                  movieId: 4
+                  roomId: 5
+              example2:
+                value:
+                  screeningTime: 2025-07-30T21:45:00
+                  ticketPrice: 8
+                  subtitled: false
+                  movieId: 4
+                  roomId: 5
+      responses:
+        '201':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreeningOutDto'
+              examples:
+                example1:
+                  value:
+                    id: 1
+                    screeningTime: 2025-07-30T18:45:00
+                    ticketPrice: 8
+                    subtitled: false
+                    movieId: 1
+                    roomId: 5
+                    movieTitle: La Guerra De Las Galaxias, EPISODE IV
+                    roomName: Sala 5
+                example2:
+                  value:
+                    id: 2
+                    screeningTime: 2025-07-30T21:45:00
+                    ticketPrice: 8
+                    subtitled: false
+                    movieId: 1
+                    roomId: 5
+                    movieTitle: La Guerra De Las Galaxias, EPISODE IV
+                    roomName: Sala 5
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /screenings/{screeningId}:
+    get:
+      tags:
+        - screenings
+      summary: Detalle de una proyeccion en una sala
+      description: Devuelve los detalles de una proyeccion por Id
+      parameters:
+        - name: screeningId
+          in: path
+          description: Identificador de la screening o proyeccion
+          required: true
+          schema:
+            type: number
+            format: int64
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreeningOutDto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - screenings
+      summary: Elimina una proyeccion
+      description: Da de baja la proyeccion cuyo id se para como parámetro
+      parameters:
+        - name: screeningId
+          in: path
+          description: Identificador de la proyeccion
+          required: true
+          schema:
+            type: number
+            format: int64
+      responses:
+        '204':
+          description: No content
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+        - screenings
+      summary: Modifica una proyeccion
+      description: Permite modificar todos los detalles de una proyeccion
+      parameters:
+        - name: screeningId
+          in: path
+          description: Identificador de la proyeccion
+          required: true
+          schema:
+            type: number
+            format: int64
+      requestBody:
+        description: Nuevos detalles de la proyeccion
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScreeningInDto'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreeningOutDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /rooms:
+    get:
+      tags:
+        - rooms
+      summary: Devuelve las Salas registradas
+      description: |
+        Devuelve un listado con las salas solicitados dependiendo de los filtros aplicados
+
+        Se puede filtrar a través de cualquier de los filtros indicados: room3d, roomAtmos y roomLaser incluso los tres al mismo tiempo
+         - **room3d**: Filtra por sala con capacidad de proyeccion 3d
+         - **roomAtmos**: Filtra por sala con capacidad de sonido espacial dolby atmos
+         - **roomLaser**: Filtra por sala con capacidad de proyeccion laser
+      parameters:
+        - name: room3d
+          in: query
+          description: Filtro por capacidad 3d de la sala
+          required: false
+          schema:
+            type: boolean
+        - name: roomAtmos
+          in: query
+          description: Filtro por capacidad Atmos de la sala
+          required: false
+          schema:
+            type: boolean
+        - name: roomLaser
+          in: query
+          description: Filtro por capacidad laser de la sala
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoomOutDto'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - rooms
+      summary: Registra una sala
+      description: Da de alta una nueva sala de cine según la información facilitada
+      requestBody:
+        description: Detalles de la nueva sala
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomInDto'
+            examples:
+              example1:
+                value:
+                  roomName: Sala 1
+                  openingDate: 2018-11-11
+                  capacity: 150
+                  room3d: false
+                  roomAtmos: true
+                  roomLaser: true
+              example2:
+                value:
+                  roomName: Sala 2
+                  openingDate: 2018-11-11
+                  capacity: 180
+                  room3d: true
+                  roomAtmos: false
+                  roomLaser: false
+      responses:
+        '201':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomOutDto'
+              examples:
+                example1:
+                  value:
+                    id: 1
+                    roomName: Sala 1
+                    openingDate: 2018-11-11
+                    capacity: 150
+                    room3d: false
+                    roomAtmos: true
+                    roomLaser: true
+                example2:
+                  value:
+                    id: 2
+                    roomName: Sala 2
+                    openingDate: 2018-11-11
+                    capacity: 180
+                    room3d: true
+                    roomAtmos: false
+                    roomLaser: false
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /rooms/{roomId}:
+    get:
+      tags:
+        - rooms
+      summary: Detalle de una Sala
+      description: Devuelve los detalles de una sala por Id
+      parameters:
+        - name: roomId
+          in: path
+          description: Identificador de la sala
+          required: true
+          schema:
+            type: number
+            format: int64
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomOutDto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - rooms
+      summary: Elimina una sala
+      description: Da de baja la sala cuyo id se para como parámetro
+      parameters:
+        - name: roomId
+          in: path
+          description: Identificador de la sala
+          required: true
+          schema:
+            type: number
+            format: int64
+      responses:
+        '204':
+          description: No content
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+        - rooms
+      summary: Modifica una sala
+      description: Permite modificar todos los detalles de una sala
+      parameters:
+        - name: roomId
+          in: path
+          description: Identificador de la sala
+          required: true
+          schema:
+            type: number
+            format: int64
+      requestBody:
+        description: Nuevos detalles de la sala
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomInDto'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomOutDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /seats:
+    get:
+      tags:
+        - seats
+      summary: Devuelve el listado de las butacas con la sala a la que pertenece
+      description: |
+        Devuelve un listado con todos las butacas de todas las salas ordenadas por id
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SeatsOutDto'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /rooms/{roomId}/seats:
+    post:
+      tags:
+        - seats
+        - rooms
+      summary: Registra una butaca en la sala especificada en el path
+      description: Da de alta una butaca para una sala
+      parameters:
+          - name: roomId
+            in: path
+            description: Identificador de la sala
+            required: true
+            schema:
+              type: number
+              format: int64
+      requestBody:
+        description: Detalles del nuevo coche
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Seats'
+            examples:
+              example1 :
+                value:
+                  seatRow: 1
+                  seatColum: 8
+                  seatAccesible: false
+                  status: OPERATIONAL
+                  priceSurcharge: 1.5
+                  lastMaintenanceDate: 2025-12-12
+              example2:
+                value:
+                  seatRow: 1
+                  seatColum: 9
+                  seatAccesible: tue
+                  status: BROKEN
+                  priceSurcharge: 0
+                  lastMaintenanceDate: 2025-12-08
+      responses:
+        '201':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeatsOutDto'
+              examples:
+                example1:
+                  value:
+                    id: 1
+                    seatRow: 1
+                    seatColum: 8
+                    seatAccesible: false
+                    status: OPERATIONAL
+                    priceSurcharge: 1.5
+                    lastMaintenanceDate: 2025-12-12
+                    rooId: 1
+                    roomName: Sala 1
+                example2:
+                  value:
+                    id: 1
+                    seatRow: 1
+                    seatColum: 9
+                    seatAccesible: true
+                    status: BROKEN
+                    priceSurcharge: 0
+                    lastMaintenanceDate: 2025-12-08
+                    rooId: 1
+                    roomName: Sala 1
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /seats/{seatId}:
+    get:
+      tags:
+        - seats
+      summary: Detalle de una butaca en una sala
+      description: Devuelve los detalles de una butaca por Id
+      parameters:
+        - name: seatId
+          in: path
+          description: Identificador de la butaca
+          required: true
+          schema:
+            type: number
+            format: int64
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeatsOutDto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - seats
+      summary: Elimina una butaca
+      description: Da de baja la butaca cuyo id se para como parámetro
+      parameters:
+        - name: seatId
+          in: path
+          description: Identificador de la butaca
+          required: true
+          schema:
+            type: number
+            format: int64
+      responses:
+        '204':
+          description: No content
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+        - seats
+      summary: Modifica una butaca
+      description: Permite modificar todos los detalles de una butaca
+      parameters:
+        - name: seatId
+          in: path
+          description: Identificador de la butaca
+          required: true
+          schema:
+            type: number
+            format: int64
+      requestBody:
+        description: Nuevos detalles de la butaca
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeatsInDto'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeatsOutDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /customers:
+    get:
+      tags:
+        - customers
+      summary: Devuelve los clientes registrados
+      description: |
+        Devuelve un listado con los clientes registrados dependiendo de los filtros aplicados
+
+        Se puede filtrar a través de cualquier de los filtros indicados: name, address y mail incluso los tres al mismo tiempo
+         - **name**: Filtra por nombre del cliente
+         - **address**: Filtra por direccion del cliente
+         - **mail**: Filtra por direccion de email del cliente
+      parameters:
+        - name: name
+          in: query
+          description: Filtro por nombre del cliente
+          required: false
+          schema:
+            type: string
+        - name: address
+          in: query
+          description: Filtro por direccion del cliente
+          required: false
+          schema:
+            type: string
+        - name: mail
+          in: query
+          description: Filtro por direccion de correo electronico
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerOutDto'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - customers
+      summary: Registra una pelicula
+      description: Da de alta un nuevo cliente según la información facilitada
+      requestBody:
+        description: Detalles del nuevo cliente
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+            examples:
+              example1:
+                value:
+                  name: Bego
+                  surname: Bordege
+                  address: Calle Union Jaquesa 4
+                  latitude: 42.5746,
+                  longitude: 0.5484,
+                  birthDate: 1971-11-07
+                  mail: bego@hotmail.es
+                  admitsAdvertising: true
+                  young: false
+                  student: false
+                  senior: false
+                  member: true
+              example2:
+                value:
+                  name: Miguel
+                  surname: Rubio
+                  address: Calle Union Jaquesa 4
+                  latitude: 42.5746,
+                  longitude: 0.5484,
+                  birthDate: 1971-06-08
+                  mail: miguel@hotmail.es
+                  admitsAdvertising: false
+                  young: false
+                  student: false
+                  senior: false
+                  member: true
+      responses:
+        '201':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerOutDto'
+              examples:
+                example1:
+                  value:
+                    id: 1
+                    name: Bego
+                    surname: Bordege
+                    address: Calle Union Jaquesa 4
+                    latitude: 42.5746,
+                    longitude: 0.5484,
+                    birthDate: 1971-11-07
+                    mail: bego@hotmail.es
+                    admitsAdvertising: true
+                    young: false
+                    student: false
+                    senior: false
+                    member: true
+                example2:
+                  value:
+                    id: 2
+                    name: Miguel
+                    surname: Rubio
+                    address: Calle Union Jaquesa 4
+                    latitude: 42.5746,
+                    longitude: 0.5484,
+                    birthDate: 1971-06-08
+                    mail: miguel@hotmail.es
+                    admitsAdvertising: false
+                    young: false
+                    student: false
+                    senior: false
+                    member: true
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /customers/{customerId}:
+    get:
+      tags:
+        - customers
+      summary: Detalle de un Cliente
+      description: Devuelve los detalles de un cliente por Id
+      parameters:
+        - name: customerId
+          in: path
+          description: Identificador del cliente
+          required: true
+          schema:
+            type: number
+            format: int64
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerOutDto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - customers
+      summary: Elimina un cliente
+      description: Da de baja un cliente cuyo id se para como parámetro
+      parameters:
+        - name: customerId
+          in: path
+          description: Identificador del cliente
+          required: true
+          schema:
+            type: number
+            format: int64
+      responses:
+        '204':
+          description: No content
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+        - customers
+      summary: Modifica un cliente
+      description: Permite modificar todos los detalles de un cliente
+      parameters:
+        - name: customerId
+          in: path
+          description: Identificador del cliente
+          required: true
+          schema:
+            type: number
+            format: int64
+      requestBody:
+        description: Nuevos detalles del cliente
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerInDto'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerOutDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /customers/admitsAdvertising/{admitsAdvertising}:
+    get:
+      tags:
+        - customers
+      summary: Lista de Clientes que admiten publicidad
+      description: Devuelve lista de clientes que admite publicidad
+      parameters:
+        - name: admitsAdvertising
+          in: path
+          description: Admite o no publicidad
+          required: true
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerOutDto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /tickets:
+    get:
+      tags:
+        - tickets
+      summary: Devuelve las entradas de los clientes
+      description: |
+        Devuelve un listado con todas la entradas registradas a los clientes dependiendo de los filtros aplicados
+
+        Se puede filtrar a través de cualquier de los filtros indicados: customerId, screeningId y seatId incluso los tres al mismo tiempo
+         - **customerId**: Filtra por Id del cliente, se detallan todas las entradas que ha sacado un cliente
+         - **screeningId**: Filtra Id de la Proyeccion, se detallan los clientes que han comprado una proyeccion
+         - **seatId**: Filtra por butaca, se puede determinar que clientes han estado en una butaca
+      parameters:
+        - name: customerId
+          in: query
+          description: Filtro por Id del cliente
+          required: false
+          schema:
+            type: number
+            format: int64
+        - name: screeningId
+          in: query
+          description: Filtro por Proyeccion de la pelicula
+          required: false
+          schema:
+            type: number
+            format: int64
+        - name: seatId
+          in: query
+          description: Filtro por Butaca
+          required: false
+          schema:
+            type: number
+            format: int64
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TicketOutDto'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - tickets
+      summary: Registra una entrada
+      description: Da de alta la entrada a un cliente relacionando cliente-butaca-sala-proyeccion-pelicula
+      requestBody:
+        description: Detalles del nuevo entrada
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketInDto'
+            examples:
+              example1:
+                value:
+                  finalPricePaid: 9.5
+                  scanned: false
+                  tickedCode: MCQWASZXCVFDERTYGHBN
+                  status: ACTIVE
+                  customerId: 1
+                  screeninId: 9
+                  seatId: 17
+              example2:
+                value:
+                  finalPricePaid: 9.5
+                  scanned: false
+                  tickedCode: RRQWASZXCVFDERTYGHTI
+                  status: ACTIVE
+                  customerId: 1
+                  screeninId: 9
+                  seatId: 18
+      responses:
+        '201':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketOutDto'
+              examples:
+                example1:
+                  value:
+                    id: 35
+                    saleDate: 2025-08-01T16:32:24.16417
+                    name: Miguel Angel
+                    mail: miguel@hotmail.es
+                    finalPricePaid: 9.5
+                    tickedCode: MCQWASZXCVFDERTYGHBN
+                    young: false
+                    student: false
+                    senior: false
+                    member: true
+                    movieTitle: El señor de los anillos
+                    ticketPrice: 8.0
+                    roomName: Sala 5
+                    screeningTime: 2025-07-30T23:45:00
+                    seatRow: 1
+                    seatcolumn: 7
+                    seatAccesible: false
+                    room3d: false
+                    roomAtmos: true
+                    roomLaser: true
+                example2:
+                  value:
+                    id: 36
+                    saleDate: 2025-08-01T16:32:25.45489
+                    name: Juan
+                    mail: juan@hotmail.es
+                    finalPricePaid: 9.5
+                    tickedCode: RRQWASZXCVFDERTYGHTI
+                    young: false
+                    student: false
+                    senior: false
+                    member: true
+                    movieTitle: El señor de los anillos
+                    ticketPrice: 8.0
+                    roomName: Sala 5
+                    screeningTime: 2025-07-30T23:45:00
+                    seatRow: 1
+                    seatcolumn: 8
+                    seatAccesible: false
+                    room3d: false
+                    roomAtmos: true
+                    roomLaser: true
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /tickets/{ticketId}:
+    get:
+      tags:
+        - tickets
+      summary: Detalle de una Entrada
+      description: Devuelve los detalles de un entrada por Id
+      parameters:
+        - name: ticketId
+          in: path
+          description: Identificador de la entrada
+          required: true
+          schema:
+            type: number
+            format: int64
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketOutDto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - tickets
+      summary: Elimina una entrada
+      description: Da de baja una Entrada cuyo id se para como parámetro
+      parameters:
+        - name: ticketId
+          in: path
+          description: Identificador de la Entrada
+          required: true
+          schema:
+            type: number
+            format: int64
+      responses:
+        '204':
+          description: No content
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+        - tickets
+      summary: Modifica una entrada
+      description: Permite modificar todos los detalles de una Entrada
+      parameters:
+        - name: ticketId
+          in: path
+          description: Identificador de la Entrada
+          required: true
+          schema:
+            type: number
+            format: int64
+      requestBody:
+        description: Nuevos detalles de la Entrada
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketInDto'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketOutDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  schemas:
+    Movie:
+      type: object
+      properties:
+        movieTitle:
+          type: string
+          description: Titulo de la Pelicula
+        genre:
+          type: string
+          description: Genero de la Pelicula
+        durationMinutes:
+          type: integer
+          description: Duracion de la Pelicua
+        filmingLatitude:
+          type: number
+          format: double
+          description: Coordenada latitud de la localizacion principal de la filmacion de la pelicula
+        filmingLongitude:
+          type: number
+          format: double
+          description: Coordenada longitud de la localizacion principal de la filmacion de la pelicula
+        releaseDate:
+          type: string
+          format: date
+          description: Fecha de lanzamiento de la Pelicula
+        currentlyShowing:
+          type: boolean
+          description: En exibicion axctualmente
+      example:
+        movieTitle: La Guerra De Las Galaxias, EPISODE IV
+        genre: Scifi
+        durationMinutes: 181
+        filmingLatitude: 41.6516677,
+        filmingLongitude: -0.8830512
+        releaseDate: 1977-12-30
+        currentlyShowing: true
+    MovieInDto:
+      allOf:
+        - $ref: '#/components/schemas/Movie'
+    MovieOutDto:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: number
+              format: int64
+              description: El identificador de la pelicula
+            movieTitle:
+              type: string
+              description: Titulo de la Pelicula
+            genre:
+              type: string
+              description: Genero de la Pelicula
+            durationMinutes:
+              type: integer
+              description: Duracion de la Pelicua
+            filmingLatitude:
+              type: number
+              format: double
+              description: Coordenada latitud de la localizacion principal de la filmacion de la pelicula
+            filmingLongitude:
+              type: number
+              format: double
+              description: Coordenada longitud de la localizacion principal de la filmacion de la pelicula
+            releaseDate:
+              type: string
+              format: date
+              description: Fecha de lanzamiento de la Pelicula
+            currentlyShowing:
+              type: boolean
+              description: En exibicion axctualmente
+          example:
+              id: 1
+              movieTitle: La Guerra De Las Galaxias, EPISODE IV
+              genre: Scifi
+              durationMinutes: 181
+              filmingLatitude: 41.6516677,
+              filmingLongitude: -0.8830512
+              releaseDate: 1977-12-30
+              currentlyShowing: true
+
+        - $ref: '#/components/schemas/MovieOutDto'
+    Screening:
+      type: object
+      properties:
+        screeningTime:
+          type: string
+          format: date-time
+          description: Hora y fecha de la sesion
+        ticketPrice:
+          type: number
+          format: double
+          description: Precio de la sesion de la pelicula
+        subtitled:
+          type: boolean
+          description: pelicula Subtitulada
+        audioLanguage:
+          type: string
+          description: Codigo del Audio de la Proyeccion
+        adDurationMinutes:
+          type: integer
+          description: Duracion de los anuncios iniciales en la Proyeccion
+        hasIntermission:
+          type: boolean
+          description: pelicula con/sin intermedio
+        movie_id:
+          type: integer
+          description: Id de la Pelicula
+        room_id:
+          type: integer
+          description: Id de la Sala
+      example:
+        screeningTime: 2025-07-30T23:45:00
+        ticketPrice: 8
+        subtitled: false
+        audioLanguage: es-ES
+        adDurationMinutes: 5
+        hasIntermission: false
+        movieId: 4
+        roomId: 5
+    ScreeningInDto:
+      allOf:
+        - $ref: '#/components/schemas/ScreeningInDto'
+        - type: object
+          properties:
+            screeningTime:
+              type: string
+              format: date-time
+              description: Hora y fecha de la sesion
+            ticketPrice:
+              type: number
+              format: double
+              description: Precio de la sesion de la pelicula
+            subtitled:
+              type: boolean
+              description: pelicula Subtitulada
+            movie_id:
+              type: integer
+              description: Id de la Pelicula
+            room_id:
+              type: integer
+              description: Id de la Sala
+          example:
+            screeningTime: 2025-07-30T23:45:00
+            ticketPrice: 8
+            subtitled: false
+            movieId: 4
+            roomId: 5
+    ScreeningOutDto:
+      allOf:
+        - $ref: '#/components/schemas/ScreeningOutDto'
+        - type: object
+          properties:
+            id:
+              type: number
+              format: int64
+              description: Identificador único de la sesion
+            screeningTime:
+              type: string
+              format: dateTime
+              description: Hora y fecha de la sesion
+            ticketPrice:
+              type: number
+              format: double
+              description: Precio de la sesion de la pelicula
+            subtitled:
+              type: boolean
+              description: pelicula Subtitulada
+            movieId:
+              type: number
+              format: int64
+              description: Identificador único de la pelicula
+            roomId:
+              type: number
+              format: int64
+              description: Identificador único de la sala
+            movieTitle:
+              type: string
+              description: Titulo de la Pelicula
+            roomName:
+              type: string
+              description: Nombre de la Sala
+          example:
+            id: 42
+            screeningTime: 2025-07-30T23:45:00
+            ticketPrice: 8
+            subtitled: false
+            movieId: 9
+            roomId: 1
+            movieTitle: Ironman
+            roomName: Sala 5
+    Room:
+      type: object
+      properties:
+        roomName:
+          type: string
+          description: Nombre de la Sala
+        openingDate:
+          type: string
+          format: date
+          description: Fecha de inaguracion de la Sala
+        capacity :
+          type: integer
+          format: int32
+          description: Numero máximo de personas que caben en la Sala
+        room3d:
+          type: boolean
+          description: Sala sin/con capacidad 3D
+        roomAtmos:
+          type: boolean
+          description: Sala sin/con capacidad sonido Atmos
+        roomLaser:
+          type: boolean
+          description: Sala sin/con capacidad definicion Laser
+      example:
+        roomName: Sala 1
+        openingDate: 2018-11-11
+        capacity: 150
+        room3d: false
+        roomAtmos: true
+        roomLaser: true
+    RoomInDto:
+      allOf:
+        - $ref: '#/components/schemas/Room'
+    RoomOutDto:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: number
+              format: int64
+              description: El identificador de la Sala
+            roomName:
+              type: string
+              description: Nombre de la Sala
+            openingDate:
+              type: string
+              format: date
+              description: Fecha de inaguracion de la Sala
+            capacity:
+              type: integer
+              format: int32
+              description: Numero máximo de personas que caben en la Sala
+            room3d:
+              type: boolean
+              description: Sala sin/con capacidad 3D
+            roomAtmos:
+              type: boolean
+              description: Sala sin/con capacidad sonido Atmos
+            roomLaser:
+              type: boolean
+              description: Sala sin/con capacidad definicion Laser
+          example:
+            id: 1
+            roomName: Sala 1
+            openingDate: 2018-11-11
+            capacity: 150
+            room3d: false
+            roomAtmos: true
+            roomLaser: true
+        - $ref: '#/components/schemas/RoomOutDto'
+    Seats:
+      type: object
+      properties:
+        seatRow:
+          type: integer
+          description: Fila de la Butaca
+        seatColumn:
+          type: integer
+          description: Columna de la Butaca
+        seatAccesible:
+          type: boolean
+          description: Butaca preparada para accesibilidad
+        status:
+          type: string
+          description: Estado operativo de la Butaca
+        priceSurcharge:
+          type: number
+          format: double
+          description: Suplemento de precio si la butaca es especial(Vip, reclinable)
+        lastMaintenanceDate:
+          type: string
+          format: date
+          description: Fecha de la ultima revision o mantenimiento
+      example:
+        seatRow: 1
+        seatColum: 8
+        seatAccesible: false
+        status: OPERATIONAL
+        priceSurcharge: 1.5
+        lastMaintenanceDate: 2025-12-12
+
+    SeatsInDto:
+      allOf:
+        - $ref: '#/components/schemas/Seats'
+    SeatsOutDto:
+      allOf:
+        - $ref: '#/components/schemas/SeatsOutDto'
+        - type: object
+          properties:
+            id:
+              type: number
+              format: int64
+              description: El identificador de la Butaca
+            seatRow:
+              type: integer
+              description: Fila de la Butaca
+            seatColumn:
+              type: integer
+              description: Columna de la Butaca
+            seatAccesible:
+              type: boolean
+              description: Butaca preparada para accesibilidad
+            status:
+              type: string
+              description: Estado operativo de la Butaca
+            priceSurcharge:
+              type: number
+              format: double
+              description: Suplemento de precio si la butaca es especial(Vip, reclinable)
+            lastMaintenanceDate:
+              type: string
+              format: date
+              description: Fecha de la ultima revision o mantenimiento
+            roomId:
+              type: number
+              format: int64
+              description: El identificador de la Sala en la que esta la butaca
+            roomName:
+              type: string
+              description: Nombre de la Sala en la que esta la butaca
+          example:
+            id: 1
+            seatRow: 1
+            seatColum: 8
+            seatAccesible: false
+            status: OPERATIONAL
+            priceSurcharge: 1.5
+            lastMaintenanceDate: 2025-12-12
+            rooId: 1
+            roomName: Sala 1
+    Customer:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nombre del cliente
+        surname:
+          type: string
+          description: Apellidos del cliente
+        address:
+          type: string
+          description: Direccion del cliente
+        latitude:
+          type: number
+          format: double
+          description: Coordenada latitud de la direccion del cliente
+        longitude:
+          type: number
+          format: double
+          description: Coordenada longitud de la direccion del cliente
+        birthDate:
+          type: string
+          format: date
+          description: Fecha de nacimiento del cliente
+        email:
+          type: string
+          description: Direccion de correo electronico del cliente
+        admitsAdvertising:
+          type: boolean
+          description: Admite que le envien publicidad
+        young:
+          type: boolean
+          description: Cliente es joven o tiene carnet joven
+        student:
+          type: boolean
+          description: Cliente es estudiante
+        senior:
+          type: boolean
+          description: Cliente esta Jubilado
+        member:
+          type: boolean
+          description: Cliente es socio
+      example:
+          name: Bego
+          surname: Bordege
+          address: Calle Union Jaquesa 4
+          latitude: 42.5746,
+          longitude: 0.5484,
+          birthDate: 1971-11-07
+          mail: bego@hotmail.es
+          admitsAdvertising: true
+          young: false
+          student: false
+          senior: false
+          member: false
+    CustomerInDto:
+      allOf:
+        - $ref: '#/components/schemas/Customer'
+    CustomerOutDto:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: number
+              format: int64
+              description: El identificador del cliente
+            name:
+              type: string
+              description: Nombre del cliente
+            surname:
+              type: string
+              description: Apellidos del cliente
+            address:
+              type: string
+              description: Direccion del cliente
+            latitude:
+              type: number
+              format: double
+              description: Coordenada latitud de la direccion del cliente
+            longitude:
+              type: number
+              format: double
+              description: Coordenada longitud de la direccion del cliente
+            birthDate:
+              type: string
+              format: date
+              description: Fecha de nacimiento del cliente
+            email:
+              type: string
+              description: Direccion de correo electronico del cliente
+            admitsAdvertising:
+              type: boolean
+              description: Admite que le envien publicidad
+            young:
+              type: boolean
+              description: Cliente es joven o tiene carnet joven
+            student:
+              type: boolean
+              description: Cliente es estudiante
+            senior:
+              type: boolean
+              description: Cliente esta Jubilado
+            member:
+              type: boolean
+              description: Cliente es socio
+          example:
+            id: 1
+            name: Bego
+            surname: Bordege
+            address: Calle Union Jaquesa 4
+            latitude: 42.5746,
+            longitude: 0.5484,
+            birthDate: 1971-11-07
+            mail: bego@hotmail.es
+            admitsAdvertising: false
+            young: false
+            student: false
+            senior: false
+            member: false
+
+        - $ref: '#/components/schemas/CustomerOutDto'
+    Ticket:
+      type: object
+      properties:
+        saleDate:
+          type: string
+          format: date-time
+          description: Fecha exacta de la venta del ticket
+        finalPricePaid:
+          type: number
+          format: double
+          description: Precio final exacto que se paga por el Ticket
+        scanned:
+          type: boolean
+          description: Indica si el el ticket ha sido escaneado o validado
+        ticketCode:
+          type: string
+          description: Identificador UNICO del ticket que se le entrga al cliente para ser escaneado
+        status:
+          type: string
+          description: Estado del ticket(ACTIVE, REFUNDED, CANCELLED)
+        customerId:
+          type: number
+          format: int64
+          description: Identificador del cliente
+        screeningId:
+          type: number
+          format: int64
+          description: Identificador de la Proyeccion
+        seatId:
+          type: number
+          format: int64
+          description: Identificador de la Butaca
+      example:
+        saleDate: 2025-12-30T23:45:00.18418
+        finalPricePaid: 9.5
+        scanned: false
+        tickedCode: MCQWASZXCVFDERTYGHBN
+        status: ACTIVE
+        customerId: 1
+        screeninId: 9
+        seatId: 17
+    TicketInDto:
+      allOf:
+        - $ref: '#/components/schemas/TicketInDto'
+        - type: object
+          properties:
+            finalPricePaid:
+              type: number
+              format: double
+              description: Precio final exacto que se paga por el Ticket
+            scanned:
+              type: boolean
+              description: Indica si el el ticket ha sido escaneado o validado
+            ticketCode:
+              type: string
+              description: Identificador UNICO del ticket que se le entrga al cliente para ser escaneado
+            status:
+              type: string
+              description: Estado del ticket(ACTIVE, REFUNDED, CANCELLED)
+            customerId:
+              type: number
+              format: int64
+              description: Identificador del cliente
+            screeningId:
+              type: number
+              format: int64
+              description: Identificador de la Proyeccion
+            seatId:
+              type: number
+              format: int64
+              description: Identificador de la Butaca
+          example:
+            finalPricePaid: 9.5
+            scanned: false
+            tickedCode: MCQWASZXCVFDERTYGHBN
+            status: ACTIVE
+            customerId: 1
+            screeninId: 9
+            seatId: 17
+    TicketOutDto:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: number
+              format: int64
+              description: El identificador de la entrada
+            saleDate:
+              type: string
+              format: dateTime
+              description: Hora y fecha de la compra de la entrada
+            finalPricePaid:
+              type: number
+              format: double
+              description: Precio final exacto que se paga por el Ticket
+            ticketCode:
+              type: string
+              description: Identificador UNICO del ticket que se le entrga al cliente para ser escaneado
+            name:
+              type: string
+              description: Nombre del cliente
+            email:
+              type: string
+              description: Direccion de correo electronico del cliente
+            young:
+              type: boolean
+              description: Cliente es joven o tiene carnet joven
+            student:
+              type: boolean
+              description: Cliente es estudiante
+            senior:
+              type: boolean
+              description: Cliente esta Jubilado
+            member:
+              type: boolean
+              description: Cliente es socio
+            movieTitle:
+              type: string
+              description: Titulo de la Pelicula
+            ticketPrice:
+              type: number
+              format: double
+              description: Precio de la sesion de la pelicula
+            roomName:
+              type: string
+              description: Nombre de la Sala donde se proyecta la pelicula
+            screeningTime:
+              type: string
+              format: dateTime
+              description: Hora y fecha de la proyeccion de la pelicula
+            seatRow:
+              type: integer
+              description: Fila de la Butaca
+            seatColumn:
+              type: integer
+              description: Columna de la Butaca
+            seatAccesible:
+              type: boolean
+              description: Butaca preparada para accesibilidad
+            room3d:
+              type: boolean
+              description: Sala sin/con capacidad 3D
+            roomAtmos:
+              type: boolean
+              description: Sala sin/con capacidad sonido Atmos
+            roomLaser:
+              type: boolean
+              description: Sala sin/con capacidad definicion Laser
+          example:
+            id: 35
+            saleDate: 2025-08-01T16:32:24.16417
+            finalPricePaid: 9.5
+            tickedCode: MCQWASZXCVFDERTYGHBN
+            name: Miguel Angel
+            mail: miguel@hotmail.es
+            young: false
+            student: false
+            senior: false
+            member: true
+            movieTitle: El señor de los anillos
+            ticketPrice: 8.0
+            roomName: Sala 5
+            screeningTime: 2025-07-30T23:45:00
+            seatRow: 1
+            seatcolumn: 7
+            seatAccesible: false
+            room3d: false
+            roomAtmos: true
+            roomLaser: true
+
+        - $ref: '#/components/schemas/TicketOutDto'
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Código de error
+        message:
+          type: string
+          description: Descripción del error
+    BadRequest:
+      allOf:
+        - $ref: '#/components/schemas/ErrorResponse'
+        - type: object
+          properties:
+            errorMessages:
+              type: array
+              items:
+                $ref: '#/components/schemas/ErrorMessage'
+      example:
+        code: 400
+        message: Bad Request
+    ErrorMessage:
+      type: object
+      properties:
+        fieldName:
+          type: string
+          description: Campo donde está el error
+          example: model
+        message:
+          type: string
+          description: Mensaje de error asociado al campo
+          example: El dato es obligatorio
+    NotFound:
+      allOf:
+        - $ref: '#/components/schemas/ErrorResponse'
+      example:
+        code: 404
+        message: Not Found
+    InternalServerError:
+      allOf:
+        - $ref: '#/components/schemas/ErrorResponse'
+      example:
+        code: 500
+        message: Internal Server Error
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequest'
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFound'
+    InternalServerError:
+      description: InternalServerError
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+
