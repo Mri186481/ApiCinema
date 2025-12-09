@@ -64,7 +64,7 @@ public class ScreeningService {
         outDto.setTheaterRoom(savedScreening.getTheaterRoom());
         outDto.setTicketPrice(savedScreening.getTicketPrice());
         outDto.setSubtitled(savedScreening.isSubtitled());
-        outDto.setMovieTitle(savedScreening.getMovie().getTitle());
+        outDto.setMovieTitle(savedScreening.getMovie().getMovieTitle());
 
         return outDto;
     }
@@ -96,7 +96,7 @@ public class ScreeningService {
 
     private ScreeningOutDto convertToOutDto(Screening screening) {
         ScreeningOutDto dto = modelMapper.map(screening, ScreeningOutDto.class);
-        dto.setMovieTitle(screening.getMovie().getTitle());
+        dto.setMovieTitle(screening.getMovie().getMovieTitle());
         return dto;
     }
 }

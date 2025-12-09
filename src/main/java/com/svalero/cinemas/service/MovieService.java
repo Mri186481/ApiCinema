@@ -1,7 +1,8 @@
 package com.svalero.cinemas.service;
 
+
 import com.svalero.cinemas.domain.Movie;
-import com.svalero.cinemas.domain.dto.MovieInDto;
+import com.svalero.cinemas.domain.dto.*;
 import com.svalero.cinemas.exception.MovieNotFoundException;
 import com.svalero.cinemas.repository.MovieRepository;
 import org.modelmapper.ModelMapper;
@@ -12,13 +13,16 @@ import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class MovieService {
+    /*
+    Para que @InjectMocks (de Mockito) o @Autowired (de Spring) funcionen, tu MovieService tiene que "pedir" el ModelMapper.
+    La forma recomendada es hacerlo a través del constructor:
+    Al tener el ModelMapper en el constructor, Mockito (con @InjectMocks) sabrá que tiene que pasar tu @Mock ModelMapper cuando cree el MovieService para el test.
+    */
 
     private final MovieRepository movieRepository;
 
@@ -26,34 +30,36 @@ public class MovieService {
     private ModelMapper modelMapper;
 
     @Autowired
-    public MovieService(MovieRepository movieRepository) {
+    public MovieService(MovieRepository movieRepository, ModelMapper modelMapper) {
         this.movieRepository = movieRepository;
-    }
-    public void setModelMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }
+//    public void setModelMapper(ModelMapper modelMapper) {
+//        this.modelMapper = modelMapper;
+//
+//    }
 
 
     // Obtener todas las películas
-    public List<Movie> findAll(String title, String genre, Integer durationMinutes) {
+    public List<MovieOutDto> findAll(String movieTitle, String genre, Integer durationMinutes) {
 
 
         List<Movie> movieList;
 
-        boolean hasTitle = !title.isEmpty();
+        boolean hasTitle = !movieTitle.isEmpty();
         boolean hasGenre = !genre.isEmpty();
         boolean hasDurationMinutes = durationMinutes != null;
 
         if (hasTitle && hasGenre && hasDurationMinutes) {
-            movieList = movieRepository.findByTitleAndGenreAndDurationMinutes(title, genre, durationMinutes);
+            movieList = movieRepository.findByMovieTitleAndGenreAndDurationMinutes(movieTitle, genre, durationMinutes);
         } else if (hasTitle && hasGenre) {
-            movieList = movieRepository.findByTitleAndGenre(title,genre);
+            movieList = movieRepository.findByMovieTitleAndGenre(movieTitle,genre);
         } else if (hasTitle && hasDurationMinutes) {
-            movieList = movieRepository.findByTitleAndDurationMinutes(title,durationMinutes);
+            movieList = movieRepository.findByMovieTitleAndDurationMinutes(movieTitle,durationMinutes);
         } else if (hasGenre && hasDurationMinutes) {
             movieList = movieRepository.findByGenreAndDurationMinutes(genre, durationMinutes);
         } else if (hasTitle) {
-            movieList = movieRepository.findByTitle(title);
+            movieList = movieRepository.findByMovieTitle(movieTitle);
         } else if (hasGenre) {
             movieList = movieRepository.findByGenre(genre);
         } else if (hasDurationMinutes) {
@@ -62,19 +68,27 @@ public class MovieService {
             movieList = movieRepository.findAll();
         }
 
-        return modelMapper.map(movieList, new TypeToken<List<Movie>>() {}.getType());
+        return modelMapper.map(movieList, new TypeToken<List<MovieOutDto>>() {}.getType());
     }
 
     // Buscar por ID
-    public Optional<Movie> findById(Long id) {
-        return movieRepository.findById(id);
+//    public Optional<Movie> findById(Long id) {
+//        return movieRepository.findById(id);
+//    }
+
+    public MovieOutDto findById(Long id) {
+        Movie movie = movieRepository.findById(id)
+                .orElseThrow(() -> new MovieNotFoundException("Movie with ID " + id + " not found"));
+        return convertToOutDto(movie);
     }
 
+
+
     // Buscar por título
-    public List<Movie> findByTitle(String title) {
-        List<Movie> movie = movieRepository.findByTitle(title);
+    public List<Movie> findByTitle(String movieTitle) {
+        List<Movie> movie = movieRepository.findByMovieTitle(movieTitle);
         if (movie == null) {
-            throw new MovieNotFoundException("Movie not found with title: " + title);
+            throw new MovieNotFoundException("Movie not found with title: " + movieTitle);
         }
         return movie;
 
@@ -92,19 +106,23 @@ public class MovieService {
 
 
     // Crear nueva película
-    public Movie create(MovieInDto movieInDto) {
+    public MovieOutDto create(MovieInDto movieInDto) {
         Movie movie = modelMapper.map(movieInDto, Movie.class);
-        return movieRepository.save(movie);
+        movie = movieRepository.save(movie);
+        return modelMapper.map(movie, MovieOutDto.class);
     }
+
 
     // Actualizar película completa
     public Movie update(Long id, MovieInDto movieInDto) {
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new MovieNotFoundException("Movie not found with id: " + id));
 
-        movie.setTitle(movieInDto.getTitle());
+        movie.setMovieTitle(movieInDto.getMovieTitle());
         movie.setGenre(movieInDto.getGenre());
         movie.setDurationMinutes(movieInDto.getDurationMinutes());
+        movie.setFilmingLatitude(movieInDto.getFilmingLatitude());
+        movie.setFilmingLongitude(movieInDto.getFilmingLongitude());
         movie.setReleaseDate(movieInDto.getReleaseDate());
         movie.setCurrentlyShowing(movieInDto.isCurrentlyShowing());
 
@@ -139,5 +157,9 @@ public class MovieService {
             throw new MovieNotFoundException("Movie not found with id: " + id);
         }
         movieRepository.deleteById(id);
+    }
+    private MovieOutDto convertToOutDto(Movie movie) {
+        MovieOutDto dto = modelMapper.map(movie,MovieOutDto.class);
+        return dto;
     }
 }

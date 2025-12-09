@@ -1,8 +1,7 @@
 package com.svalero.cinemas.controller;
 
 import com.svalero.cinemas.domain.Movie;
-import com.svalero.cinemas.domain.dto.ErrorResponse;
-import com.svalero.cinemas.domain.dto.MovieInDto;
+import com.svalero.cinemas.domain.dto.*;
 import com.svalero.cinemas.exception.MovieNotFoundException;
 import com.svalero.cinemas.service.MovieService;
 import jakarta.validation.Valid;
@@ -21,7 +20,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/movies")
@@ -35,42 +34,45 @@ public class MovieController {
 
     // Obtener todas las películas con posibilidad de filtro por genero
     @GetMapping
-    public ResponseEntity<List<Movie>> getAllMovies(@RequestParam(value = "title", defaultValue = "") String title,
-                                                    @RequestParam(value = "genre", defaultValue = "") String genre,
-                                                    @RequestParam(value = "durationMinutes", required = false) Integer durationMinutes) {
+    public ResponseEntity<List<MovieOutDto>> getAllMovies(@RequestParam(value = "movieTitle", defaultValue = "") String movieTitle,
+                                                          @RequestParam(value = "genre", defaultValue = "") String genre,
+                                                          @RequestParam(value = "durationMinutes", required = false) Integer durationMinutes) {
 
         logger.info("BEGIN getAllMovies");
-        List<Movie> movies = movieService.findAll(title, genre, durationMinutes);
+        List<MovieOutDto> movies = movieService.findAll(movieTitle, genre, durationMinutes);
         logger.info("END getAllMovies");
         return new ResponseEntity<>(movies, HttpStatus.OK);
     }
 
     // Buscar película por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Movie> getMovieById(@PathVariable Long id)  {
-//        logger.info("BEGIN getMovieById");
-//        return movieService.findById(id)
-//                .map(ResponseEntity::ok)
-//                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<MovieOutDto> getMovieById(@PathVariable Long id) throws MovieNotFoundException  {
         logger.info("BEGIN getMovieById");
-        Optional<Movie> movieOptional = movieService.findById(id);
+        MovieOutDto dto = movieService.findById(id);
 
+//        if (movieOptional.isPresent()) {
+//            logger.info("END getMovieById - Movie found");
+//            return ResponseEntity.ok(movieOptional.get());
+//        } else {
+//            logger.info("END getMovieById - Movie not found");
+//            return ResponseEntity.notFound().build();
+//        }
+//        @GetMapping("/{roomId}")
+//        public ResponseEntity<Room> getRoomById(@PathVariable Long roomId) throws RoomNotFoundException {
+//            logger.info("Begin Get room");
+//            Room room = roomService.get(roomId);
+//            logger.info("Fetching room with id: {}", roomId);
+//            return new ResponseEntity<>(room, HttpStatus.OK);
 
-
-        if (movieOptional.isPresent()) {
-            logger.info("END getMovieById - Movie found");
-            return ResponseEntity.ok(movieOptional.get());
-        } else {
-            logger.info("END getMovieById - Movie not found");
-            return ResponseEntity.notFound().build();
-        }
+        logger.info("END getByTitle");
+        return ResponseEntity.ok(dto);
     }
 
     // Buscar película por título
-    @GetMapping("/title/{title}")
-    public ResponseEntity<List<Movie>> getByTitle(@PathVariable String title) throws MovieNotFoundException {
+    @GetMapping("/movieTitle/{movieTitle}")
+    public ResponseEntity<List<Movie>> getByTitle(@PathVariable String movieTitle) throws MovieNotFoundException {
         logger.info("BEGIN getByTitle");
-        List<Movie> movie = movieService.findByTitle(title);
+        List<Movie> movie = movieService.findByTitle(movieTitle);
         logger.info("END getByTitle");
         return ResponseEntity.ok(movie);
 
@@ -88,13 +90,11 @@ public class MovieController {
 
     // Crear nueva película
     @PostMapping
-    public ResponseEntity<Movie> createMovie(@Valid @RequestBody MovieInDto movieInDto) {
+    public ResponseEntity<MovieOutDto> createMovie(@Valid @RequestBody MovieInDto movieInDto) {
         logger.info("BEGIN createMovie");
-        Movie movie = movieService.create(movieInDto);
+        MovieOutDto addMovie = movieService.create(movieInDto);
         logger.info("END createMovies");
-        return new ResponseEntity<>(movie, HttpStatus.OK);
-//        return ResponseEntity.ok(movieService.create(movieInDto));
-
+        return new ResponseEntity<>(addMovie, HttpStatus.OK);
     }
 
     // Actualizar película
@@ -104,9 +104,6 @@ public class MovieController {
         Movie movie = movieService.update(id, movieInDto);
         logger.info("END updateMovie");
         return new ResponseEntity<>(movie, HttpStatus.OK);
-
-
-//        return ResponseEntity.ok(movieService.update(id, movieInDto));
     }
     // Actualizar Tabla parcialmente
     @PatchMapping ("/{id}")
@@ -116,8 +113,6 @@ public class MovieController {
         logger.info("END updateMoviePartial");
         return new ResponseEntity<>(updatedMovie, HttpStatus.OK);
 
-
-//        return ResponseEntity.ok(movieService.update(id, movieInDto));
     }
     @GetMapping("/release-date/{date}")
     public ResponseEntity<List<Movie>> getByReleaseDate(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
@@ -168,3 +163,4 @@ public class MovieController {
 
 
 }
+
