@@ -12,8 +12,9 @@ public interface MovieRepository extends CrudRepository<Movie, Long> {
     // Método para obtener todos los usuarios
     List<Movie> findAll();
 
+
     // Método para buscar una pelicula por su titulo
-    List<Movie> findByTitle(String title);
+    List<Movie> findByMovieTitle(String movieTitle);
 
     List<Movie> findByGenre(String genre);
 
@@ -21,11 +22,11 @@ public interface MovieRepository extends CrudRepository<Movie, Long> {
 
     List<Movie> findByReleaseDate(LocalDate releaseDate);
 
-    List<Movie> findByTitleAndGenreAndDurationMinutes(String title,String genre, Integer durationMinutes);
+    List<Movie> findByMovieTitleAndGenreAndDurationMinutes(String movieTitle,String genre, Integer durationMinutes);
 
-    List<Movie> findByTitleAndGenre(String title,String genre);
+    List<Movie> findByMovieTitleAndGenre(String movieTitle,String genre);
 
-    List<Movie> findByTitleAndDurationMinutes(String title,Integer durationMinutes);
+    List<Movie> findByMovieTitleAndDurationMinutes(String movieTitle,Integer durationMinutes);
 
     List<Movie> findByGenreAndDurationMinutes(String genre,Integer durationMinutes);
 
