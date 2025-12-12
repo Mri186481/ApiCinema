@@ -3,6 +3,7 @@ package com.svalero.cinemas.controller;
 import com.svalero.cinemas.domain.dto.ErrorResponse;
 import com.svalero.cinemas.domain.dto.ScreeningInDto;
 import com.svalero.cinemas.domain.dto.ScreeningOutDto;
+import com.svalero.cinemas.exception.RoomNotFoundException;
 import com.svalero.cinemas.exception.ScreeningNotFoundException;
 import com.svalero.cinemas.service.ScreeningService;
 import jakarta.validation.Valid;
@@ -44,7 +45,7 @@ public class ScreeningController {
     }
 
     @PostMapping("/screenings")
-    public ResponseEntity<ScreeningOutDto> addScreening(@Valid @RequestBody ScreeningInDto screeningInDto) throws ScreeningNotFoundException {
+    public ResponseEntity<ScreeningOutDto> addScreening(@Valid @RequestBody ScreeningInDto screeningInDto) throws ScreeningNotFoundException, RoomNotFoundException {
         logger.info("BEGIN addScreening");
         ScreeningOutDto addScreening = screeningService.add(screeningInDto);
         logger.info("END addScreening");
@@ -52,7 +53,7 @@ public class ScreeningController {
     }
 
     @PutMapping("/screenings/{screeningId}")
-    public ResponseEntity<ScreeningOutDto> modifyScreening(@Valid @PathVariable Long screeningId, @RequestBody ScreeningInDto screeningInDto) throws ScreeningNotFoundException {
+    public ResponseEntity<ScreeningOutDto> modifyScreening(@Valid @PathVariable Long screeningId, @RequestBody ScreeningInDto screeningInDto) throws ScreeningNotFoundException, RoomNotFoundException {
         logger.info("BEGIN modifyScreening");
         ScreeningOutDto modifyScreening = screeningService.modify(screeningId, screeningInDto);
         logger.info("END modifyScreening");
@@ -69,6 +70,12 @@ public class ScreeningController {
 
     @ExceptionHandler(ScreeningNotFoundException.class)
     public ResponseEntity<String> handleScreeningNotFound(ScreeningNotFoundException e) {
+        logger.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(RoomNotFoundException.class)
+    public ResponseEntity<String> handleRoomNotFound(RoomNotFoundException e) {
         logger.error(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
