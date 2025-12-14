@@ -99,7 +99,7 @@ public class MovieController {
 
     // Actualizar película
     @PutMapping("/{id}")
-    public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @RequestBody MovieInDto movieInDto) throws MovieNotFoundException{
+    public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @Valid  @RequestBody MovieInDto movieInDto) throws MovieNotFoundException{
         logger.info("BEGIN updateMovie");
         Movie movie = movieService.update(id, movieInDto);
         logger.info("END updateMovie");

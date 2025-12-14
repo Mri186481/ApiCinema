@@ -4,6 +4,7 @@ import com.svalero.cinemas.domain.Room;
 import com.svalero.cinemas.domain.dto.*;
 import com.svalero.cinemas.exception.RoomNotFoundException;
 import com.svalero.cinemas.service.RoomService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +58,7 @@ public class RoomController {
 
     // Agregar una nueva sala
     @PostMapping
-    public ResponseEntity<RoomOutDto> addRoom(@RequestBody RoomInDto roomInDto) {
+    public ResponseEntity<RoomOutDto> addRoom( @Valid @RequestBody RoomInDto roomInDto) {
         logger.info("Adding new room");
         RoomOutDto addRoom = roomService.add(roomInDto);
         logger.info("End adding new customer");
@@ -66,7 +67,7 @@ public class RoomController {
 
     // Modificar una sala
     @PutMapping("/{roomId}")
-    public ResponseEntity<RoomOutDto> modifyRoom(@PathVariable long roomId, @RequestBody RoomInDto room)
+    public ResponseEntity<RoomOutDto> modifyRoom(@PathVariable long roomId, @Valid  @RequestBody RoomInDto room)
             throws RoomNotFoundException {
         logger.info("Begin Modify room");
         RoomOutDto modifiedRoom = roomService.modify(roomId, room);

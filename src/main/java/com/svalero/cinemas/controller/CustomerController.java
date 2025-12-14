@@ -6,6 +6,7 @@ import com.svalero.cinemas.domain.dto.CustomerOutDto;
 import com.svalero.cinemas.domain.dto.ErrorResponse;
 import com.svalero.cinemas.exception.CustomerNotFoundException;
 import com.svalero.cinemas.service.CustomerService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +60,7 @@ public class CustomerController {
 
     // Agregar un nuevo usuario
     @PostMapping
-    public ResponseEntity<CustomerOutDto> addUser(@RequestBody CustomerInDto customerInDto) {
+    public ResponseEntity<CustomerOutDto> addUser( @Valid @RequestBody CustomerInDto customerInDto) {
         logger.info("Adding new customer");
         CustomerOutDto addUser = customerService.add(customerInDto);
         logger.info("End adding new customer");
@@ -68,7 +69,7 @@ public class CustomerController {
 
     // Modificar un usuario
     @PutMapping("/{customerId}")
-    public ResponseEntity<CustomerOutDto> modifyUser(@PathVariable long customerId, @RequestBody CustomerInDto customer)
+    public ResponseEntity<CustomerOutDto> modifyUser(@PathVariable long customerId, @Valid  @RequestBody CustomerInDto customer)
             throws CustomerNotFoundException {
         logger.info("Begin Modify customer");
         CustomerOutDto modifiedUser = customerService.modify(customerId, customer);

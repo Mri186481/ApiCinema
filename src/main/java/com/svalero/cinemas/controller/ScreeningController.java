@@ -53,7 +53,7 @@ public class ScreeningController {
     }
 
     @PutMapping("/screenings/{screeningId}")
-    public ResponseEntity<ScreeningOutDto> modifyScreening(@Valid @PathVariable Long screeningId, @RequestBody ScreeningInDto screeningInDto) throws ScreeningNotFoundException, RoomNotFoundException {
+    public ResponseEntity<ScreeningOutDto> modifyScreening(@PathVariable Long screeningId, @Valid  @RequestBody ScreeningInDto screeningInDto) throws ScreeningNotFoundException, RoomNotFoundException {
         logger.info("BEGIN modifyScreening");
         ScreeningOutDto modifyScreening = screeningService.modify(screeningId, screeningInDto);
         logger.info("END modifyScreening");
