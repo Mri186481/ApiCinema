@@ -1,5 +1,6 @@
 package com.svalero.cinemas.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -37,4 +39,12 @@ public class Screening {
     @ManyToOne
     @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
+
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private Room room;
+
+    @OneToMany(mappedBy = "screening")
+    @JsonBackReference(value="screenings_tickets")
+    private List<Ticket> tickets;
 }

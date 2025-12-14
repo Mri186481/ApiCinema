@@ -66,7 +66,7 @@ public class SeatController {
 
     // Modificar una butaca
     @PutMapping("/seats/{seatId}")
-    public ResponseEntity<SeatOutDto> modifySeat(@PathVariable long seatId, @RequestBody SeatInDto seat)
+    public ResponseEntity<SeatOutDto> modifySeat(@PathVariable long seatId, @Valid  @RequestBody SeatInDto seat)
             throws SeatNotFoundException {
         logger.info("Begin Modify seat");
         SeatOutDto modifiedSeat = seatService.modify(seatId, seat);
