@@ -28,10 +28,19 @@ public class ScreeningController {
 
     private final Logger logger = LoggerFactory.getLogger(MovieController.class);
 
+    //    @GetMapping("/screenings")
+//    public ResponseEntity<List<ScreeningOutDto>> getAllScreenings() {
+//        logger.info("BEGIN Allscreenings");
+//        List<ScreeningOutDto> screenings = screeningService.findAll();
+//        logger.info("END Allscreeenings");
+//        return ResponseEntity.ok(screenings);
+//    }
     @GetMapping("/screenings")
-    public ResponseEntity<List<ScreeningOutDto>> getAllScreenings() {
+    public ResponseEntity<List<ScreeningOutDto>> getAll(@RequestParam(value = "movieId", required = false) Long movieId,
+                                                        @RequestParam(value = "subtitled", required = false) Boolean subtitled,
+                                                        @RequestParam(value = "roomId",  required = false) Long roomId) {
         logger.info("BEGIN Allscreenings");
-        List<ScreeningOutDto> screenings = screeningService.findAll();
+        List<ScreeningOutDto> screenings = screeningService.findAll(movieId,subtitled,roomId);
         logger.info("END Allscreeenings");
         return ResponseEntity.ok(screenings);
     }
@@ -53,7 +62,7 @@ public class ScreeningController {
     }
 
     @PutMapping("/screenings/{screeningId}")
-    public ResponseEntity<ScreeningOutDto> modifyScreening(@PathVariable Long screeningId, @Valid  @RequestBody ScreeningInDto screeningInDto) throws ScreeningNotFoundException, RoomNotFoundException {
+    public ResponseEntity<ScreeningOutDto> modifyScreening(@PathVariable Long screeningId,  @Valid  @RequestBody ScreeningInDto screeningInDto) throws ScreeningNotFoundException, RoomNotFoundException {
         logger.info("BEGIN modifyScreening");
         ScreeningOutDto modifyScreening = screeningService.modify(screeningId, screeningInDto);
         logger.info("END modifyScreening");

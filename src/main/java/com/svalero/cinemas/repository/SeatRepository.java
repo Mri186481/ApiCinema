@@ -1,8 +1,5 @@
 package com.svalero.cinemas.repository;
 
-
-
-
 import com.svalero.cinemas.domain.Seat;
 import org.springframework.data.repository.CrudRepository;
 
@@ -13,6 +10,19 @@ public interface SeatRepository extends CrudRepository<Seat, Long> {
 
     // Método para obtener todos los usuarios
     List<Seat> findAll();
+    List<Seat> findBySeatRow(Integer seatRow);
+
+    List<Seat> findBySeatColumn(Integer seatColumn);
+
+    List<Seat> findByStatus(String status);
+
+    List<Seat> findBySeatRowAndSeatColumnAndStatus(Integer seatRow, Integer seatColumn, String status);
+
+    List<Seat> findBySeatRowAndSeatColumn(Integer seatRow, Integer seatColumn);
+
+    List<Seat> findBySeatRowAndStatus(Integer seatRow, String status);
+
+    List<Seat> findBySeatColumnAndStatus(Integer seatColumn, String status);
 
     Optional<Seat> findById(Long id);
 
@@ -21,6 +31,4 @@ public interface SeatRepository extends CrudRepository<Seat, Long> {
 
     List<Seat> findBySeatAccesible(boolean seatAccesible);
 
-
 }
-

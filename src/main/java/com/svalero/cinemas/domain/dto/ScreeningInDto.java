@@ -15,9 +15,6 @@ public class ScreeningInDto {
     @NotNull(message = "Screening time is required")
     private LocalDateTime screeningTime;
 
-    @NotNull(message = "Theater room is required")
-    private String theaterRoom;
-
     @NotNull(message = "Ticket price is required")
     private Double ticketPrice;
 
@@ -25,4 +22,7 @@ public class ScreeningInDto {
 
     @NotNull(message = "Movie ID is required")
     private Long movieId;
+
+    @NotNull(message = "Room ID is required")
+    private Long roomId;
 }

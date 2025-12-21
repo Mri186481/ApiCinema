@@ -8,8 +8,10 @@ import java.time.LocalDateTime;
 public class ScreeningOutDto {
     private Long id;
     private LocalDateTime screeningTime;
-    private String theaterRoom;
     private double ticketPrice;
     private boolean subtitled;
+    private Long movieId;
+    private Long roomId;
     private String movieTitle;
+    private String roomName;
 }
