@@ -34,7 +34,7 @@ public class Seat {
     @Column(name = "status", length = 20)
     @ColumnDefault("'OPERATIONAL'")
     private String status = "OPERATIONAL";
-   //Estado operativo de la butaca (ej. "OPERATIONAL", "BROKEN", "MAINTENANCE")
+    //Estado operativo de la butaca (ej. "OPERATIONAL", "BROKEN", "MAINTENANCE")
 
     @Column(name = "price_surcharge", precision = 5, scale = 2)
     @ColumnDefault("0.0")

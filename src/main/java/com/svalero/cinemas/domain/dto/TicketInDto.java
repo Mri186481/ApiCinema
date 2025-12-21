@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TicketInDto {
 
-//    @NotNull(message = "saleDate time is required")
-//    private LocalDateTime saleDate;
     @NotNull(message = "Final Price is required")
     private double finalPricePaid;
 
@@ -24,6 +22,9 @@ public class TicketInDto {
 
     @NotNull(message = "Customer ID is required")
     private Long customerId;
+
+    @NotNull(message = "Rate ID is required")
+    private Long rateId;
 
     @NotNull(message = "Screening ID is required")
     private Long screeningId;

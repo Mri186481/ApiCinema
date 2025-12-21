@@ -43,10 +43,10 @@ public class Ticket {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
-// Futura incorporacion
-//    @ManyToOne
-//    @JoinColumn(name = "rate_id")
-//    private Rate rate;
+    //
+    @ManyToOne
+    @JoinColumn(name = "rate_id")
+    private Rate rate;
 
     @ManyToOne
     @JoinColumn(name = "screening_id")

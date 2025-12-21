@@ -24,6 +24,8 @@ public class TicketService {
     @Autowired
     private CustomerRepository customerRepository;
     @Autowired
+    private RateRepository rateRepository;
+    @Autowired
     private ModelMapper modelMapper;
 
     // Obtener todos los tickets con filtrado de customer, screening and seat
@@ -65,7 +67,7 @@ public class TicketService {
         return convertToOutDto(ticket);
     }
     // Añadir Ticket
-    public TicketOutDto add(TicketInDto ticketInDto) throws ScreeningNotFoundException, CustomerNotFoundException, SeatNotFoundException {
+    public TicketOutDto add(TicketInDto ticketInDto) throws ScreeningNotFoundException, CustomerNotFoundException, RateNotFoundException, SeatNotFoundException {
         // 1A. Buscar screening
         Screening screening = screeningRepository.findById(ticketInDto.getScreeningId())
                 .orElseThrow(() -> new ScreeningNotFoundException("Screening not found"));
@@ -73,7 +75,10 @@ public class TicketService {
         // 1B. Buscar Customer
         Customer customer = customerRepository.findById(ticketInDto.getCustomerId())
                 .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
-        // 1C. Buscar Seat
+        // 1C. Buscar Rate
+        Rate rate = rateRepository.findById(ticketInDto.getRateId())
+                .orElseThrow(() -> new RateNotFoundException("Rate not found"));
+        // 1D. Buscar Seat
         Seat seat = seatRepository.findById(ticketInDto.getSeatId())
                 .orElseThrow(() -> new CustomerNotFoundException("Seat not found"));
         // 2. Crear manualmente la entidad ticket
@@ -85,6 +90,7 @@ public class TicketService {
         ticket.setTicketCode(ticketInDto.getTicketCode());
         ticket.setStatus(ticketInDto.getStatus());
         ticket.setCustomer(customer);
+        ticket.setRate(rate);
         ticket.setScreening(screening);
         ticket.setSeat(seat);
 
@@ -94,8 +100,8 @@ public class TicketService {
         // 4. Crear DTO de salida manualmente
         return convertToOutDto(savedTicket);
     }
-        //Modificar ticket
-    public TicketOutDto modify(Long id, TicketInDto ticketInDto) throws TicketNotFoundException, ScreeningNotFoundException, CustomerNotFoundException, SeatNotFoundException {
+    //Modificar ticket
+    public TicketOutDto modify(Long id, TicketInDto ticketInDto) throws TicketNotFoundException, ScreeningNotFoundException, CustomerNotFoundException, RateNotFoundException, SeatNotFoundException {
         ticketRepository.findById(id)
                 .orElseThrow(() -> new TicketNotFoundException("Ticket with ID " + id + " not found"));
         // 1A. Buscar screening
@@ -105,6 +111,9 @@ public class TicketService {
         // 1B. Buscar Customer
         Customer customer = customerRepository.findById(ticketInDto.getCustomerId())
                 .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
+        // 1C. Buscar Rate
+        Rate rate = rateRepository.findById(ticketInDto.getRateId())
+                .orElseThrow(() -> new RateNotFoundException("Rate not found"));
         // 1C. Buscar Seat
         Seat seat = seatRepository.findById(ticketInDto.getSeatId())
                 .orElseThrow(() -> new CustomerNotFoundException("Seat not found"));
@@ -117,6 +126,7 @@ public class TicketService {
         ticket.setTicketCode(ticketInDto.getTicketCode());
         ticket.setStatus(ticketInDto.getStatus());
         ticket.setCustomer(customer);
+        ticket.setRate(rate);
         ticket.setScreening(screening);
         ticket.setSeat(seat);
 
@@ -157,10 +167,17 @@ public class TicketService {
         outDto.setRoom3d(ticket.getScreening().getRoom().isRoom3d());
         outDto.setRoomAtmos(ticket.getScreening().getRoom().isRoomAtmos());
         outDto.setRoomLaser(ticket.getScreening().getRoom().isRoomLaser());
+        outDto.setNameDayRate(ticket.getRate().getNameDayRate());
+        outDto.setYoungDiscount(ticket.getRate().getYoungDiscount());
+        outDto.setStudentDiscount(ticket.getRate().getStudentDiscount());
+        outDto.setSeniorDiscount(ticket.getRate().getSeniorDiscount());
+        outDto.setPromoDayDiscount(ticket.getRate().getPromoDayDiscount());
+        outDto.setMemberDiscount(ticket.getRate().getMemberDiscount());
+        outDto.setRoom3dPlus(ticket.getRate().getRoom3dPlus());
+        outDto.setRoomAtmosPlus(ticket.getRate().getRoomAtmosPlus());
+        outDto.setRoomLaserPlus(ticket.getRate().getRoomLaserPlus());
+        outDto.setPromoDay(ticket.getRate().isPromoDay());
         return outDto;
     }
-
-
-
 
 }

@@ -26,8 +26,35 @@ public class SeatService {
     private ModelMapper modelMapper;
 
     // Obtener todos las butacas
-    public List<SeatOutDto> getAll() {
-        List<Seat> seatList = seatRepository.findAll();
+//    public List<SeatOutDto> getAll() {
+//        List<Seat> seatList = seatRepository.findAll();
+//        return modelMapper.map(seatList, new TypeToken<List<SeatOutDto>>() {}.getType());
+//    }
+    public List<SeatOutDto> getAll(Integer seatRow, Integer seatColumn, String status) {
+        List<Seat> seatList;
+
+        boolean hasSeatRow = seatRow != null;
+        boolean hasSeatColumn = seatColumn != null;
+        boolean hasStatus = !status.isEmpty();
+
+        if (hasSeatRow && hasSeatColumn && hasStatus) {
+            seatList = seatRepository.findBySeatRowAndSeatColumnAndStatus(seatRow, seatColumn, status);
+        } else if (hasSeatRow && hasSeatColumn) {
+            seatList = seatRepository.findBySeatRowAndSeatColumn(seatRow,seatColumn);
+        } else if (hasSeatRow && hasStatus) {
+            seatList = seatRepository.findBySeatRowAndStatus(seatRow,status);
+        } else if (hasSeatColumn && hasStatus) {
+            seatList = seatRepository.findBySeatColumnAndStatus(seatColumn, status);
+        } else if (hasSeatRow) {
+            seatList = seatRepository.findBySeatRow(seatRow);
+        } else if (hasSeatColumn) {
+            seatList = seatRepository.findBySeatColumn(seatColumn);
+        } else if (hasStatus) {
+            seatList = seatRepository.findByStatus(status);
+        } else {
+            seatList = seatRepository.findAll();
+        }
+
         return modelMapper.map(seatList, new TypeToken<List<SeatOutDto>>() {}.getType());
     }
 

@@ -1,13 +1,16 @@
 package com.svalero.cinemas.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -21,36 +24,39 @@ public class Rate {
     private Long id;
     @Column(name = "rate_date", nullable = false)
     private LocalDate rateDate;
-    @Column(name = "young_discount", nullable = false)
-    private double youngDiscount;
-    @Column(name = "student_discount", nullable = false)
-    private double studentDiscount;
-    @Column(name = "senior_discount", nullable = false)
-    private double seniorDiscount;
-    @Column(name = "promo_day_discount", nullable = false)
-    private double promoDayDiscount;
-    @Column(name = "member_discount", nullable = false)
-    private double memberDiscount;
-    @Column(name = "room_3d_plus", nullable = false)
-    private double room3dPlus;
-    @Column(name = "room_Atmos_plus", nullable = false)
-    private double roomAtmosPlus;
-    @Column(name = "room_Laser_plus", nullable = false)
-    private double roomLaserPlus;
+    @Column(name = "name_day_rate")
+    @ColumnDefault("'Normal'")
+    private String nameDayRate;
+    @Column(name = "young_discount", precision = 5, scale = 2)
+    @ColumnDefault("2.0")
+    private BigDecimal youngDiscount = BigDecimal.valueOf(2.0);
+    @Column(name = "student_discount", precision = 5, scale =2)
+    @ColumnDefault("2.0")
+    private BigDecimal studentDiscount = BigDecimal.valueOf(2.0);
+    @Column(name = "senior_discount", precision = 5, scale = 2)
+    @ColumnDefault("2.0")
+    private BigDecimal seniorDiscount = BigDecimal.valueOf(2.0);
+    @Column(name = "promo_day_discount", precision = 5, scale = 2)
+    @ColumnDefault("2.0")
+    private BigDecimal promoDayDiscount = BigDecimal.valueOf(2.0);
+    @Column(name = "member_discount", precision = 5, scale = 2)
+    @ColumnDefault("2.0")
+    private BigDecimal memberDiscount = BigDecimal.valueOf(2.0);
+    @Column(name = "room_3d_plus", precision = 5, scale = 2)
+    @ColumnDefault("2.0")
+    private BigDecimal room3dPlus = BigDecimal.valueOf(2.0);
+    @Column(name = "room_Atmos_plus", precision = 5, scale = 2)
+    @ColumnDefault("2.0")
+    private BigDecimal roomAtmosPlus = BigDecimal.valueOf(2.0);
+    @Column(name = "room_Laser_plus", precision = 5, scale = 2)
+    @ColumnDefault("2.0")
+    private BigDecimal roomLaserPlus = BigDecimal.valueOf(2.0);
     @Column(name = "promo_day")
     @ColumnDefault("FALSE")
-    private boolean promoDay;
-    //Asi seria con Rate:
-//    @OneToMany(mappedBy = "rate")
-//    @JsonBackReference(value="rates_tickets")
-//    private List<Ticket> tickets;
-//de momento no tiene relacion con ninguna tabla, CREO QUE DEBERIA TENER UNA RELACION 1-->N  CON TICKETS
-//se podria hacer que tuviese relacion directa, como customer con tickets,
-//habria que poner su id como campo clave, al igual que customers en tickets
-//de esa manera en tickets tb se tiene informacion de los descuentos que hay
-//pero creo que seria mejor acceder y ya, o es mejor tb ponerlo en el ticketOutDto?
-//esto seria una buena pregunta para Santi
+    private boolean promoDay = false;
 
-//seria una tabla donde se generaria un registro de tarifas diario
-//y aqui es donde a traves del campo promoDay se puede aclarar si es dia del espectador
+    @OneToMany(mappedBy = "rate")
+    @JsonBackReference(value="rates_tickets")
+    private List<Ticket> tickets;
+
 }

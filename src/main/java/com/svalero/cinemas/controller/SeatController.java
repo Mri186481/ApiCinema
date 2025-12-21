@@ -30,9 +30,11 @@ public class SeatController {
     private final Logger logger = LoggerFactory.getLogger(SeatController.class);
     // Obtener todos los usuarios
     @GetMapping("/seats")
-    public ResponseEntity<List<SeatOutDto>> getAll()  {
+    public ResponseEntity<List<SeatOutDto>> getAll(@RequestParam(value = "seatRow", required = false) Integer seatRow,
+                                                   @RequestParam(value = "seatColumn", required = false) Integer seatColumn,
+                                                   @RequestParam(value = "status", defaultValue = "") String status) {
         logger.info("Begin Get all seats");
-        List<SeatOutDto> seats = seatService.getAll();
+        List<SeatOutDto> seats = seatService.getAll(seatRow,seatColumn,status);
         logger.info("End all seats");
         return new ResponseEntity<>(seats, HttpStatus.OK);
     }
@@ -110,6 +112,4 @@ public class SeatController {
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-
 }
-

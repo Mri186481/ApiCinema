@@ -51,7 +51,7 @@ public class TicketController {
     }
     //Grabar un nuevo ticket
     @PostMapping("/tickets")
-    public ResponseEntity<TicketOutDto> addTickets(@Valid @RequestBody TicketInDto ticketInDto) throws ScreeningNotFoundException, CustomerNotFoundException, SeatNotFoundException {
+    public ResponseEntity<TicketOutDto> addTickets(@Valid @RequestBody TicketInDto ticketInDto) throws ScreeningNotFoundException, CustomerNotFoundException, RateNotFoundException,SeatNotFoundException {
         logger.info("BEGIN addTickets");
         TicketOutDto addTicket = ticketService.add(ticketInDto);
         logger.info("END addTickets");
@@ -60,7 +60,7 @@ public class TicketController {
 
     // Modificar un ticket
     @PutMapping("/tickets/{ticketId}")
-    public ResponseEntity<TicketOutDto> modifyTicket(@PathVariable Long ticketId, @Valid  @RequestBody TicketInDto ticketInDto) throws TicketNotFoundException, ScreeningNotFoundException, CustomerNotFoundException, SeatNotFoundException {
+    public ResponseEntity<TicketOutDto> modifyTicket(@PathVariable Long ticketId, @Valid  @RequestBody TicketInDto ticketInDto) throws TicketNotFoundException, ScreeningNotFoundException, CustomerNotFoundException, RateNotFoundException,SeatNotFoundException {
         logger.info("BEGIN modifyTicket");
         TicketOutDto modifyTicket = ticketService.modify(ticketId, ticketInDto);
         logger.info("END modifyTicket");
@@ -88,6 +88,11 @@ public class TicketController {
     }
     @ExceptionHandler(CustomerNotFoundException.class)
     public ResponseEntity<String> handlerCustomerNotFound(CustomerNotFoundException e) {
+        logger.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+    @ExceptionHandler(RateNotFoundException.class)
+    public ResponseEntity<String> handlerRateNotFound(RateNotFoundException e) {
         logger.error(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
@@ -121,4 +126,3 @@ public class TicketController {
 
 
 }
-
