@@ -1,0 +1,15 @@
+name: cinemas
+services:
+  db:
+    image: mariadb:11.3.2
+    container_name: cinemas-db
+    environment:
+      MYSQL_USER: $MARIADB_USER
+      MYSQL_PASSWORD: $MARIADB_PASSWORD
+      MYSQL_DATABASE: $MARIADB_DATABASE
+      MYSQL_PORT: 3306
+      MYSQL_ROOT_PASSWORD: $MARIADB_ROOT_PASSWORD
+    ports:
+      - "3306:3306"
+#    volumes:
+#      - /c/docker_volumes/mariadb_data:/var/lib/mysql

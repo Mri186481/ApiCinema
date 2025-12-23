@@ -5,6 +5,7 @@ import com.svalero.cinemas.domain.Room;
 import com.svalero.cinemas.domain.Screening;
 import com.svalero.cinemas.domain.dto.ScreeningInDto;
 import com.svalero.cinemas.domain.dto.ScreeningOutDto;
+import com.svalero.cinemas.exception.MovieNotFoundException;
 import com.svalero.cinemas.exception.RoomNotFoundException;
 import com.svalero.cinemas.exception.ScreeningNotFoundException;
 import com.svalero.cinemas.repository.MovieRepository;
@@ -14,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -176,7 +178,43 @@ public class ScreeningService {
 //    return modelMapper.map(screening, ScreeningOutDto.class);
 //}
 
-// A la hora de modificar da problemas de mapeo
+// A la hora de modificar da problemas de mapeo, he probado a cambiar la configuracion
+// de modelmapper en AppConfig, ahora lee y entiende LocalDate y LocalDateTime y hay que ayudarle con los ID
+
+    // Modificacion parcial de una screening
+    public ScreeningOutDto modifyPartial(Long id, Map<String, Object> updates) {
+        Screening screening = screeningRepository.findById(id)
+                .orElseThrow(() -> new ScreeningNotFoundException("Screening with ID " + id + " not found"));
+
+        // --- BLOQUE DE AYUDA MANUAL PARA RELACIONES CON MODELLMAPER ---
+
+        // 1. Movie
+        if (updates.containsKey("movieId")) {
+            // Obtenemos el ID del mapa (asegurando que sea Long)
+            Long newMovieId = ((Number) updates.get("movieId")).longValue();
+            // Buscamos la película real
+            Movie movie = movieRepository.findById(newMovieId)
+                    .orElseThrow(() -> new MovieNotFoundException("Movie not found"));
+            // Se la asignamos al screening
+            screening.setMovie(movie);
+            // Borramos la clave del mapa para que ModelMapper no intente tocarla
+            updates.remove("movieId");
+        }
+
+        // 2. Room
+        if (updates.containsKey("roomId")) {
+            Long newRoomId = ((Number) updates.get("roomId")).longValue();
+            Room room = roomRepository.findById(newRoomId)
+                    .orElseThrow(() -> new RoomNotFoundException("Room not found"));
+            screening.setRoom(room);
+            updates.remove("roomId");
+        }
+
+        modelMapper.map(updates, screening);
+        screeningRepository.save(screening);
+        return modelMapper.map(screening, ScreeningOutDto.class);
+    }
+
 
     public void delete(Long id) {
         screeningRepository.findById(id)

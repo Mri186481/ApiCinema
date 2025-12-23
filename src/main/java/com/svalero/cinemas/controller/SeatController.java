@@ -75,6 +75,15 @@ public class SeatController {
         logger.info("End Modify seat");
         return ResponseEntity.ok(modifiedSeat);
     }
+    // Modificar una butaca parcialmente
+    @PatchMapping("/seats/{seatId}")
+    public ResponseEntity<SeatOutDto> modifySeatPartial(@PathVariable long seatId, @RequestBody Map<String, Object> updates)
+            throws SeatNotFoundException {
+        logger.info("Begin ModifyPartial seat");
+        SeatOutDto modifiedSeat = seatService.modifyPartial(seatId, updates);
+        logger.info("End ModifyPartial seat");
+        return ResponseEntity.ok(modifiedSeat);
+    }
     // Borrar una butaca
     @DeleteMapping("/seats/{seatId}")
     public ResponseEntity<Seat> deleteSeat(@PathVariable long seatId) throws SeatNotFoundException {

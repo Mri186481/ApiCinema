@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -70,6 +71,13 @@ public class CustomerService {
     public CustomerOutDto modify(long customerId, CustomerInDto customerInDto) throws CustomerNotFoundException {
         Customer customer = customerRepository.findById(customerId).orElseThrow(CustomerNotFoundException::new);
         modelMapper.map(customerInDto, customer);
+        customerRepository.save(customer);
+        return modelMapper.map(customer, CustomerOutDto.class);
+    }
+    // Modificacion parcial de un usuario
+    public CustomerOutDto modifyPartial(Long customerId, Map<String, Object> updates) {
+        Customer customer = customerRepository.findById(customerId).orElseThrow(CustomerNotFoundException::new);
+        modelMapper.map(updates, customer);
         customerRepository.save(customer);
         return modelMapper.map(customer, CustomerOutDto.class);
     }

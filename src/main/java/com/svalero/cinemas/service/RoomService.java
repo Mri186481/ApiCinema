@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -72,6 +73,13 @@ public class RoomService {
     public RoomOutDto modify(long roomId, RoomInDto roomInDto) throws RoomNotFoundException {
         Room room = roomRepository.findById(roomId).orElseThrow(CustomerNotFoundException::new);
         modelMapper.map(roomInDto, room);
+        roomRepository.save(room);
+        return modelMapper.map(room, RoomOutDto.class);
+    }
+
+    public RoomOutDto modifyPartial(Long roomId, Map<String, Object> updates) {
+        Room room = roomRepository.findById(roomId).orElseThrow(RoomNotFoundException::new);
+        modelMapper.map(updates, room);
         roomRepository.save(room);
         return modelMapper.map(room, RoomOutDto.class);
     }

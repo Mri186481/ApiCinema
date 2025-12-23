@@ -67,6 +67,15 @@ public class TicketController {
         return new ResponseEntity<>(modifyTicket, HttpStatus.OK);
     }
 
+    // Modificar un ticket parcialmente
+    @PatchMapping("/tickets/{ticketId}")
+    public ResponseEntity<TicketOutDto> modifyTicketPartial(@PathVariable Long ticketId, @RequestBody Map<String, Object> updates) throws TicketNotFoundException, ScreeningNotFoundException, CustomerNotFoundException, RateNotFoundException,SeatNotFoundException {
+        logger.info("BEGIN modifyTicket");
+        TicketOutDto modifyTicket = ticketService.modifyPartial(ticketId, updates);
+        logger.info("END modifyTicket");
+        return new ResponseEntity<>(modifyTicket, HttpStatus.OK);
+    }
+
     // Borrar una ticket
     @DeleteMapping("/tickets/{ticketId}")
     public ResponseEntity<Ticket> deleteTicket(@PathVariable long ticketId) throws TicketNotFoundException {

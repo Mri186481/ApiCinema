@@ -76,6 +76,16 @@ public class CustomerController {
         logger.info("End Modify customer");
         return ResponseEntity.ok(modifiedUser);
     }
+    // Modificar un usuario parcialmente
+    @PatchMapping("/{customerId}")
+    public ResponseEntity<CustomerOutDto> modifyUserPartial(@PathVariable long customerId, @RequestBody Map<String, Object> updates)
+            throws CustomerNotFoundException {
+        logger.info("Begin ModifyCustomerPartial");
+        CustomerOutDto modifiedUser = customerService.modifyPartial(customerId, updates);
+        logger.info("End ModifyCustomerPartial");
+        return ResponseEntity.ok(modifiedUser);
+    }
+
     // Borrar un usuario
     // Eliminar un user
     @DeleteMapping("/{customerId}")

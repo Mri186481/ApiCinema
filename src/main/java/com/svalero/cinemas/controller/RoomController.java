@@ -74,6 +74,15 @@ public class RoomController {
         logger.info("End Modify room");
         return ResponseEntity.ok(modifiedRoom);
     }
+    //Modificar una sala Parcialmente
+    @PatchMapping("/{roomId}")
+    public ResponseEntity<RoomOutDto> modifyRoomPartial(@PathVariable long roomId, @RequestBody Map<String, Object> updates)
+            throws RoomNotFoundException {
+        logger.info("Begin Modify room partial");
+        RoomOutDto modifiedRoom = roomService.modifyPartial(roomId, updates);
+        logger.info("End Modify room partial");
+        return ResponseEntity.ok(modifiedRoom);
+    }
     // Borrar una sala
     @DeleteMapping("/{roomId}")
     public ResponseEntity<Room> deleteRoom(@PathVariable long roomId) throws RoomNotFoundException {
