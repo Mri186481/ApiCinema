@@ -66,6 +66,15 @@ public class RateController {
         logger.info("End Modify Rate");
         return ResponseEntity.ok(modifiedRate);
     }
+    // Modificar una tarifa parcialmente
+    @PatchMapping("/{rateId}")
+    public ResponseEntity<RateOutDto> modifyRatePartial(@PathVariable long rateId, @RequestBody Map<String, Object> updates)
+            throws RateNotFoundException {
+        logger.info("Begin ModifyRatePartial Rate");
+        RateOutDto modifiedRate = rateService.modifyPartial(rateId, updates);
+        logger.info("End ModifyRatePartial");
+        return ResponseEntity.ok(modifiedRate);
+    }
     // Borrar una tarifa
     @DeleteMapping("/{rateId}")
     public ResponseEntity<Rate> deleteRate(@PathVariable long rateId) throws RateNotFoundException {

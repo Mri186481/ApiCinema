@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class RateService {
@@ -70,6 +71,14 @@ public class RateService {
         rateRepository.save(rate);
         return modelMapper.map(rate, RateOutDto.class);
     }
+
+    public RateOutDto modifyPartial(Long rateId, Map<String, Object> updates) {
+        Rate rate = rateRepository.findById(rateId).orElseThrow(RateNotFoundException::new);
+        modelMapper.map(updates, rate);
+        rateRepository.save(rate);
+        return modelMapper.map(rate, RateOutDto.class);
+    }
+
 
     public void delete(long rateId) throws RateNotFoundException {
         Rate rate = rateRepository.findById(rateId).orElseThrow(RateNotFoundException::new);

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -84,6 +85,14 @@ public class SeatService {
         return modelMapper.map(seat, SeatOutDto.class);
     }
     // eliminar una butaca
+    // Modificacion parcial de una butaca
+    public SeatOutDto modifyPartial(Long seatId, Map<String, Object> updates) {
+        Seat seat = seatRepository.findById(seatId).orElseThrow(SeatNotFoundException::new);
+        modelMapper.map(updates, seat);
+        seatRepository.save(seat);
+        return modelMapper.map(seat, SeatOutDto.class);
+
+    }
 
     public void delete(long seatId) throws SeatNotFoundException {
         Seat seat = seatRepository.findById(seatId).orElseThrow(SeatNotFoundException::new);

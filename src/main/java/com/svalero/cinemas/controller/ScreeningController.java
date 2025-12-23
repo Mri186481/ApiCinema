@@ -68,6 +68,14 @@ public class ScreeningController {
         logger.info("END modifyScreening");
         return new ResponseEntity<>(modifyScreening, HttpStatus.OK);
     }
+    //Modificar una screening parcialmente
+    @PatchMapping("/screenings/{screeningId}")
+    public ResponseEntity<ScreeningOutDto> modifyScreeningPartial(@PathVariable Long screeningId, @RequestBody Map<String, Object> updates) throws ScreeningNotFoundException, RoomNotFoundException {
+        logger.info("BEGIN modifyScreening");
+        ScreeningOutDto modifyScreening = screeningService.modifyPartial(screeningId, updates);
+        logger.info("END modifyScreening");
+        return new ResponseEntity<>(modifyScreening, HttpStatus.OK);
+    }
 
     @DeleteMapping("/screenings/{screeningId}")
     public ResponseEntity<Void> deleteScreening(@PathVariable Long screeningId) throws ScreeningNotFoundException {

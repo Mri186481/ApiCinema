@@ -107,9 +107,9 @@ public class MovieController {
     }
     // Actualizar Tabla parcialmente
     @PatchMapping ("/{id}")
-    public ResponseEntity<Movie> updateMoviePartial(@PathVariable Long id, @RequestBody Map<String, Object> updates) throws MovieNotFoundException{
+    public ResponseEntity<MovieOutDto> updateMoviePartial(@PathVariable Long id, @RequestBody Map<String, Object> updates) throws MovieNotFoundException{
         logger.info("BEGIN updateMoviePartial");
-        Movie updatedMovie = movieService.updatePartial(id, updates);
+        MovieOutDto updatedMovie = movieService.updatePartial(id, updates);
         logger.info("END updateMoviePartial");
         return new ResponseEntity<>(updatedMovie, HttpStatus.OK);
 

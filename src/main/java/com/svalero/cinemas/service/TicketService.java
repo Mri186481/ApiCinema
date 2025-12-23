@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -134,6 +135,59 @@ public class TicketService {
         Ticket savedTicket = ticketRepository.save(ticket);
 
         // 4. Crear DTO de salida manualmente
+        return convertToOutDto(savedTicket);
+
+    }
+
+    // Modificacion parcial(hecha con modelMapper)
+    //Al final he realizado una manual y otra con modelMapper
+    public TicketOutDto modifyPartial(Long ticketId, Map<String, Object> updates) {
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(TicketNotFoundException::new);
+        // --- BLOQUE DE AYUDA MANUAL PARA RELACIONES CON MODELLMAPER ---
+        // 1A.Screening
+        if (updates.containsKey("screeningId")) {
+            Long newScreeningId = ((Number) updates.get("screeningId")).longValue();
+            Screening screening = screeningRepository.findById(newScreeningId)
+                    .orElseThrow(() -> new ScreeningNotFoundException("Screening not found"));
+            ticket.setScreening(screening);
+            updates.remove("screeningId");
+        }
+        // 1B.Customer
+        if (updates.containsKey("customerId")) {
+            // Obtenemos el ID del mapa (asegurando que sea Long)
+            Long newCustomerId = ((Number) updates.get("customerId")).longValue();
+            // Buscamos la película real
+            Customer customer = customerRepository.findById(newCustomerId)
+                    .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
+            // Se la asignamos al screening
+            ticket.setCustomer(customer);
+            // Borramos la clave del mapa para que ModelMapper no intente tocarla
+            updates.remove("customerId");
+        }
+        // 1C.Rate
+        if (updates.containsKey("rateId")) {
+            Long newRateId = ((Number) updates.get("rateId")).longValue();
+            Rate rate = rateRepository.findById(newRateId)
+                    .orElseThrow(() -> new RateNotFoundException("Rate not found"));
+            ticket.setRate(rate);
+            updates.remove("rateId");
+        }
+        // 1D.Seat
+        if (updates.containsKey("seatId")) {
+            Long newSeatId = ((Number) updates.get("seatId")).longValue();
+            Seat seat = seatRepository.findById(newSeatId)
+                    .orElseThrow(() -> new SeatNotFoundException("Seat not found"));
+            ticket.setSeat(seat);
+            updates.remove("seatId");
+        }
+
+        // 2. Crea automaticamnete con modelMapper ticket
+        modelMapper.map(updates, ticket);
+
+        // 3. Guardar en BD
+        Ticket savedTicket = ticketRepository.save(ticket);
+
+        // 4. Creo DTO de salida manualmente
         return convertToOutDto(savedTicket);
 
     }

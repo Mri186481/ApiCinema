@@ -136,20 +136,27 @@ public class MovieService {
     }
 
     // Actualización parcial (PATCH)
-    public Movie updatePartial(Long id, Map<String, Object> updates) {
+    public MovieOutDto updatePartial(Long id, Map<String, Object> updates) {
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new MovieNotFoundException("Movie not found with id: " + id));
 
-        updates.forEach((key, value) -> {
-            Field field = ReflectionUtils.findField(Movie.class, key);
-            if (field != null) {
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, movie, value);
-            }
-        });
-
-        return movieRepository.save(movie);
+//        updates.forEach((key, value) -> {
+//            Field field = ReflectionUtils.findField(Movie.class, key);
+//            if (field != null) {
+//                field.setAccessible(true);
+//                Object valueToSet = value;
+//                // Lógica de conversión
+//                if (field.getType().equals(LocalDate.class) && value instanceof String) {
+//                    valueToSet = LocalDate.parse((String) value);
+//                }
+//                ReflectionUtils.setField(field, movie, valueToSet);
+//            }
+//        });
+        modelMapper.map(updates, movie);
+        movieRepository.save(movie);
+        return modelMapper.map(movie, MovieOutDto.class);
     }
+
 
     // Eliminar película
     public void delete(Long id) {
