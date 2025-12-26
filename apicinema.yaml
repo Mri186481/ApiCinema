@@ -14,6 +14,8 @@ tags:
     description: Operaciones con seats
   - name: customers
     description: Operaciones con customers
+  - name: rates
+    description: Operaciones con rates
   - name: tickets
     description: Operaciones con tickets
 servers:
@@ -312,6 +314,32 @@ paths:
       summary: Devuelve el listado de visionados de todas las peliculas
       description: |
         Devuelve un listado con todos las sesiones de todas las peliculas ordenadas por id
+        
+        Se puede filtrar a través de cualquier de los filtros indicados: movieId, subtitled y roomId incluso los tres al mismo tiempo
+          - **movieId**: Filtra por Id de la pelicula
+          - **subtitled**: Filtra por si es pelicula subtitulada
+          - **roomId**: Filtra por Id de la Sala
+      parameters:
+        - name: movieId
+          in: query
+          description: Id de la pelicula
+          required: false
+          schema:
+            type: number
+            format: int64
+        - name: subtitled
+          in: query
+          description: Pelicula subtitulada
+          required: false
+          schema:
+            type: string
+        - name: roomId
+          in: query
+          description: Id de la sala
+          required: false
+          schema:
+            type: number
+            format: int64
       responses:
         '200':
           description: Ok
@@ -441,6 +469,38 @@ paths:
             format: int64
       requestBody:
         description: Nuevos detalles de la proyeccion
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScreeningInDto'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreeningOutDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    patch:
+      tags:
+        - screenings
+      summary: Modifica Parcialmete los detalles de un aproyeccion
+      description: Permite modificar solo los detalles que se quieran modificar de una proyeccion, actualizacion parcial
+      parameters:
+        - name: screeningId
+          in: path
+          description: Identificador de la sesion
+          required: true
+          schema:
+            type: number
+            format: int64
+      requestBody:
+        description: Nuevos detalles de la sesion, actualizacion parcial
         content:
           application/json:
             schema:
@@ -635,6 +695,38 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    patch:
+      tags:
+        - rooms
+      summary: Modifica Parcialmete una sala
+      description: Permite modificar solo los detalles que se quieran modificar de una sala, actualizacion parcial
+      parameters:
+        - name: roomId
+          in: path
+          description: Identificador de la sala
+          required: true
+          schema:
+            type: number
+            format: int64
+      requestBody:
+        description: Nuevos detalles de la sala, actualizacion parcial
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomInDto'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomOutDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /seats:
     get:
       tags:
@@ -642,6 +734,32 @@ paths:
       summary: Devuelve el listado de las butacas con la sala a la que pertenece
       description: |
         Devuelve un listado con todos las butacas de todas las salas ordenadas por id
+        
+        Se puede filtrar a través de cualquier de los filtros indicados: seatRow, seatColumn y status incluso los tres al mismo tiempo
+         - **seatRow**: Filtra por fila de la butaca
+         - **seatColumn**: Filtra por columna de la butaca
+         - **status**: Filtra por estado operativo de la butaca
+      parameters:
+        - name: seatRow
+          in: query
+          description: Fila de la butaca
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: seatColumn
+          in: query
+          description: Columna de la butaca
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: status
+          in: query
+          description: Estado operativo de la butaca
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Ok
@@ -785,6 +903,38 @@ paths:
             format: int64
       requestBody:
         description: Nuevos detalles de la butaca
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeatsInDto'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeatsOutDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    patch:
+      tags:
+        - seats
+      summary: Modifica Parcialmete una butaca
+      description: Permite modificar solo los detalles que se quieran modificar de una butaca, actualizacion parcial
+      parameters:
+        - name: seatId
+          in: path
+          description: Identificador de la butaca
+          required: true
+          schema:
+            type: number
+            format: int64
+      requestBody:
+        description: Nuevos detalles de la butaca, actualizacion parcial
         content:
           application/json:
             schema:
@@ -1003,6 +1153,38 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    patch:
+      tags:
+        - customers
+      summary: Modifica Parcialmete un cliente
+      description: Permite modificar solo los detalles que se quieran modificar de una pelicula, actualizacion parcial
+      parameters:
+        - name: customerId
+          in: path
+          description: Identificador del cliente
+          required: true
+          schema:
+            type: number
+            format: int64
+      requestBody:
+        description: Nuevos detalles del cliente, actualizacion parcial
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerInDto'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerOutDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /customers/admitsAdvertising/{admitsAdvertising}:
     get:
       tags:
@@ -1023,6 +1205,235 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomerOutDto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /rates:
+    get:
+      tags:
+        - rates
+      summary: Devuelve las tarifas diarias para calculo de precios de tickets
+      description: |
+        Devuelve un listado con las tarifas dependiendo de los filtros aplicados
+
+        Se puede filtrar a través de cualquier de los filtros indicados: rate, nameDayrate y promoDay incluso los tres al mismo tiempo
+         - **rateDate**: Filtra por fecha de la aplicacion de la tarifa
+         - **nameDayRate**: Descripcion del dia de la tarifa
+         - **promoDay**: Dias especiales donde cambian todas las tarifas con respecto a la normalidad
+      parameters:
+        - name: rateDate
+          in: query
+          description: Filtro por nombre fecha de la aplicacion de la tarifa
+          required: false
+          schema:
+            type: string
+        - name: nameDayRate
+          in: query
+          description: Filtro por descripcion del dia de la tarifa
+          required: false
+          schema:
+            type: string
+        - name: promoDay
+          in: query
+          description: Filtro por activacion o no de tarifas especiales
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RateOutDto'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - rates
+      summary: Registra una nueva tarifa
+      description: Da de alta un nueva tarifa diaria según la información facilitada
+      requestBody:
+        description: Detalles de la nueva tarifa
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rate'
+            examples:
+              example1:
+                value:
+                  rateDate: 2025-12-18
+                  nameDayRate: Normal
+                  youngDiscount: 1.8
+                  studentDiscount: 1.8
+                  seniorDiscount: 1.8
+                  promoDayDiscount: 2.5
+                  memberDiscount: 2.5
+                  room3dPlus: 1
+                  roomAtmosPlus: 1
+                  roomLaserPlus: 1
+                  promoDay: true
+              example2:
+                value:
+                  rateDate: 2025-12-19
+                  nameDayRate: Viewer
+                  youngDiscount: 1.8
+                  studentDiscount: 1.8
+                  seniorDiscount: 1.8
+                  promoDayDiscount: 0.0
+                  memberDiscount: 2.5
+                  room3dPlus: 1
+                  roomAtmosPlus: 1
+                  roomLaserPlus: 1
+                  promoDay: false
+      responses:
+        '201':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateOutDto'
+              examples:
+                example1:
+                  value:
+                    id: 1
+                    rateDate: 2025-12-18
+                    nameDayRate: Normal
+                    youngDiscount: 1.8
+                    studentDiscount: 1.8
+                    seniorDiscount: 1.8
+                    promoDayDiscount: 2.5
+                    memberDiscount: 2.5
+                    room3dPlus: 1
+                    roomAtmosPlus: 1
+                    roomLaserPlus: 1
+                    promoDay: true
+                example2:
+                  value:
+                    id: 2
+                    rateDate: 2025-12-19
+                    nameDayRate: Viewer
+                    youngDiscount: 1.8
+                    studentDiscount: 1.8
+                    seniorDiscount: 1.8
+                    promoDayDiscount: 0.0
+                    memberDiscount: 2.5
+                    room3dPlus: 1
+                    roomAtmosPlus: 1
+                    roomLaserPlus: 1
+                    promoDay: false
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /rates/{rateId}:
+    get:
+      tags:
+        - rates
+      summary: Detalle de una Tarifa
+      description: Devuelve los detalles de una tarifa por Id
+      parameters:
+        - name: rateId
+          in: path
+          description: Identificador de la tarifa
+          required: true
+          schema:
+            type: number
+            format: int64
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateOutDto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - rates
+      summary: Elimina una Tarifa
+      description: Da de baja una Tarifa cuyo id se para como parámetro
+      parameters:
+        - name: rateId
+          in: path
+          description: Identificador de la tarifa
+          required: true
+          schema:
+            type: number
+            format: int64
+      responses:
+        '204':
+          description: No content
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+        - rates
+      summary: Modifica una Tarifa
+      description: Permite modificar todos los detalles de una Tarifa
+      parameters:
+        - name: rateId
+          in: path
+          description: Identificador de la tarifa
+          required: true
+          schema:
+            type: number
+            format: int64
+      requestBody:
+        description: Nuevos detalles de la tarifa
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RateInDto'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateOutDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    patch:
+      tags:
+        - rates
+      summary: Modifica Parcialmete una Tarifa
+      description: Permite modificar solo los detalles que se quieran modificar de una tarifa, actualizacion parcial
+      parameters:
+        - name: rateId
+          in: path
+          description: Identificador de la tarifa
+          required: true
+          schema:
+            type: number
+            format: int64
+      requestBody:
+        description: Nuevos detalles de la tarifa, actualizacion parcial
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RateInDto'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateOutDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -1218,6 +1629,38 @@ paths:
             format: int64
       requestBody:
         description: Nuevos detalles de la Entrada
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketInDto'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketOutDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    patch:
+      tags:
+        - tickets
+      summary: Modifica Parcialmete los detalles de una entrada
+      description: Permite modificar solo los detalles que se quieran modificar de una entrada, actualizacion parcial
+      parameters:
+        - name: ticketId
+          in: path
+          description: Identificador de la entrada
+          required: true
+          schema:
+            type: number
+            format: int64
+      requestBody:
+        description: Nuevos detalles de la pelicula, actualizacion parcial
         content:
           application/json:
             schema:
@@ -1698,6 +2141,181 @@ components:
             member: false
 
         - $ref: '#/components/schemas/CustomerOutDto'
+    Rate:
+      type: object
+      properties:
+        rateDate:
+          type: string
+          format: date-time
+          description: Fecha diaria de aplicacion de la tarifa
+        nameDayRate:
+          type: string
+          description: Nombre del dia de tarifa
+        youngDiscount:
+          type: string
+          format: decimal
+          description: Descuento por carnet joven
+        studentDiscount:
+          type: string
+          description: Descuento por carnet de Estudiante
+        seniorDiscount:
+          type: string
+          description: Descuento por persona mayor
+        promoDayDiscount:
+          type: number
+          format: int64
+          description: Descuento por dia de promocion
+        memberDiscount:
+          type: number
+          format: int64
+          description: Descuento por socio/fidelidad
+        room3dPlus:
+          type: string
+          format: decimal
+          description: Plus por sala 3d
+        roomAtmosPlus:
+          type: string
+          format: decimal
+          description: Plus por sala Atmos
+        roomLaserPlus:
+          type: string
+          format: decimal
+          description: Plus por sala Laser
+        promoDay:
+          type: boolean
+          description: Dia con/sin promocion
+      example:
+        rateDate: 2025-12-18
+        nameDayRate: Normal
+        youngDiscount: 1.8
+        studentDiscount: 1.8
+        seniorDiscount: 1.8
+        promoDayDiscount: 2.5
+        memberDiscount: 2.5
+        room3dPlus: 1
+        roomAtmosPlus: 1
+        roomLaserPlus: 1
+        promoDay: true
+    RateInDto:
+      allOf:
+        - $ref: '#/components/schemas/RateInDto'
+        - type: object
+          properties:
+            rateDate:
+              type: string
+              format: date-time
+              description: Fecha diaria de aplicacion de la tarifa
+            nameDayRate:
+              type: string
+              description: Nombre del dia de tarifa
+            youngDiscount:
+              type: string
+              format: decimal
+              description: Descuento por carnet joven
+            studentDiscount:
+              type: string
+              description: Descuento por carnet de Estudiante
+            seniorDiscount:
+              type: string
+              description: Descuento por persona mayor
+            promoDayDiscount:
+              type: number
+              format: int64
+              description: Descuento por dia de promocion
+            memberDiscount:
+              type: number
+              format: int64
+              description: Descuento por socio/fidelidad
+            room3dPlus:
+              type: string
+              format: decimal
+              description: Plus por sala 3d
+            roomAtmosPlus:
+              type: string
+              format: decimal
+              description: Plus por sala Atmos
+            roomLaserPlus:
+              type: string
+              format: decimal
+              description: Plus por sala Laser
+            promoDay:
+              type: boolean
+              description: Dia con/sin promocion
+          example:
+            rateDate: 2025-12-18
+            nameDayRate: Normal
+            youngDiscount: 1.8
+            studentDiscount: 1.8
+            seniorDiscount: 1.8
+            promoDayDiscount: 2.5
+            memberDiscount: 2.5
+            room3dPlus: 1
+            roomAtmosPlus: 1
+            roomLaserPlus: 1
+            promoDay: true
+    RateOutDto:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: number
+              format: int64
+              description: El identificador de la tarifa
+            rateDate:
+              type: string
+              format: date-time
+              description: Fecha diaria de aplicacion de la tarifa
+            nameDayRate:
+              type: string
+              description: Nombre del dia de tarifa
+            youngDiscount:
+              type: string
+              format: decimal
+              description: Descuento por carnet joven
+            studentDiscount:
+              type: string
+              description: Descuento por carnet de Estudiante
+            seniorDiscount:
+              type: string
+              description: Descuento por persona mayor
+            promoDayDiscount:
+              type: number
+              format: int64
+              description: Descuento por dia de promocion
+            memberDiscount:
+              type: number
+              format: int64
+              description: Descuento por socio/fidelidad
+            room3dPlus:
+              type: string
+              format: decimal
+              description: Plus por sala 3d
+            roomAtmosPlus:
+              type: string
+              format: decimal
+              description: Plus por sala Atmos
+            roomLaserPlus:
+              type: string
+              format: decimal
+              description: Plus por sala Laser
+            promoDay:
+              type: boolean
+              description: Dia con/sin promocion
+          example:
+            id: 1
+            rateDate: 2025-12-18
+            nameDayRate: Normal
+            youngDiscount: 1.8
+            studentDiscount: 1.8
+            seniorDiscount: 1.8
+            promoDayDiscount: 2.5
+            memberDiscount: 2.5
+            room3dPlus: 1
+            roomAtmosPlus: 1
+            roomLaserPlus: 1
+            promoDay: true
+
+        - $ref: '#/components/schemas/RateOutDto'
     Ticket:
       type: object
       properties:
