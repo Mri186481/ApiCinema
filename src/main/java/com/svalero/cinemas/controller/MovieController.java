@@ -94,7 +94,7 @@ public class MovieController {
         logger.info("BEGIN createMovie");
         MovieOutDto addMovie = movieService.create(movieInDto);
         logger.info("END createMovies");
-        return new ResponseEntity<>(addMovie, HttpStatus.OK);
+        return new ResponseEntity<>(addMovie, HttpStatus.CREATED);
     }
 
     // Actualizar película
