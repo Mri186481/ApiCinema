@@ -11,7 +11,6 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Map;
 
@@ -26,11 +25,6 @@ public class SeatService {
     @Autowired
     private ModelMapper modelMapper;
 
-    // Obtener todos las butacas
-//    public List<SeatOutDto> getAll() {
-//        List<Seat> seatList = seatRepository.findAll();
-//        return modelMapper.map(seatList, new TypeToken<List<SeatOutDto>>() {}.getType());
-//    }
     public List<SeatOutDto> getAll(Integer seatRow, Integer seatColumn, String status) {
         List<Seat> seatList;
 
@@ -84,7 +78,6 @@ public class SeatService {
         seatRepository.save(seat);
         return modelMapper.map(seat, SeatOutDto.class);
     }
-    // eliminar una butaca
     // Modificacion parcial de una butaca
     public SeatOutDto modifyPartial(Long seatId, Map<String, Object> updates) {
         Seat seat = seatRepository.findById(seatId).orElseThrow(SeatNotFoundException::new);
@@ -93,13 +86,10 @@ public class SeatService {
         return modelMapper.map(seat, SeatOutDto.class);
 
     }
-
+    // eliminar una butaca
     public void delete(long seatId) throws SeatNotFoundException {
         Seat seat = seatRepository.findById(seatId).orElseThrow(SeatNotFoundException::new);
         seatRepository.delete(seat);
     }
-
-
-
 
 }

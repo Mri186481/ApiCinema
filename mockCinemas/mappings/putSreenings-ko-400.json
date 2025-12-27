@@ -1,0 +1,22 @@
+{
+  "priority": 2,
+  "request": {
+    "method": "PUT",
+    "url": "/screenings/3",
+    "bodyPatterns": [{
+      "equalToJson": {
+        "ticketPrice": 9,
+        "subtitled": 0,
+        "movieId": 1,
+        "roomId": 1
+      }
+    }]
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "putScreenings-ko-400.json"
+  }
+}

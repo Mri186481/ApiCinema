@@ -48,23 +48,13 @@ public class SeatController {
     }
 
     // Agregar una nueva butaca
-//    @PostMapping
-//    public ResponseEntity<SeatOutDto> addSeat(@RequestBody SeatInDto seatInDto) {
-//        logger.info("Adding new seat");
-//        SeatOutDto addSeat = seatService.add(seatInDto);
-//        logger.info("End adding new seat");
-//        return new ResponseEntity<>(addSeat, HttpStatus.CREATED);
-//    }
-
-    // Agregar una nueva butaca
     @PostMapping("/rooms/{roomId}/seats")
     public ResponseEntity<SeatOutDto> addSeat(@PathVariable long roomId, @Valid @RequestBody SeatInDto seat) {
         logger.info("Adding new seat");
         SeatOutDto newSeat = seatService.add(roomId, seat);
+        logger.info("End adding new seat");
         return new ResponseEntity<>(newSeat, HttpStatus.CREATED);
     }
-
-
 
     // Modificar una butaca
     @PutMapping("/seats/{seatId}")

@@ -28,13 +28,6 @@ public class ScreeningController {
 
     private final Logger logger = LoggerFactory.getLogger(MovieController.class);
 
-    //    @GetMapping("/screenings")
-//    public ResponseEntity<List<ScreeningOutDto>> getAllScreenings() {
-//        logger.info("BEGIN Allscreenings");
-//        List<ScreeningOutDto> screenings = screeningService.findAll();
-//        logger.info("END Allscreeenings");
-//        return ResponseEntity.ok(screenings);
-//    }
     @GetMapping("/screenings")
     public ResponseEntity<List<ScreeningOutDto>> getAll(@RequestParam(value = "movieId", required = false) Long movieId,
                                                         @RequestParam(value = "subtitled", required = false) Boolean subtitled,

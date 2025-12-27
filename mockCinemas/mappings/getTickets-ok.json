@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/tickets"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "getTickets-ok.json"
+  }
+}

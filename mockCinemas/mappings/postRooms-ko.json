@@ -1,0 +1,23 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "POST",
+    "url": "/rooms",
+    "bodyPatterns": [{
+      "equalToJson": {
+        "openingDate": "2018-11-11",
+        "capacity": 201,
+        "room3d": 1,
+        "roomAtmos": 0,
+        "roomLaser": 0
+      }
+    }]
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "postRooms-ko.json"
+  }
+}

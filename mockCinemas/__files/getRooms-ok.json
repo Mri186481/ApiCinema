@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "roomName": "Sala 1",
+    "openingDate": "2018-11-11",
+    "capacity": 250,
+    "room3d": false,
+    "roomAtmos": false,
+    "roomLaser": true
+  },
+  {
+    "id": 2,
+    "roomName": "Sala 2",
+    "openingDate": "2018-11-11",
+    "capacity": 180,
+    "room3d": false,
+    "roomAtmos": true,
+    "roomLaser": true
+  },
+  {
+    "id": 3,
+    "roomName": "Sala 3",
+    "openingDate": "2018-11-11",
+    "capacity": 198,
+    "room3d": true,
+    "roomAtmos": false,
+    "roomLaser": false
+  }
+]

@@ -1,6 +1,5 @@
 package com.svalero.cinemas.service;
 
-
 import com.svalero.cinemas.domain.Customer;
 import com.svalero.cinemas.domain.dto.CustomerInDto;
 import com.svalero.cinemas.domain.dto.CustomerOutDto;
@@ -10,10 +9,8 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Map;
-
 
 @Service
 public class CustomerService {
@@ -86,8 +83,5 @@ public class CustomerService {
         Customer customer = customerRepository.findById(customerId).orElseThrow(CustomerNotFoundException::new);
         customerRepository.delete(customer);
     }
-
-
-
 
 }

@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/rooms/1/seats"
+  },
+  "response": {
+    "status": 201,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "postSeats-ok.json"
+  }
+}

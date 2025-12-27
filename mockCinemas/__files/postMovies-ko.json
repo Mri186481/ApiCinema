@@ -1,0 +1,7 @@
+{
+  "code": 400,
+  "message": "Bad Request",
+  "errorMessages": {
+    "movieTitle": "no debe estar vacío"
+  }
+}

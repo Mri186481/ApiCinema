@@ -1,0 +1,14 @@
+{
+  "priority": 2,
+  "request": {
+    "method": "DELETE",
+    "url": "/tickets/6"
+  },
+  "response": {
+    "status": 404,
+    "headers":{
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "ticketNotFound.json"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "id": 4,
+  "roomName": "Sala 4",
+  "openingDate": "2018-11-11",
+  "capacity": 201,
+  "room3d": true,
+  "roomAtmos": false,
+  "roomLaser": false
+}

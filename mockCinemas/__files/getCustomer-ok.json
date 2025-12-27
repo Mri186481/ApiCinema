@@ -1,0 +1,15 @@
+{
+  "id": 3,
+  "name": "Begoña",
+  "surname": "Bordege",
+  "address": "Calle Union Jaquesa 4",
+  "latitude": 42.5746,
+  "longitude": 0.5484,
+  "birthDate": "1975-11-07",
+  "mail": "begona@hotmail.es",
+  "admitsAdvertising": true,
+  "young": false,
+  "student": false,
+  "senior": false,
+  "member": false
+}

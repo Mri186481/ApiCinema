@@ -1,0 +1,14 @@
+{
+  "priority": 3,
+  "request": {
+    "method": "PUT",
+    "url": "/customers/5"
+  },
+  "response": {
+    "status": 500,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "internalServerError.json"
+  }
+}

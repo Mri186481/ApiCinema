@@ -9,7 +9,6 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +70,7 @@ public class RateService {
         rateRepository.save(rate);
         return modelMapper.map(rate, RateOutDto.class);
     }
-
+    //Modificar parcialmente una tarifa
     public RateOutDto modifyPartial(Long rateId, Map<String, Object> updates) {
         Rate rate = rateRepository.findById(rateId).orElseThrow(RateNotFoundException::new);
         modelMapper.map(updates, rate);

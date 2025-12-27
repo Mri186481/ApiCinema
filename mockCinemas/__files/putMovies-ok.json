@@ -1,0 +1,11 @@
+{
+
+  "id": 3,
+  "movieTitle": "EPISODIO V",
+  "genre": "Scifi",
+  "durationMinutes": 122,
+  "filmingLatitude": 41.6598777,
+  "filmingLongitude": -0.8897212,
+  "releaseDate": "1980-08-11",
+  "currentlyShowing": true
+}

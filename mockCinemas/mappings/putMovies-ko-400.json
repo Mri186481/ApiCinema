@@ -1,0 +1,24 @@
+{
+  "priority": 2,
+  "request": {
+    "method": "PUT",
+    "url": "/movies/3",
+    "bodyPatterns": [{
+      "equalToJson": {
+        "genre": "Scifi",
+        "durationMinutes": 122,
+        "filmingLatitude": 41.6598777,
+        "filmingLongitude": -0.8897212,
+        "releaseDate": "1980-08-11",
+        "currentlyShowing": true
+      }
+    }]
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "putMovies-ko-400.json"
+  }
+}

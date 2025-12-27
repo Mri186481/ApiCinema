@@ -1,0 +1,23 @@
+{
+  "priority": 2,
+  "request": {
+    "method": "PUT",
+    "url": "/rooms/3",
+    "bodyPatterns": [{
+      "equalToJson": {
+        "openingDate": "2025-11-11",
+        "capacity": 200,
+        "room3d": 1,
+        "roomAtmos": 1,
+        "roomLaser": 1
+      }
+    }]
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "putRooms-ko-400.json"
+  }
+}

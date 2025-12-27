@@ -1,6 +1,5 @@
 package com.svalero.cinemas.service;
 
-
 import com.svalero.cinemas.domain.Movie;
 import com.svalero.cinemas.domain.dto.*;
 import com.svalero.cinemas.exception.MovieNotFoundException;
@@ -9,9 +8,6 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ReflectionUtils;
-
-import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -34,11 +30,6 @@ public class MovieService {
         this.movieRepository = movieRepository;
         this.modelMapper = modelMapper;
     }
-//    public void setModelMapper(ModelMapper modelMapper) {
-//        this.modelMapper = modelMapper;
-//
-//    }
-
 
     // Obtener todas las películas
     public List<MovieOutDto> findAll(String movieTitle, String genre, Integer durationMinutes) {
@@ -71,39 +62,31 @@ public class MovieService {
         return modelMapper.map(movieList, new TypeToken<List<MovieOutDto>>() {}.getType());
     }
 
-    // Buscar por ID
-//    public Optional<Movie> findById(Long id) {
-//        return movieRepository.findById(id);
-//    }
-
     public MovieOutDto findById(Long id) {
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new MovieNotFoundException("Movie with ID " + id + " not found"));
         return convertToOutDto(movie);
     }
 
-
-
     // Buscar por título
-    public List<Movie> findByTitle(String movieTitle) {
+    public List<MovieOutDto> findByTitle(String movieTitle) {
         List<Movie> movie = movieRepository.findByMovieTitle(movieTitle);
         if (movie == null) {
             throw new MovieNotFoundException("Movie not found with title: " + movieTitle);
         }
-        return movie;
+        return modelMapper.map(movie, new TypeToken<List<MovieOutDto>>() {}.getType());
 
     }
-
-
-    public List<Movie> findByReleaseDate(LocalDate releaseDate) {
-        return movieRepository.findByReleaseDate(releaseDate);
+    //Buscar Por ReleaseDate
+    public List<MovieOutDto> findByReleaseDate(LocalDate releaseDate) {
+        List<Movie> movie = movieRepository.findByReleaseDate(releaseDate);
+        return modelMapper.map(movie, new TypeToken<List<MovieOutDto>>() {}.getType());
     }
-
-    public List<Movie> findBycurrentlyShowing(boolean currentlyShowing) {
-        return movieRepository.findAllMoviesByCurrentlyShowing(currentlyShowing);
+    //Buscar Por CurrentlyShowing
+    public List<MovieOutDto> findBycurrentlyShowing(boolean currentlyShowing) {
+        List<Movie> movie = movieRepository.findAllMoviesByCurrentlyShowing(currentlyShowing);
+        return modelMapper.map(movie, new TypeToken<List<MovieOutDto>>() {}.getType());
     }
-
-
 
     // Crear nueva película
     public MovieOutDto create(MovieInDto movieInDto) {
@@ -127,11 +110,9 @@ public class MovieService {
         movie.setCurrentlyShowing(movieInDto.isCurrentlyShowing());
 
         return movieRepository.save(movie);
-//        No funciona no se porque, si lo muevo manualmente va bien
-//        modelMapper.map(movieInDto, movie);
-//        return movieRepository.save(movie);
-
-
+//        No funciona bien, si lo muevo manualmente va bien
+//        Posteriormente he ayudado al modelmapper creando un mapa especifico para que no se lie y parece que va bien;
+//        Estan implementados ahora dos formas de hacer lo mismo, manualmente y con modelmapper
 
     }
 
@@ -140,18 +121,6 @@ public class MovieService {
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new MovieNotFoundException("Movie not found with id: " + id));
 
-//        updates.forEach((key, value) -> {
-//            Field field = ReflectionUtils.findField(Movie.class, key);
-//            if (field != null) {
-//                field.setAccessible(true);
-//                Object valueToSet = value;
-//                // Lógica de conversión
-//                if (field.getType().equals(LocalDate.class) && value instanceof String) {
-//                    valueToSet = LocalDate.parse((String) value);
-//                }
-//                ReflectionUtils.setField(field, movie, valueToSet);
-//            }
-//        });
         modelMapper.map(updates, movie);
         movieRepository.save(movie);
         return modelMapper.map(movie, MovieOutDto.class);

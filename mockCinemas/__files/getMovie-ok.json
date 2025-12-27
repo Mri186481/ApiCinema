@@ -1,0 +1,10 @@
+{
+  "id": 3,
+  "movieTitle": "La guerra de las Galaxias",
+  "genre": "Scifi",
+  "durationMinutes": 101,
+  "filmingLatitude": 41.6598777,
+  "filmingLongitude": -0.8897212,
+  "releaseDate": "1977-08-11",
+  "currentlyShowing": true
+}

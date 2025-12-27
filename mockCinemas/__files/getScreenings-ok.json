@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "screeningTime": "2025-12-20T21:00:00",
+    "ticketPrice": 8.0,
+    "subtitled": false,
+    "movieId": 1,
+    "roomId": 1,
+    "movieTitle": "La guerra de las Galaxias",
+    "roomName": "Sala 1"
+  },
+  {
+    "id": 2,
+    "screeningTime": "2025-12-20T21:00:00",
+    "ticketPrice": 8.0,
+    "subtitled": false,
+    "movieId": 2,
+    "roomId": 2,
+    "movieTitle": "El Imperio Contraataca",
+    "roomName": "Sala 2"
+  },
+  {
+    "id": 3,
+    "screeningTime": "2025-12-20T21:00:00",
+    "ticketPrice": 8.0,
+    "subtitled": false,
+    "movieId": 3,
+    "roomId": 3,
+    "movieTitle": "El Retorno del Jedi",
+    "roomName": "Sala 3"
+  }
+]

@@ -29,7 +29,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/movies?movieTitle=La Guerra de las Galaxias",
+					"raw": "http://localhost:8080/movies",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -41,7 +41,8 @@
 					"query": [
 						{
 							"key": "movieTitle",
-							"value": "La Guerra de las Galaxias"
+							"value": "La Guerra de las Galaxias",
+							"disabled": true
 						},
 						{
 							"key": "genre",
@@ -144,7 +145,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"movieTitle\": \"La Guerra de las Galaxias\",\n  \"genre\": \"Scifi\",\n  \"durationMinutes\": 100,\n  \"filmingLatitude\": 41.6598777,\n  \"filmingLongitude\": -0.8897212,\n  \"releaseDate\": \"1977-08-11\",\n  \"currentlyShowing\": 0 \n}",
+					"raw": "{\n  \"movieTitle\": \"El Rey de Reyes\",\n  \"genre\": \"Animated Religious History\",\n  \"durationMinutes\": 99,\n  \"filmingLatitude\": 41.6598777,\n  \"filmingLongitude\": -0.8897212,\n  \"releaseDate\": \"2025-12-19\",\n  \"currentlyShowing\": 1 \n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -211,6 +212,27 @@
 					"path": [
 						"movies",
 						"{{movieId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "movies/movieTitle/{title}",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/movies/movieTitle/Terminator",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"movies",
+						"movieTitle",
+						"Terminator"
 					]
 				}
 			},
@@ -325,7 +347,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"movieTitle\": \"La Guerra de las Galaxias\",\n  \"genre\": \"Scifi\",\n  \"durationMinutes\": 121,\n  \"releaseDate\": \"1977-11-11\"\n}",
+					"raw": "{\n  \"movieTitle\": \"La Guerra de las Galaxias\",\n  \"genre\": \"Scifi\",\n  \"durationMinutes\": 121,\n  \"releaseDate\": \"1977-11-11\",\n  \"currentlyShowing\": 1\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -333,7 +355,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/movies/1",
+					"raw": "http://localhost:8080/movies/7",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -341,7 +363,7 @@
 					"port": "8080",
 					"path": [
 						"movies",
-						"1"
+						"7"
 					]
 				},
 				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
@@ -404,7 +426,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/rates?rateDate=2025-12-19&nameDayRate=Normal&promoDay=false",
+					"raw": "http://localhost:8080/rates",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -416,15 +438,18 @@
 					"query": [
 						{
 							"key": "rateDate",
-							"value": "2025-12-19"
+							"value": "2025-12-27",
+							"disabled": true
 						},
 						{
 							"key": "nameDayRate",
-							"value": "Normal"
+							"value": "Normal",
+							"disabled": true
 						},
 						{
 							"key": "promoDay",
-							"value": "false"
+							"value": "false",
+							"disabled": true
 						}
 					]
 				},
@@ -453,7 +478,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"rateDate\": \"2025-12-16\",\n  \"nameDayRate\": \"Normal\",\n  \"youngDiscount\": 2.8,\n  \"studentDiscount\": 2.8,\n  \"seniorDiscount\": 2.8,\n  \"promoDayDiscount\": 2.8,\n  \"memberDiscount\": 2.8,\n  \"room3dPlus\": 3,\n  \"roomAtmosPlus\": 3,\n  \"roomLaserPlus\": 3,\n  \"promoDay\": false \n}",
+					"raw": "{\n  \"rateDate\": \"2025-12-31\",\n  \"nameDayRate\": \"Normal\",\n  \"youngDiscount\": 2.8,\n  \"studentDiscount\": 2.8,\n  \"seniorDiscount\": 2.8,\n  \"promoDayDiscount\": 2.8,\n  \"memberDiscount\": 2.8,\n  \"room3dPlus\": 3,\n  \"roomAtmosPlus\": 3,\n  \"roomLaserPlus\": 3,\n  \"promoDay\": false \n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1208,7 +1233,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"name\": \"David\",\n  \"surname\": \"Bordege\",\n  \"address\": \"Calle Union Jaquesa 4\",\n  \"latitude\": 42.5746,\n  \"longitude\": 0.5484,\n  \"birthDate\": \"1975-11-07\",\n  \"mail\": \"begona@hotmail.es\",\n  \"admitsAdvertising\": 1,\n  \"student\": 0\n}",
+					"raw": "{\n  \"name\": \"Miguel\",\n  \"surname\": \"Rubio\",\n  \"address\": \"Calle Union Jaquesa 4\",\n  \"latitude\": 42.5746,\n  \"longitude\": 0.5484,\n  \"birthDate\": \"1971-06-18\",\n  \"mail\": \"miguel@hotmail.es\",\n  \"admitsAdvertising\": 0,\n  \"student\": 1\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1337,7 +1362,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/customers/1",
+					"raw": "http://localhost:8080/customers/3",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -1345,7 +1370,7 @@
 					"port": "8080",
 					"path": [
 						"customers",
-						"1"
+						"3"
 					]
 				},
 				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
@@ -1408,7 +1433,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/screenings?subtitled=0&movieId=2&roomId=2",
+					"raw": "http://localhost:8080/screenings?movieId=7&roomId=1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -1420,15 +1445,16 @@
 					"query": [
 						{
 							"key": "subtitled",
-							"value": "0"
+							"value": "0",
+							"disabled": true
 						},
 						{
 							"key": "movieId",
-							"value": "2"
+							"value": "7"
 						},
 						{
 							"key": "roomId",
-							"value": "2"
+							"value": "1"
 						}
 					]
 				},
@@ -1657,7 +1683,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/tickets?customerId=4&screeningId=2&seatId=2",
+					"raw": "http://localhost:8080/tickets",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -1669,15 +1695,18 @@
 					"query": [
 						{
 							"key": "customerId",
-							"value": "4"
+							"value": "4",
+							"disabled": true
 						},
 						{
 							"key": "screeningId",
-							"value": "2"
+							"value": "1",
+							"disabled": true
 						},
 						{
 							"key": "seatId",
-							"value": "2"
+							"value": "2",
+							"disabled": true
 						}
 					]
 				},
@@ -1706,7 +1735,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"finalPricePaid\": 9,\n  \"scanned\": true,\n  \"ticketCode\": \"EEIUYTRELLLKJHGFDSAX\",\n  \"status\": \"ACTIVE\",\n  \"customerId\": 4,\n  \"rateId\": 1,\n  \"screeningId\": 2,\n  \"seatId\": 2\n}",
+					"raw": "{\n  \"finalPricePaid\": 9,\n  \"scanned\": false,\n  \"ticketCode\": \"EEIUYTRELLLKJHGFDSAX\",\n  \"status\": \"ACTIVE\",\n  \"customerId\": 2,\n  \"rateId\": 1,\n  \"screeningId\": 5,\n  \"seatId\": 5\n}",
 					"options": {
 						"raw": {
 							"language": "json"

@@ -1,0 +1,28 @@
+{
+  "priority": 2,
+  "request": {
+    "method": "PUT",
+    "url": "/rates/3",
+    "bodyPatterns": [{
+      "equalToJson": {
+        "nameDayRate": "PreChristmas",
+        "youngDiscount": 1.8,
+        "studentDiscount": 1.8,
+        "seniorDiscount": 1.8,
+        "promoDayDiscount": 2.5,
+        "memberDiscount": 2.5,
+        "room3dPlus": 1,
+        "roomAtmosPlus": 1,
+        "roomLaserPlus": 1,
+        "promoDay": true
+      }
+    }]
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "putRates-ko-400.json"
+  }
+}

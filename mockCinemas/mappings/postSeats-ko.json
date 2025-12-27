@@ -1,0 +1,23 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "POST",
+    "url": "/rooms/1/seats",
+    "bodyPatterns": [{
+      "equalToJson": {
+        "seatColumn": 4,
+        "seatAccesible": 0,
+        "status": "OPERATONAL",
+        "priceSurcharge": 0,
+        "lastMaintenanceDate": "2025-12-12"
+      }
+    }]
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "postSeats-ko.json"
+  }
+}
