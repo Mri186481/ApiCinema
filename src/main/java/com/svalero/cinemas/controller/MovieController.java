@@ -49,30 +49,15 @@ public class MovieController {
     public ResponseEntity<MovieOutDto> getMovieById(@PathVariable Long id) throws MovieNotFoundException  {
         logger.info("BEGIN getMovieById");
         MovieOutDto dto = movieService.findById(id);
-
-//        if (movieOptional.isPresent()) {
-//            logger.info("END getMovieById - Movie found");
-//            return ResponseEntity.ok(movieOptional.get());
-//        } else {
-//            logger.info("END getMovieById - Movie not found");
-//            return ResponseEntity.notFound().build();
-//        }
-//        @GetMapping("/{roomId}")
-//        public ResponseEntity<Room> getRoomById(@PathVariable Long roomId) throws RoomNotFoundException {
-//            logger.info("Begin Get room");
-//            Room room = roomService.get(roomId);
-//            logger.info("Fetching room with id: {}", roomId);
-//            return new ResponseEntity<>(room, HttpStatus.OK);
-
         logger.info("END getByTitle");
         return ResponseEntity.ok(dto);
     }
 
     // Buscar película por título
     @GetMapping("/movieTitle/{movieTitle}")
-    public ResponseEntity<List<Movie>> getByTitle(@PathVariable String movieTitle) throws MovieNotFoundException {
+    public ResponseEntity<List<MovieOutDto>> getByTitle(@PathVariable String movieTitle) throws MovieNotFoundException {
         logger.info("BEGIN getByTitle");
-        List<Movie> movie = movieService.findByTitle(movieTitle);
+        List<MovieOutDto> movie = movieService.findByTitle(movieTitle);
         logger.info("END getByTitle");
         return ResponseEntity.ok(movie);
 
@@ -80,13 +65,22 @@ public class MovieController {
 
     // Buscar película por currentlyShowing usando JPQL
     @GetMapping("/currentlyShowing/{currentlyShowing}")
-    public ResponseEntity<List<Movie>> getBycurrentlyShowing(@PathVariable boolean currentlyShowing) throws MovieNotFoundException {
+    public ResponseEntity<List<MovieOutDto>> getBycurrentlyShowing(@PathVariable boolean currentlyShowing) throws MovieNotFoundException {
         logger.info("BEGIN getBycurrentlyShowing");
-        List<Movie> movie = movieService.findBycurrentlyShowing(currentlyShowing);
+        List<MovieOutDto> movie = movieService.findBycurrentlyShowing(currentlyShowing);
         logger.info("END getBycurrentlyShowing");
         return ResponseEntity.ok(movie);
-
     }
+    // Buscar pelicula por ReleaseDate
+    @GetMapping("/release-date/{date}")
+    public ResponseEntity<List<MovieOutDto>> getByReleaseDate(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        logger.info("BEGIN getByReleaseDate");
+        List<MovieOutDto> movies = movieService.findByReleaseDate(date);
+        logger.info("END getByReleaseDate");
+        return new ResponseEntity<>(movies, HttpStatus.OK);
+//        return ResponseEntity.ok(movieService.findByReleaseDate(date));
+    }
+
 
     // Crear nueva película
     @PostMapping
@@ -114,15 +108,6 @@ public class MovieController {
         return new ResponseEntity<>(updatedMovie, HttpStatus.OK);
 
     }
-    @GetMapping("/release-date/{date}")
-    public ResponseEntity<List<Movie>> getByReleaseDate(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        logger.info("BEGIN getByReleaseDate");
-        List<Movie> movies = movieService.findByReleaseDate(date);
-        logger.info("END getByReleaseDate");
-        return new ResponseEntity<>(movies, HttpStatus.OK);
-//        return ResponseEntity.ok(movieService.findByReleaseDate(date));
-    }
-
 
     // Eliminar película
     @DeleteMapping("/{id}")

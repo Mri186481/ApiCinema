@@ -46,16 +46,6 @@ public class RoomController {
         logger.info("Fetching room with id: {}", roomId);
         return new ResponseEntity<>(room, HttpStatus.OK);
     }
-    // Obtener lista de usuarios que admiten o no publicidad
-    // Obtener un usuario por ID
-//    @GetMapping("/admitsAdvertising/{admitsAdvertising}")
-//    public ResponseEntity<List<CustomerOutDto>> getUserByAd(@PathVariable boolean admitsAdvertising) throws CustomerNotFoundException {
-//        logger.info("Begin Get List of customer with ad");
-//        List<CustomerOutDto> customers = customerService.getAllAd(admitsAdvertising);
-//        logger.info("Begin Get List of customer with ad");
-//        return new ResponseEntity<>(customers, HttpStatus.OK);
-//    }
-
     // Agregar una nueva sala
     @PostMapping
     public ResponseEntity<RoomOutDto> addRoom( @Valid @RequestBody RoomInDto roomInDto) {
@@ -119,7 +109,4 @@ public class RoomController {
         logger.error(exception.getMessage(), exception);
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-
 }
-

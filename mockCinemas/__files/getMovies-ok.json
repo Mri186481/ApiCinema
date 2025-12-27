@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "movieTitle": "Terminator 2",
+    "genre": "Scifi",
+    "durationMinutes": 101,
+    "filmingLatitude": 41.6598777,
+    "filmingLongitude": -0.8835212,
+    "releaseDate": "1992-08-11",
+    "currentlyShowing": true
+  },
+  {
+    "id": 2,
+    "movieTitle": "Terminator",
+    "genre": "Scifi",
+    "durationMinutes": 101,
+    "filmingLatitude": 41.6545777,
+    "filmingLongitude": -0.8839212,
+    "releaseDate": "1984-08-11",
+    "currentlyShowing": true
+  },
+  {
+    "id": 3,
+    "movieTitle": "La guerra de las Galaxias",
+    "genre": "Scifi",
+    "durationMinutes": 101,
+    "filmingLatitude": 41.6598777,
+    "filmingLongitude": -0.8897212,
+    "releaseDate": "1997-08-11",
+    "currentlyShowing": true
+  }
+]

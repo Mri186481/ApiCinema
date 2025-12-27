@@ -1,0 +1,24 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "POST",
+    "url": "/movies",
+    "bodyPatterns": [{
+      "equalToJson": {
+        "genre": "Scifi",
+        "durationMinutes": 118,
+        "filmingLatitude": 41.6598777,
+        "filmingLongitude": -0.8897212,
+        "releaseDate": "1980-08-11",
+        "currentlyShowing": true
+      }
+    }]
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "postMovies-ko.json"
+  }
+}

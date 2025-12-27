@@ -1,0 +1,25 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "POST",
+    "url": "/tickets",
+    "bodyPatterns": [{
+      "equalToJson": {
+        "scanned": true,
+        "ticketCode": "FFIUYTRELLLKJHGFDSAX",
+        "status": "ACTIVE",
+        "customerId": 4,
+        "rateId": 1,
+        "screeningId": 2,
+        "seatId": 2
+      }
+    }]
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "postTickets-ko.json"
+  }
+}

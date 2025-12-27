@@ -1,7 +1,5 @@
 package com.svalero.cinemas.service;
 
-
-
 import com.svalero.cinemas.domain.Room;
 import com.svalero.cinemas.domain.dto.RoomInDto;
 import com.svalero.cinemas.domain.dto.RoomOutDto;
@@ -12,10 +10,8 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Map;
-
 
 @Service
 public class RoomService {
@@ -54,15 +50,12 @@ public class RoomService {
 
         return modelMapper.map(roomList, new TypeToken<List<RoomOutDto>>() {}.getType());
     }
+    // Buscar una sala por id
     public Room get(long id) throws RoomNotFoundException {
         return roomRepository.findById(id)
                 .orElseThrow(RoomNotFoundException::new);
     }
-    //
-//    public List<CustomerOutDto> getAllAd(boolean admitsAdvertising) {
-//        List<Customer> customers = customerRepository.findAllUsersByAdmitsAdvertising(admitsAdvertising);
-//        return modelMapper.map(customers, new TypeToken<List<CustomerOutDto>>() {}.getType());
-//    }
+
     // Dar de alta un usuario
     public RoomOutDto add(RoomInDto roomInDto) {
         Room room = modelMapper.map(roomInDto, Room.class);
@@ -88,8 +81,5 @@ public class RoomService {
         Room room = roomRepository.findById(roomId).orElseThrow(RoomNotFoundException::new);
         roomRepository.delete(room);
     }
-
-
-
 
 }

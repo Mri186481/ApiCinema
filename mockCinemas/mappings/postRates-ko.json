@@ -1,0 +1,28 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "POST",
+    "url": "/rates",
+    "bodyPatterns": [{
+      "equalToJson": {
+        "nameDayRate": "Normal",
+        "youngDiscount": 2.8,
+        "studentDiscount": 2.8,
+        "seniorDiscount": 2.8,
+        "promoDayDiscount": 2.8,
+        "memberDiscount": 2.8,
+        "room3dPlus": 3,
+        "roomAtmosPlus": 3,
+        "roomLaserPlus": 3,
+        "promoDay": false
+      }
+    }]
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "postRates-ko.json"
+  }
+}

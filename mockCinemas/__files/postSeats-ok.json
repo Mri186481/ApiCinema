@@ -1,0 +1,11 @@
+{
+  "id": 4,
+  "seatRow": 1,
+  "seatcolumn": 4,
+  "seatAccesible": false,
+  "status": "OPERATONAL",
+  "priceSurcharge": 0.0,
+  "lastMaintenanceDate": "2025-12-12",
+  "roomId": 1,
+  "roomName": "Sala 1"
+}

@@ -13,7 +13,6 @@ import com.svalero.cinemas.repository.RoomRepository;
 import com.svalero.cinemas.repository.ScreeningRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,7 +22,6 @@ public class ScreeningService {
 
     private final ScreeningRepository screeningRepository;
     private final MovieRepository movieRepository;
-
     private final RoomRepository roomRepository;
     private final ModelMapper modelMapper;
 
@@ -34,14 +32,6 @@ public class ScreeningService {
         this.modelMapper = modelMapper;
     }
 
-
-
-//    public List<ScreeningOutDto> findAll() {
-//        return ((List<Screening>) screeningRepository.findAll())
-//                .stream()
-//                .map(this::convertToOutDto)
-//                .collect(Collectors.toList());
-//    }
 
     public List<ScreeningOutDto> findAll(Long movieId, Boolean subtitled, Long roomId) {
         List<Screening> screeningList;
@@ -69,6 +59,8 @@ public class ScreeningService {
         }
 
 //        return modelMapper.map(screeningList, new TypeToken<List<ScreeningOutDto>>() {}.getType());
+//        Posiblemente con las ayudas al mapeador funcionaria ya, lo dejo para ver como se haria sin
+//        el mapeador, me paso lo mosmo con movies.
         return screeningList.stream()
                 .map(this::convertToOutDto)
                 .collect(Collectors.toList());
@@ -153,33 +145,11 @@ public class ScreeningService {
 
     }
 
-//He tenido muchos problemas con el mapeador, lo he hecho a mano tanto modificar
-//como para grabar no separa bien los id de la clave principal con los otros dos claves foraneas
-// Estos dos metodos dan el mismo resultado
+//        No funciona bien, si lo muevo manualmente va bien
+//        Posteriormente he ayudado al modelmapper creando un mapa especifico para que no se lie y parece que va bien;
+//        ahora lee y entiende LocalDate y LocalDateTime y hay que ayudarle tb con los ID
+//        Estan implementados ahora dos formas de hacer lo mismo, manualmente y con modelmapper
 
-//    public ScreeningOutDto modify(Long id, ScreeningInDto screeningInDto) {
-//        screeningRepository.findById(id)
-//                .orElseThrow(() -> new ScreeningNotFoundException("Screening with ID " + id + " not found"));
-//
-//        Screening screening = convertToEntity(screeningInDto);
-//
-//        screening.setId(id); // preserve ID for update
-//        Screening updatedScreening = screeningRepository.save(screening);
-//        return convertToOutDto(updatedScreening);
-//    }
-
-//Este es el que he utilizado en otros
-//public ScreeningOutDto modify(Long screeningId, ScreeningInDto screeningInDto) throws ScreeningNotFoundException {
-//    Screening screening = screeningRepository.findById(screeningId)
-//            .orElseThrow();
-//
-//    modelMapper.map(screeningInDto, screening);
-//    screeningRepository.save(screening);
-//    return modelMapper.map(screening, ScreeningOutDto.class);
-//}
-
-// A la hora de modificar da problemas de mapeo, he probado a cambiar la configuracion
-// de modelmapper en AppConfig, ahora lee y entiende LocalDate y LocalDateTime y hay que ayudarle con los ID
 
     // Modificacion parcial de una screening
     public ScreeningOutDto modifyPartial(Long id, Map<String, Object> updates) {
@@ -214,7 +184,6 @@ public class ScreeningService {
         screeningRepository.save(screening);
         return modelMapper.map(screening, ScreeningOutDto.class);
     }
-
 
     public void delete(Long id) {
         screeningRepository.findById(id)

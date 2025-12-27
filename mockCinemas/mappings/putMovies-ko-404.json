@@ -1,0 +1,14 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "PUT",
+    "url": "/movies/6"
+  },
+  "response": {
+    "status": 404,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "movieNotFound.json"
+  }
+}

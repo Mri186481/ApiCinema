@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/rates"
+  },
+  "response": {
+    "status": 201,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "postRates-ok.json"
+  }
+}

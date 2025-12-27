@@ -133,5 +133,4 @@ public class TicketController {
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-
 }

@@ -1,0 +1,23 @@
+{
+  "priority": 2,
+  "request": {
+    "method": "PUT",
+    "url": "/seats/3",
+    "bodyPatterns": [{
+      "equalToJson": {
+        "seatColumn": 3,
+        "seatAccesible": 1,
+        "status": "BAD",
+        "priceSurcharge": 0,
+        "lastMaintenanceDate": "2025-12-12"
+      }
+    }]
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "putSeats-ko-400.json"
+  }
+}

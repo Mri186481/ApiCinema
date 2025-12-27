@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "name": "Juan",
+    "surname": "Bordege",
+    "address": "Calle Union Jaquesa 4",
+    "latitude": 42.5746,
+    "longitude": 0.5484,
+    "birthDate": "1971-11-07",
+    "mail": "david@hotmail.es",
+    "admitsAdvertising": false,
+    "young": false,
+    "student": true,
+    "senior": false,
+    "member": false
+  },
+  {
+    "id": 2,
+    "name": "David",
+    "surname": "Bordege",
+    "address": "Calle Union Jaquesa 4",
+    "latitude": 42.5746,
+    "longitude": 0.5484,
+    "birthDate": "1978-11-07",
+    "mail": "david@hotmail.es",
+    "admitsAdvertising": false,
+    "young": false,
+    "student": true,
+    "senior": false,
+    "member": false
+  },
+  {
+    "id": 3,
+    "name": "Begoña",
+    "surname": "Bordege",
+    "address": "Calle Union Jaquesa 4",
+    "latitude": 42.5746,
+    "longitude": 0.5484,
+    "birthDate": "1975-11-07",
+    "mail": "begona@hotmail.es",
+    "admitsAdvertising": true,
+    "young": false,
+    "student": false,
+    "senior": false,
+    "member": false
+  }
+]

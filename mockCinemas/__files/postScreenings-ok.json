@@ -1,0 +1,10 @@
+{
+  "id": 4,
+  "screeningTime": "2025-12-20T21:00:00",
+  "ticketPrice": 8.0,
+  "subtitled": false,
+  "movieId": 4,
+  "roomId": 4,
+  "movieTitle": "El Despertar de la fuerza",
+  "roomName": "Sala 4"
+}

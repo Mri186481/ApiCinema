@@ -50,7 +50,7 @@ public class TicketService {
         } else if (hasScreeningId) {
             ticketList = ticketRepository.findByScreeningId(screeningId);
         } else if (hasSeatId) {
-            ticketList = ticketRepository.findByScreeningId(seatId);
+            ticketList = ticketRepository.findBySeatId(seatId);
         } else {
             ticketList = ticketRepository.findAll();
         }

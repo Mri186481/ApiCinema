@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/movies"
+  },
+  "response": {
+    "status": 201,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "postMovies-ok.json"
+  }
+}

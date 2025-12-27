@@ -1,0 +1,26 @@
+{
+  "priority": 2,
+  "request": {
+    "method": "PUT",
+    "url": "/customers/3",
+    "bodyPatterns": [{
+      "equalToJson": {
+        "surname": "Ibor",
+        "address": "Calle Union Jaquesa 8",
+        "latitude": 42.5746,
+        "longitude": 0.5484,
+        "birthDate": "1971-11-07",
+        "mail": "miguel@hotmail.es",
+        "admitsAdvertising": 0,
+        "student": 1
+      }
+    }]
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "putCustomers-ko-400.json"
+  }
+}

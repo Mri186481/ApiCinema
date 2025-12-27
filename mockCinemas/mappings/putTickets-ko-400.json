@@ -1,0 +1,25 @@
+{
+  "priority": 2,
+  "request": {
+    "method": "PUT",
+    "url": "/tickets/3",
+    "bodyPatterns": [{
+      "equalToJson": {
+        "scanned": true,
+        "ticketCode": "CCIUYTRELLLKJHGFDSAX",
+        "status": "ACTIVE",
+        "customerId": 4,
+        "rateId": 1,
+        "screeningId": 2,
+        "seatId": 2
+      }
+    }]
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "putTickets-ko-400.json"
+  }
+}

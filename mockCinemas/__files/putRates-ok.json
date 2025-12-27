@@ -1,0 +1,14 @@
+{
+  "id": 3,
+  "rateDate": "2025-12-18",
+  "nameDayRate": "PreChristmas",
+  "youngDiscount": 1.80,
+  "studentDiscount": 1.80,
+  "seniorDiscount": 1.80,
+  "promoDayDiscount": 2.50,
+  "memberDiscount": 2.50,
+  "room3dPlus": 1.00,
+  "roomAtmosPlus": 1.00,
+  "roomLaserPlus": 1.00,
+  "promoDay": true
+}

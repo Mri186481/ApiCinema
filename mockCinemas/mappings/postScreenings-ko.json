@@ -1,0 +1,22 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "POST",
+    "url": "/screenings",
+    "bodyPatterns": [{
+      "equalToJson": {
+        "ticketPrice": 8,
+        "subtitled": 0,
+        "movieId": 4,
+        "roomId": 4
+      }
+    }]
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "postScreenings-ko.json"
+  }
+}

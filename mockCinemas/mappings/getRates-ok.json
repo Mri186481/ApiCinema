@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/rates"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "getRates-ok.json"
+  }
+}
