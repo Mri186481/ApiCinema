@@ -24,7 +24,7 @@ public class RoomService {
     // Obtener todos los usuarios
     public List<RoomOutDto> getAll(Boolean room3d, Boolean roomAtmos, Boolean roomLaser) {
         List<Room> roomList;
-//
+
         boolean hasRoom3d = room3d != null;
         boolean hasRoomAtmos = roomAtmos != null;
         boolean hasRoomLaser = roomLaser != null;
@@ -50,6 +50,7 @@ public class RoomService {
 
         return modelMapper.map(roomList, new TypeToken<List<RoomOutDto>>() {}.getType());
     }
+
     // Buscar una sala por id
     public Room get(long id) throws RoomNotFoundException {
         return roomRepository.findById(id)
@@ -62,6 +63,7 @@ public class RoomService {
         room = roomRepository.save(room);
         return modelMapper.map(room, RoomOutDto.class);
     }
+
     // Modificar un usuario
     public RoomOutDto modify(long roomId, RoomInDto roomInDto) throws RoomNotFoundException {
         Room room = roomRepository.findById(roomId).orElseThrow(CustomerNotFoundException::new);

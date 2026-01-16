@@ -14,11 +14,6 @@ import java.util.Map;
 
 @Service
 public class MovieService {
-    /*
-    Para que @InjectMocks (de Mockito) o @Autowired (de Spring) funcionen, tu MovieService tiene que "pedir" el ModelMapper.
-    La forma recomendada es hacerlo a través del constructor:
-    Al tener el ModelMapper en el constructor, Mockito (con @InjectMocks) sabrá que tiene que pasar tu @Mock ModelMapper cuando cree el MovieService para el test.
-    */
 
     private final MovieRepository movieRepository;
 
@@ -33,8 +28,6 @@ public class MovieService {
 
     // Obtener todas las películas
     public List<MovieOutDto> findAll(String movieTitle, String genre, Integer durationMinutes) {
-
-
         List<Movie> movieList;
 
         boolean hasTitle = !movieTitle.isEmpty();
@@ -77,11 +70,13 @@ public class MovieService {
         return modelMapper.map(movie, new TypeToken<List<MovieOutDto>>() {}.getType());
 
     }
+
     //Buscar Por ReleaseDate
     public List<MovieOutDto> findByReleaseDate(LocalDate releaseDate) {
         List<Movie> movie = movieRepository.findByReleaseDate(releaseDate);
         return modelMapper.map(movie, new TypeToken<List<MovieOutDto>>() {}.getType());
     }
+
     //Buscar Por CurrentlyShowing
     public List<MovieOutDto> findBycurrentlyShowing(boolean currentlyShowing) {
         List<Movie> movie = movieRepository.findAllMoviesByCurrentlyShowing(currentlyShowing);
@@ -94,7 +89,6 @@ public class MovieService {
         movie = movieRepository.save(movie);
         return modelMapper.map(movie, MovieOutDto.class);
     }
-
 
     // Actualizar película completa
     public Movie update(Long id, MovieInDto movieInDto) {
@@ -111,9 +105,8 @@ public class MovieService {
 
         return movieRepository.save(movie);
 //        No funciona bien, si lo muevo manualmente va bien
-//        Posteriormente he ayudado al modelmapper creando un mapa especifico para que no se lie y parece que va bien;
+//        Posteriormente he ayudado al modelmapper creando un mapa especifico y parece que va bien;
 //        Estan implementados ahora dos formas de hacer lo mismo, manualmente y con modelmapper
-
     }
 
     // Actualización parcial (PATCH)
@@ -134,6 +127,7 @@ public class MovieService {
         }
         movieRepository.deleteById(id);
     }
+
     private MovieOutDto convertToOutDto(Movie movie) {
         MovieOutDto dto = modelMapper.map(movie,MovieOutDto.class);
         return dto;

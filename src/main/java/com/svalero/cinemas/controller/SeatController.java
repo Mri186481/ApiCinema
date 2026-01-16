@@ -26,7 +26,6 @@ public class SeatController {
     @Autowired
     private SeatService seatService;
 
-    //defino el objeto logger basado en la clase Logger
     private final Logger logger = LoggerFactory.getLogger(SeatController.class);
     // Obtener todos los usuarios
     @GetMapping("/seats")
@@ -38,6 +37,7 @@ public class SeatController {
         logger.info("End all seats");
         return new ResponseEntity<>(seats, HttpStatus.OK);
     }
+
     // Obtener un seat por ID
     @GetMapping("/seats/{seatId}")
     public ResponseEntity<Seat> getSeatById(@PathVariable Long seatId) throws SeatNotFoundException {
@@ -65,6 +65,7 @@ public class SeatController {
         logger.info("End Modify seat");
         return ResponseEntity.ok(modifiedSeat);
     }
+
     // Modificar una butaca parcialmente
     @PatchMapping("/seats/{seatId}")
     public ResponseEntity<SeatOutDto> modifySeatPartial(@PathVariable long seatId, @RequestBody Map<String, Object> updates)
@@ -74,6 +75,7 @@ public class SeatController {
         logger.info("End ModifyPartial seat");
         return ResponseEntity.ok(modifiedSeat);
     }
+
     // Borrar una butaca
     @DeleteMapping("/seats/{seatId}")
     public ResponseEntity<Seat> deleteSeat(@PathVariable long seatId) throws SeatNotFoundException {
@@ -88,6 +90,7 @@ public class SeatController {
         logger.error(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+
     // Manejo de excepciones por validaciones incorrectas
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> MethodArgumentNotValidException(MethodArgumentNotValidException exception) {
@@ -101,12 +104,11 @@ public class SeatController {
 
         return new ResponseEntity<>(ErrorResponse.validationError(errors), HttpStatus.BAD_REQUEST);
     }
+
     // Manejo de error genérico
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception exception) {
-        // al usuario le digo esto
         ErrorResponse error = ErrorResponse.generalError(500, "Internal Server Error");
-        //pero yo en mi log me lo guardo de verdad, para no dar detalle y no tener brecha
         logger.error(exception.getMessage(), exception);
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

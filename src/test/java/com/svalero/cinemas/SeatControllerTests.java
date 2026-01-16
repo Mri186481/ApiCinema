@@ -45,22 +45,16 @@ public class SeatControllerTests {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // ---------------------------------------------------------------------------------
-    // TEST GET ALL
-    // ---------------------------------------------------------------------------------
 
+    // TEST GET ALL
     @Test
     public void testGetAllSeats() throws Exception {
-        // Preparamos datos de prueba
         List<SeatOutDto> seatsOutDto = List.of(
                 new SeatOutDto(1L, 1, 1, true, "OPERATIONAL", 0.0, LocalDate.now(), 1L, "Room A"),
                 new SeatOutDto(2L, 1, 2, false, "BROKEN", 0.0, LocalDate.now(), 1L, "Room A")
         );
-
-        // Mockeamos el servicio
         when(seatService.getAll(null,null,"")).thenReturn(seatsOutDto);
 
-        // Ejecutamos la petición
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/seats")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -69,17 +63,14 @@ public class SeatControllerTests {
         // Verificamos
         String jsonResponse = result.getResponse().getContentAsString();
         List<SeatOutDto> responseList = objectMapper.readValue(jsonResponse, new TypeReference<>(){});
-
         assertNotNull(responseList);
         assertEquals(2, responseList.size());
         assertEquals("OPERATIONAL", responseList.getFirst().getStatus());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST GET BY ID
-    // ---------------------------------------------------------------------------------
-
-    @Test // Caso 200 OK
+    // Caso 200 OK
+    @Test
     public void testGetSeatById() throws Exception {
         Long seatId = 1L;
         Seat seat = new Seat();
@@ -101,8 +92,8 @@ public class SeatControllerTests {
                     assertEquals("OPERATIONAL", response.getStatus());
                 });
     }
-
-    @Test // Caso 404 Not Found
+    // Caso 404 Not Found
+    @Test
     public void testGetSeatByIdNotFound() throws Exception {
         Long seatId = 99L;
         when(seatService.get(seatId)).thenThrow(new SeatNotFoundException("Seat not found"));
@@ -112,29 +103,24 @@ public class SeatControllerTests {
                 .andExpect(status().isNotFound());
     }
 
-    // ---------------------------------------------------------------------------------
-    // TEST POST (ADD SEAT)
-    // ---------------------------------------------------------------------------------
 
-    @Test // Caso 201 Created
+    // TEST POST
+    // Caso 201 Created
+    @Test
     public void testAddSeat() throws Exception {
         Long roomId = 10L;
-
-        // 1. Input válido (cumpliendo @Min)
+        //Input válido (cumpliendo @Min)
         SeatInDto inputDto = new SeatInDto();
         inputDto.setSeatRow(1);
         inputDto.setSeatColumn(1);
         inputDto.setStatus("OPERATIONAL");
         inputDto.setSeatAccesible(true);
         inputDto.setPriceSurcharge(2.50);
-
-        // 2. Output esperado
+        //Output esperado
         SeatOutDto outputDto = new SeatOutDto(1L, 1, 1, true, "OPERATIONAL", 2.50, null, roomId, "Room A");
-
-        // 3. Mock
+        //Mock
         when(seatService.add(eq(roomId), any(SeatInDto.class))).thenReturn(outputDto);
-
-        // 4. Ejecución (OJO A LA URL)
+        //Ejecución
         mockMvc.perform(MockMvcRequestBuilders.post("/rooms/{roomId}/seats", roomId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDto))
@@ -147,13 +133,14 @@ public class SeatControllerTests {
                 });
     }
 
-    @Test // Caso 400 Bad Request
+    // Caso 400 Bad Request
+    @Test
     public void testAddSeatBadRequest() throws Exception {
         Long roomId = 10L;
         // Envio filas y columnas inválidas (<1) para provocar error de validación @Min
         SeatInDto invalidDto = new SeatInDto();
-        invalidDto.setSeatRow(0); // Inválido
-        invalidDto.setSeatColumn(-5); // Inválido
+        invalidDto.setSeatRow(0);
+        invalidDto.setSeatColumn(-5);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/rooms/{roomId}/seats", roomId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -162,27 +149,22 @@ public class SeatControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST PUT (MODIFY SEAT)
-    // ---------------------------------------------------------------------------------
-
-    @Test // Caso 200 OK
+    // Caso 200 OK
+    @Test
     public void testModifySeat() throws Exception {
         Long seatId = 1L;
 
-        // 1. Input válido
+        //Input válido
         SeatInDto inputDto = new SeatInDto();
         inputDto.setSeatRow(2);
         inputDto.setSeatColumn(2);
         inputDto.setStatus("MAINTENANCE");
-
-        // 2. Output esperado
+        //Output esperado
         SeatOutDto outputDto = new SeatOutDto(seatId, 2, 2, false, "MAINTENANCE", 0.0, LocalDate.now(), 1L, "Room A");
-
-        // 3. Mock
+        //Mock
         when(seatService.modify(eq(seatId), any(SeatInDto.class))).thenReturn(outputDto);
-
-        // 4. Ejecución
+        //Ejecución
         mockMvc.perform(MockMvcRequestBuilders.put("/seats/{seatId}", seatId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDto))
@@ -194,10 +176,10 @@ public class SeatControllerTests {
                 });
     }
 
-    @Test // Caso 404 Not Found
+    // Caso 404 Not Found
+    @Test
     public void testModifySeatNotFound() throws Exception {
         Long seatId = 99L;
-
         // IMPORTANTE: Objeto VÁLIDO para pasar el @Valid del controller
         SeatInDto inputDto = new SeatInDto();
         inputDto.setSeatRow(5);
@@ -213,13 +195,13 @@ public class SeatControllerTests {
                 .andExpect(status().isNotFound());
     }
 
-    @Test // Caso 400 Bad Request
+    // Caso 400 Bad Request
+    @Test
     public void testModifySeatBadRequest() throws Exception {
         Long seatId = 1L;
         // Objeto inválido (fila 0) para que salte @Min
         SeatInDto invalidDto = new SeatInDto();
         invalidDto.setSeatRow(0);
-
         mockMvc.perform(MockMvcRequestBuilders.put("/seats/{seatId}", seatId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto))
@@ -227,26 +209,22 @@ public class SeatControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST DELETE
-    // ---------------------------------------------------------------------------------
-
-    @Test // Caso 204 No Content
+    // Caso 204 No Content
+    @Test
     public void testDeleteSeat() throws Exception {
         Long seatId = 1L;
         // Mock implícito (doNothing)
-
         mockMvc.perform(MockMvcRequestBuilders.delete("/seats/{seatId}", seatId))
                 .andExpect(status().isNoContent());
     }
 
-    @Test // Caso 404 Not Found
+    // Caso 404 Not Found
+    @Test
     public void testDeleteSeatNotFound() throws Exception {
         Long seatId = 99L;
-
         doThrow(new SeatNotFoundException("Seat not found"))
                 .when(seatService).delete(seatId);
-
         mockMvc.perform(MockMvcRequestBuilders.delete("/seats/{seatId}", seatId))
                 .andExpect(status().isNotFound());
     }

@@ -24,7 +24,7 @@ public class RateService {
     // Obtener todos las tarifas
     public List<RateOutDto> getAll(LocalDate rateDate, String nameDayRate, Boolean promoDay) {
         List<Rate> rateList;
-//
+
         boolean hasRateDate = rateDate != null;
         boolean hasNameDayRate = nameDayRate != null && !nameDayRate.isEmpty();
         boolean hasPromoDay = promoDay != null;
@@ -51,7 +51,6 @@ public class RateService {
     }
 
     // Get by ID
-
     public Rate get(long id) throws RateNotFoundException {
         return rateRepository.findById(id)
                 .orElseThrow(RateNotFoundException::new);
@@ -63,6 +62,7 @@ public class RateService {
         rate = rateRepository.save(rate);
         return modelMapper.map(rate, RateOutDto.class);
     }
+
     // Modificar una Tarifa
     public RateOutDto modify(long rateId, RateInDto rateInDto) throws RateNotFoundException {
         Rate rate = rateRepository.findById(rateId).orElseThrow(RateNotFoundException::new);
@@ -70,6 +70,7 @@ public class RateService {
         rateRepository.save(rate);
         return modelMapper.map(rate, RateOutDto.class);
     }
+
     //Modificar parcialmente una tarifa
     public RateOutDto modifyPartial(Long rateId, Map<String, Object> updates) {
         Rate rate = rateRepository.findById(rateId).orElseThrow(RateNotFoundException::new);
@@ -77,7 +78,6 @@ public class RateService {
         rateRepository.save(rate);
         return modelMapper.map(rate, RateOutDto.class);
     }
-
 
     public void delete(long rateId) throws RateNotFoundException {
         Rate rate = rateRepository.findById(rateId).orElseThrow(RateNotFoundException::new);

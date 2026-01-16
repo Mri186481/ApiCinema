@@ -47,5 +47,4 @@ public class TicketOutDto {
     private BigDecimal roomAtmosPlus;
     private BigDecimal roomLaserPlus;
     private boolean promoDay;
-
 }

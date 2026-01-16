@@ -27,7 +27,6 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
-    //defino el objeto logger basado en la clase Logger
     private final Logger logger = LoggerFactory.getLogger(TicketController.class);
     // Obtener todos los tickets
     @GetMapping("/tickets")
@@ -40,7 +39,6 @@ public class TicketController {
         return new ResponseEntity<>(tickets, HttpStatus.OK);
     }
 
-
     // Obtener un ticket por ID
     @GetMapping("/tickets/{ticketId}")
     public ResponseEntity<TicketOutDto> getTicketById(@PathVariable Long ticketId) throws TicketNotFoundException {
@@ -49,6 +47,7 @@ public class TicketController {
         logger.info("Fetching ticket with id: {}", ticketId);
         return new ResponseEntity<>(ticketOutDto, HttpStatus.OK);
     }
+
     //Grabar un nuevo ticket
     @PostMapping("/tickets")
     public ResponseEntity<TicketOutDto> addTickets(@Valid @RequestBody TicketInDto ticketInDto) throws ScreeningNotFoundException, CustomerNotFoundException, RateNotFoundException,SeatNotFoundException {
@@ -90,26 +89,31 @@ public class TicketController {
         logger.error(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+
     @ExceptionHandler(ScreeningNotFoundException.class)
     public ResponseEntity<String> handlerScreeningNotFound(ScreeningNotFoundException e) {
         logger.error(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+
     @ExceptionHandler(CustomerNotFoundException.class)
     public ResponseEntity<String> handlerCustomerNotFound(CustomerNotFoundException e) {
         logger.error(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+
     @ExceptionHandler(RateNotFoundException.class)
     public ResponseEntity<String> handlerRateNotFound(RateNotFoundException e) {
         logger.error(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+
     @ExceptionHandler(SeatNotFoundException.class)
     public ResponseEntity<String> handlerSeatNotFound(SeatNotFoundException e) {
         logger.error(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+
     // Manejo de excepciones por validaciones incorrectas
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> MethodArgumentNotValidException(MethodArgumentNotValidException exception) {
@@ -123,6 +127,7 @@ public class TicketController {
 
         return new ResponseEntity<>(ErrorResponse.validationError(errors), HttpStatus.BAD_REQUEST);
     }
+
     // Manejo de error genérico
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception exception) {

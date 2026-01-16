@@ -29,10 +29,9 @@ public class MovieController {
     @Autowired
     private  MovieService movieService;
 
-    //defino el objeto logger basado en la clase Logger
     private final Logger logger = LoggerFactory.getLogger(MovieController.class);
 
-    // Obtener todas las películas con posibilidad de filtro por genero
+    // Obtener todas las películas con tres filtros
     @GetMapping
     public ResponseEntity<List<MovieOutDto>> getAllMovies(@RequestParam(value = "movieTitle", defaultValue = "") String movieTitle,
                                                           @RequestParam(value = "genre", defaultValue = "") String genre,
@@ -71,6 +70,7 @@ public class MovieController {
         logger.info("END getBycurrentlyShowing");
         return ResponseEntity.ok(movie);
     }
+
     // Buscar pelicula por ReleaseDate
     @GetMapping("/release-date/{date}")
     public ResponseEntity<List<MovieOutDto>> getByReleaseDate(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
@@ -78,9 +78,7 @@ public class MovieController {
         List<MovieOutDto> movies = movieService.findByReleaseDate(date);
         logger.info("END getByReleaseDate");
         return new ResponseEntity<>(movies, HttpStatus.OK);
-//        return ResponseEntity.ok(movieService.findByReleaseDate(date));
     }
-
 
     // Crear nueva película
     @PostMapping
@@ -106,7 +104,6 @@ public class MovieController {
         MovieOutDto updatedMovie = movieService.updatePartial(id, updates);
         logger.info("END updateMoviePartial");
         return new ResponseEntity<>(updatedMovie, HttpStatus.OK);
-
     }
 
     // Eliminar película
@@ -117,12 +114,14 @@ public class MovieController {
         logger.info("END deleteMovie");
         return ResponseEntity.noContent().build();
     }
+
     // Manejo de excepción: Movie no encontrado
     @ExceptionHandler(MovieNotFoundException.class)
     public ResponseEntity<String> handleMovieNotFound(MovieNotFoundException e) {
         logger.error(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+
     // Manejo de excepciones por validaciones incorrectas
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> MethodArgumentNotValidException(MethodArgumentNotValidException exception) {
@@ -136,12 +135,11 @@ public class MovieController {
 
         return new ResponseEntity<>(ErrorResponse.validationError(errors), HttpStatus.BAD_REQUEST);
     }
+
     // Manejo de error genérico
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception exception) {
-        // al usuario le digo esto
         ErrorResponse error = ErrorResponse.generalError(500, "Internal Server Error");
-        //pero yo en mi log me lo guardo de verdad, para no dar detalle y no tener brecha
         logger.error(exception.getMessage(), exception);
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

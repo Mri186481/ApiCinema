@@ -64,8 +64,4 @@ public class Customer {
     @OneToMany(mappedBy = "customer")
     @JsonBackReference(value="customers_tickets")
     private List<Ticket> tickets;
-//Si elimino un cliente no tengo porque borrar las entradas asociadas a ese cliente
-
-
-
 }

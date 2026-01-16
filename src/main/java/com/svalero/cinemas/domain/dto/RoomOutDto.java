@@ -17,5 +17,4 @@ public class RoomOutDto {
     private boolean room3d;
     private boolean roomAtmos;
     private boolean roomLaser;
-//    private List<Seat> seats;
 }

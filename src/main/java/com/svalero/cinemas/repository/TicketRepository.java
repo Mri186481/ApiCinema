@@ -8,7 +8,6 @@ import java.util.Optional;
 
 public interface TicketRepository extends CrudRepository<Ticket, Long> {
 
-    // Método para obtener todos los usuarios
     List<Ticket> findAll();
 
     Optional<Ticket> findById(Long id);
@@ -26,5 +25,4 @@ public interface TicketRepository extends CrudRepository<Ticket, Long> {
     List<Ticket> findByCustomerIdAndSeatId(Long customerId, Long seatId);
 
     List<Ticket> findByScreeningIdAndSeatId(Long screeningId, Long seatId);
-
 }

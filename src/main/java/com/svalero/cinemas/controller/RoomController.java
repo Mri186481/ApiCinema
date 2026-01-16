@@ -26,7 +26,6 @@ public class RoomController {
     @Autowired
     private RoomService roomService;
 
-    //defino el objeto logger basado en la clase Logger
     private final Logger logger = LoggerFactory.getLogger(RoomController.class);
     // Obtener todos los usuarios
     @GetMapping
@@ -38,6 +37,7 @@ public class RoomController {
         logger.info("End all rooms");
         return new ResponseEntity<>(rooms, HttpStatus.OK);
     }
+
     // Obtener un room por ID
     @GetMapping("/{roomId}")
     public ResponseEntity<Room> getRoomById(@PathVariable Long roomId) throws RoomNotFoundException {
@@ -46,6 +46,7 @@ public class RoomController {
         logger.info("Fetching room with id: {}", roomId);
         return new ResponseEntity<>(room, HttpStatus.OK);
     }
+
     // Agregar una nueva sala
     @PostMapping
     public ResponseEntity<RoomOutDto> addRoom( @Valid @RequestBody RoomInDto roomInDto) {
@@ -64,6 +65,7 @@ public class RoomController {
         logger.info("End Modify room");
         return ResponseEntity.ok(modifiedRoom);
     }
+
     //Modificar una sala Parcialmente
     @PatchMapping("/{roomId}")
     public ResponseEntity<RoomOutDto> modifyRoomPartial(@PathVariable long roomId, @RequestBody Map<String, Object> updates)
@@ -73,6 +75,7 @@ public class RoomController {
         logger.info("End Modify room partial");
         return ResponseEntity.ok(modifiedRoom);
     }
+
     // Borrar una sala
     @DeleteMapping("/{roomId}")
     public ResponseEntity<Room> deleteRoom(@PathVariable long roomId) throws RoomNotFoundException {
@@ -103,9 +106,7 @@ public class RoomController {
     // Manejo de error genérico
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception exception) {
-        // al usuario le digo esto
         ErrorResponse error = ErrorResponse.generalError(500, "Internal Server Error");
-        //pero yo en mi log me lo guardo de verdad, para no dar detalle y no tener brecha
         logger.error(exception.getMessage(), exception);
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

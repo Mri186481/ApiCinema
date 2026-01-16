@@ -28,9 +28,8 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    //defino el objeto logger basado en la clase Logger
     private final Logger logger = LoggerFactory.getLogger(CustomerController.class);
-    // Obtener todos los usuarios
+    // Obtener todos los usuarios con tres filtros
     @GetMapping
     public ResponseEntity<List<CustomerOutDto>> getAll(@RequestParam(value = "name", defaultValue = "") String name,
                                                  @RequestParam(value = "address", defaultValue = "") String address,
@@ -40,6 +39,7 @@ public class CustomerController {
         logger.info("End all customers");
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
+
     // Obtener un usuario por ID
     @GetMapping("/{customerId}")
     public ResponseEntity<Customer> getUserById(@PathVariable Long customerId) throws CustomerNotFoundException {
@@ -48,8 +48,8 @@ public class CustomerController {
         logger.info("Fetching customer with id: {}", customerId);
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }
+
     // Obtener lista de usuarios que admiten o no publicidad
-    // Obtener un usuario por ID
     @GetMapping("/admitsAdvertising/{admitsAdvertising}")
     public ResponseEntity<List<CustomerOutDto>> getUserByAd(@PathVariable boolean admitsAdvertising) throws CustomerNotFoundException {
         logger.info("Begin Get List of customer with ad");
@@ -76,6 +76,7 @@ public class CustomerController {
         logger.info("End Modify customer");
         return ResponseEntity.ok(modifiedUser);
     }
+
     // Modificar un usuario parcialmente
     @PatchMapping("/{customerId}")
     public ResponseEntity<CustomerOutDto> modifyUserPartial(@PathVariable long customerId, @RequestBody Map<String, Object> updates)
@@ -87,7 +88,6 @@ public class CustomerController {
     }
 
     // Borrar un usuario
-    // Eliminar un user
     @DeleteMapping("/{customerId}")
     public ResponseEntity<Customer> deleteUser(@PathVariable long customerId) throws CustomerNotFoundException {
         logger.info("Deleting user with id: {}", customerId);
@@ -101,6 +101,7 @@ public class CustomerController {
         logger.error(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+
     // Manejo de excepciones por validaciones incorrectas
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> MethodArgumentNotValidException(MethodArgumentNotValidException exception) {
@@ -114,12 +115,11 @@ public class CustomerController {
 
         return new ResponseEntity<>(ErrorResponse.validationError(errors), HttpStatus.BAD_REQUEST);
     }
+
     // Manejo de error genérico
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception exception) {
-        // al usuario le digo esto
         ErrorResponse error = ErrorResponse.generalError(500, "Internal Server Error");
-        //pero yo en mi log me lo guardo de verdad, para no dar detalle y no tener brecha
         logger.error(exception.getMessage(), exception);
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

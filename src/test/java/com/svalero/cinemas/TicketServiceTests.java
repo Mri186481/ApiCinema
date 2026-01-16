@@ -82,10 +82,7 @@ public class TicketServiceTests {
         return ticket;
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST GET ALL
-    // ---------------------------------------------------------------------------------
-
     @Test
     public void testGetAll_NoFilters() {
         List<Ticket> mockList = List.of(createMockTicket(1L));
@@ -97,7 +94,6 @@ public class TicketServiceTests {
         assertEquals(1, result.size());
         assertEquals("CODE-1", result.get(0).getTicketCode());
         assertEquals("Matrix", result.get(0).getMovieTitle()); // Verifica mapeo profundo
-
         verify(ticketRepository, times(1)).findAll();
     }
 
@@ -115,10 +111,7 @@ public class TicketServiceTests {
         verify(ticketRepository, times(0)).findAll();
     }
 
-    // ---------------------------------------------------------------------------------
-    // TEST GET BY ID (Devuelve DTO)
-    // ---------------------------------------------------------------------------------
-
+    // TEST GET BY ID
     @Test
     public void testGet_Success() {
         Long id = 1L;
@@ -141,10 +134,7 @@ public class TicketServiceTests {
         assertThrows(TicketNotFoundException.class, () -> ticketService.get(id));
     }
 
-    // ---------------------------------------------------------------------------------
-    // TEST ADD (CREATE)
-    // ---------------------------------------------------------------------------------
-
+    // TEST ADD
     @Test
     public void testAdd_Success() throws ScreeningNotFoundException, CustomerNotFoundException, RateNotFoundException,SeatNotFoundException {
         // Input
@@ -156,7 +146,7 @@ public class TicketServiceTests {
         inDto.setSeatId(3L);
         inDto.setRateId(4L);
 
-        // Mocks de dependencias
+        //Mocks de dependencias
         Customer mockCustomer = new Customer(); mockCustomer.setId(1L);
         Screening mockScreening = new Screening(); mockScreening.setId(2L);
         Seat mockSeat = new Seat(); mockSeat.setId(3L);
@@ -181,12 +171,10 @@ public class TicketServiceTests {
 
         assertNotNull(result);
         assertEquals("NEW-CODE", result.getTicketCode());
-
         verify(screeningRepository).findById(2L);
         verify(customerRepository).findById(1L);
         verify(seatRepository).findById(3L);
         verify(rateRepository).findById(4L);
-
         verify(ticketRepository).save(any(Ticket.class));
     }
 
@@ -194,21 +182,18 @@ public class TicketServiceTests {
     public void testAdd_CustomerNotFound() {
         TicketInDto inDto = new TicketInDto();
         inDto.setScreeningId(2L);
-        inDto.setCustomerId(99L); // No existe
+        inDto.setCustomerId(99L);
 
         when(screeningRepository.findById(2L)).thenReturn(Optional.of(new Screening()));
         when(customerRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThrows(CustomerNotFoundException.class, () -> ticketService.add(inDto));
 
-        verify(seatRepository, times(0)).findById(any()); // Se detiene antes
+        verify(seatRepository, times(0)).findById(any());
         verify(ticketRepository, times(0)).save(any());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST MODIFY (UPDATE)
-    // ---------------------------------------------------------------------------------
-
     @Test
     public void testModify_Success() throws Exception {
         Long id = 1L;
@@ -221,14 +206,12 @@ public class TicketServiceTests {
 
         // Ticket existente
         Ticket existingTicket = new Ticket(); existingTicket.setId(id);
-
         // Mocks
         when(ticketRepository.findById(id)).thenReturn(Optional.of(existingTicket));
         when(screeningRepository.findById(2L)).thenReturn(Optional.of(new Screening()));
         when(customerRepository.findById(1L)).thenReturn(Optional.of(new Customer()));
         when(seatRepository.findById(3L)).thenReturn(Optional.of(new Seat()));
         when(rateRepository.findById(4L)).thenReturn(Optional.of(new Rate()));
-
         // Ticket guardado
         Ticket savedTicket = createMockTicket(id);
         savedTicket.setTicketCode("UPDATED-CODE");
@@ -245,28 +228,19 @@ public class TicketServiceTests {
     public void testModify_TicketNotFound() {
         Long id = 99L;
         TicketInDto inDto = new TicketInDto();
-
         when(ticketRepository.findById(id)).thenReturn(Optional.empty());
-
         assertThrows(TicketNotFoundException.class, () -> ticketService.modify(id, inDto));
-
         verify(screeningRepository, times(0)).findById(any());
         verify(ticketRepository, times(0)).save(any());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST DELETE
-    // ---------------------------------------------------------------------------------
-
     @Test
     public void testDelete_Success() throws TicketNotFoundException {
         Long id = 1L;
         Ticket ticket = new Ticket(); ticket.setId(id);
-
         when(ticketRepository.findById(id)).thenReturn(Optional.of(ticket));
-
         ticketService.delete(id);
-
         verify(ticketRepository).findById(id);
         verify(ticketRepository).delete(ticket);
     }
@@ -275,9 +249,7 @@ public class TicketServiceTests {
     public void testDelete_NotFound() {
         Long id = 99L;
         when(ticketRepository.findById(id)).thenReturn(Optional.empty());
-
         assertThrows(TicketNotFoundException.class, () -> ticketService.delete(id));
-
         verify(ticketRepository, times(0)).delete(any());
     }
 }

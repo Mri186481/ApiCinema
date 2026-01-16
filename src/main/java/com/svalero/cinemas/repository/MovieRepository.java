@@ -9,11 +9,8 @@ import java.util.List;
 
 public interface MovieRepository extends CrudRepository<Movie, Long> {
 
-    // Método para obtener todos los usuarios
     List<Movie> findAll();
 
-
-    // Método para buscar una pelicula por su titulo
     List<Movie> findByMovieTitle(String movieTitle);
 
     List<Movie> findByGenre(String genre);
@@ -32,7 +29,6 @@ public interface MovieRepository extends CrudRepository<Movie, Long> {
 
     @Query("select m FROM Movie m WHERE m.currentlyShowing = :currentlyShowing")
     List<Movie> findAllMoviesByCurrentlyShowing(Boolean currentlyShowing);
-
 }
 
 

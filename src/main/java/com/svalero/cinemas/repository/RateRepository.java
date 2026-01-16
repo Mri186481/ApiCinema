@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RateRepository extends CrudRepository<Rate, Long> {
-    // Método para obtener todos los usuarios
     List<Rate> findAll();
 
     Optional<Rate> findById(Long id);

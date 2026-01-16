@@ -12,12 +12,10 @@ import java.util.Optional;
 
 public interface RoomRepository extends CrudRepository<Room, Long> {
 
-    // Método para obtener todos los usuarios
     List<Room> findAll();
 
     Optional<Room> findById(Long id);
 
-    // Método para buscar un usuario por su nopmbre
     Room findByRoomName(String name);
 
     List<Room> findByRoom3d(boolean room3d);
@@ -36,6 +34,5 @@ public interface RoomRepository extends CrudRepository<Room, Long> {
 
     @Query("select r FROM Room r WHERE r.openingDate = :openingDate")
     List<Room> findAllRoomsByOpeningDate(LocalDate openingdate);
-
 }
 

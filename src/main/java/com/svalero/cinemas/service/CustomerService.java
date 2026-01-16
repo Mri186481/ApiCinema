@@ -46,24 +46,28 @@ public class CustomerService {
             customerList = customerRepository.findAll();
         }
 
-
         return modelMapper.map(customerList, new TypeToken<List<CustomerOutDto>>() {}.getType());
     }
+
+    // Por Id
     public Customer get(long id) throws CustomerNotFoundException {
         return customerRepository.findById(id)
                 .orElseThrow(CustomerNotFoundException::new);
     }
-    //
+
+    //Conseguir lista de clientes que admiten publicidad
     public List<CustomerOutDto> getAllAd(boolean admitsAdvertising) {
         List<Customer> customers = customerRepository.findAllUsersByAdmitsAdvertising(admitsAdvertising);
         return modelMapper.map(customers, new TypeToken<List<CustomerOutDto>>() {}.getType());
     }
+
     // Dar de alta un usuario
     public CustomerOutDto add(CustomerInDto customerInDto) {
         Customer customer = modelMapper.map(customerInDto, Customer.class);
         customer = customerRepository.save(customer);
         return modelMapper.map(customer, CustomerOutDto.class);
     }
+
     // Modificar un usuario
     public CustomerOutDto modify(long customerId, CustomerInDto customerInDto) throws CustomerNotFoundException {
         Customer customer = customerRepository.findById(customerId).orElseThrow(CustomerNotFoundException::new);
@@ -71,6 +75,7 @@ public class CustomerService {
         customerRepository.save(customer);
         return modelMapper.map(customer, CustomerOutDto.class);
     }
+
     // Modificacion parcial de un usuario
     public CustomerOutDto modifyPartial(Long customerId, Map<String, Object> updates) {
         Customer customer = customerRepository.findById(customerId).orElseThrow(CustomerNotFoundException::new);

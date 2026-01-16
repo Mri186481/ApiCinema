@@ -10,12 +10,10 @@ import java.util.Optional;
 
 public interface CustomerRepository extends CrudRepository<Customer, Long> {
 
-    // Método para obtener todos los usuarios
     List<Customer> findAll();
 
     Optional<Customer> findById(Long id);
 
-    // Método para buscar un usuario por su nopmbre
     List<Customer> findByName(String name);
 
     List<Customer> findByMail(String mail);
@@ -30,11 +28,7 @@ public interface CustomerRepository extends CrudRepository<Customer, Long> {
 
     List<Customer> findByAddressAndMail(String address, String mail);
 
-
-
-
     @Query("select u FROM Customer u WHERE u.admitsAdvertising = :admitsAdvertising")
     List<Customer> findAllUsersByAdmitsAdvertising(Boolean admitsAdvertising);
-
 }
 

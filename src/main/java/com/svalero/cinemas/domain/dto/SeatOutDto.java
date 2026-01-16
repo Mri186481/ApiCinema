@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class SeatOutDto {
     private long id;
     private int seatRow;
-    private int seatcolumn;
+    private int seatColumn;
     private boolean seatAccesible;
     private String status;
     private double priceSurcharge;

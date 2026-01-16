@@ -44,13 +44,9 @@ public class TicketControllerTests {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // ---------------------------------------------------------------------------------
-    // TEST GET ALL (Con filtros opcionales)
-    // ---------------------------------------------------------------------------------
-
+    // TEST GET ALL
     @Test
     public void testGetAllTickets() throws Exception {
-        // Preparamos datos de prueba
         List<TicketOutDto> ticketsOutDto = List.of(
                 new TicketOutDto(1L, LocalDateTime.now(), 9.50, "TICKET-001", "Juan", "juan@mail.com", false, false, false, false, "Avatar", 10.0, "Sala 1", LocalDateTime.now(), 1, 1, true, true, true, true,
                         "Normal", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,BigDecimal.ZERO,BigDecimal.ZERO,BigDecimal.ZERO,BigDecimal.ZERO,BigDecimal.ZERO,false),
@@ -58,32 +54,26 @@ public class TicketControllerTests {
                         "Normal", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,BigDecimal.ZERO,BigDecimal.ZERO,BigDecimal.ZERO,BigDecimal.ZERO,BigDecimal.ZERO,false)
                         );
 
-        // Mockeamos la llamada con filtros nulos (comportamiento por defecto)
         when(ticketService.getAll(null, null, null)).thenReturn(ticketsOutDto);
 
-        // Ejecutamos la petición
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/tickets")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        // Verificamos la respuesta
+        // Verificacion
         String jsonResponse = result.getResponse().getContentAsString();
         List<TicketOutDto> responseList = objectMapper.readValue(jsonResponse, new TypeReference<>(){});
-
         assertNotNull(responseList);
         assertEquals(2, responseList.size());
         assertEquals("TICKET-001", responseList.getFirst().getTicketCode());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST GET BY ID
-    // ---------------------------------------------------------------------------------
-
-    @Test // Caso 200 OK
+    // Caso 200 OK
+    @Test
     public void testGetTicketById() throws Exception {
         Long ticketId = 1L;
-        // Tu controller devuelve TicketOutDto
         TicketOutDto outDto = new TicketOutDto();
         outDto.setId(ticketId);
         outDto.setTicketCode("ABC-123");
@@ -103,7 +93,8 @@ public class TicketControllerTests {
                 });
     }
 
-    @Test // Caso 404 Not Found
+    // Caso 404 Not Found
+    @Test
     public void testGetTicketByIdNotFound() throws Exception {
         Long ticketId = 99L;
         when(ticketService.get(ticketId)).thenThrow(new TicketNotFoundException("Ticket not found"));
@@ -113,13 +104,11 @@ public class TicketControllerTests {
                 .andExpect(status().isNotFound());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST POST (ADD TICKET)
-    // ---------------------------------------------------------------------------------
-
-    @Test // Caso 201 Created
+    // Caso 201 Created
+    @Test
     public void testAddTicket() throws Exception {
-        // 1. Input válido (Cumpliendo @NotNull en price, code, customerId, screeningId, rateId, seatId)
+        //Input válido (Cumpliendo @NotNull en price, code, customerId, screeningId, rateId, seatId)
         TicketInDto inputDto = new TicketInDto();
         inputDto.setTicketCode("NEW-TICKET-001");
         inputDto.setFinalPricePaid(15.00);
@@ -129,18 +118,15 @@ public class TicketControllerTests {
         inputDto.setRateId(4L);
         inputDto.setScanned(false);
         inputDto.setStatus("ACTIVE");
-
-        // 2. Output esperado
+        //Output esperado
         TicketOutDto outputDto = new TicketOutDto();
         outputDto.setId(1L);
         outputDto.setTicketCode("NEW-TICKET-001");
         outputDto.setFinalPricePaid(15.00);
         outputDto.setMovieTitle("Inception"); // Simulado
-
-        // 3. Mock
+        //Mock
         when(ticketService.add(any(TicketInDto.class))).thenReturn(outputDto);
-
-        // 4. Ejecución
+        //Ejecución
         mockMvc.perform(MockMvcRequestBuilders.post("/tickets")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDto))
@@ -153,7 +139,8 @@ public class TicketControllerTests {
                 });
     }
 
-    @Test // Caso 400 Bad Request
+    // Caso 400 Bad Request
+    @Test
     public void testAddTicketBadRequest() throws Exception {
         // Enviamos objeto vacío para provocar fallo de validación (@NotNull)
         TicketInDto invalidDto = new TicketInDto();
@@ -165,15 +152,13 @@ public class TicketControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
-    // ---------------------------------------------------------------------------------
-    // TEST PUT (MODIFY TICKET)
-    // ---------------------------------------------------------------------------------
-
-    @Test // Caso 200 OK
+    // TEST PUt
+    // Caso 200 OK
+    @Test
     public void testModifyTicket() throws Exception {
         Long ticketId = 1L;
 
-        // 1. Input válido
+        //Input válido
         TicketInDto inputDto = new TicketInDto();
         inputDto.setTicketCode("MODIFIED-CODE");
         inputDto.setFinalPricePaid(20.00);
@@ -181,17 +166,14 @@ public class TicketControllerTests {
         inputDto.setScreeningId(2L);
         inputDto.setSeatId(3L);
         inputDto.setRateId(4L);
-
-        // 2. Output esperado
+        //Output esperado
         TicketOutDto outputDto = new TicketOutDto();
         outputDto.setId(ticketId);
         outputDto.setTicketCode("MODIFIED-CODE");
         outputDto.setFinalPricePaid(20.00);
-
-        // 3. Mock
+        //Mock
         when(ticketService.modify(eq(ticketId), any(TicketInDto.class))).thenReturn(outputDto);
-
-        // 4. Ejecución
+        //Ejecución
         mockMvc.perform(MockMvcRequestBuilders.put("/tickets/{ticketId}", ticketId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDto))
@@ -204,7 +186,8 @@ public class TicketControllerTests {
                 });
     }
 
-    @Test // Caso 404 Not Found
+    // Caso 404 Not Found
+    @Test
     public void testModifyTicketNotFound() throws Exception {
         Long ticketId = 99L;
 
@@ -226,12 +209,12 @@ public class TicketControllerTests {
                 .andExpect(status().isNotFound());
     }
 
-    @Test // Caso 400 Bad Request
+    // Caso 400 Bad Request
+    @Test
     public void testModifyTicketBadRequest() throws Exception {
         Long ticketId = 1L;
         // Objeto vacío para que salten los @NotNull
         TicketInDto invalidDto = new TicketInDto();
-
         mockMvc.perform(MockMvcRequestBuilders.put("/tickets/{ticketId}", ticketId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto))
@@ -239,11 +222,9 @@ public class TicketControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST DELETE
-    // ---------------------------------------------------------------------------------
-
-    @Test // Caso 204 No Content
+    // Caso 204 No Content
+    @Test
     public void testDeleteTicket() throws Exception {
         Long ticketId = 1L;
         // Mock implícito (doNothing)
@@ -251,13 +232,12 @@ public class TicketControllerTests {
                 .andExpect(status().isNoContent());
     }
 
-    @Test // Caso 404 Not Found
+    // Caso 404 Not Found
+    @Test
     public void testDeleteTicketNotFound() throws Exception {
         Long ticketId = 99L;
-
         doThrow(new TicketNotFoundException("Ticket not found"))
                 .when(ticketService).delete(ticketId);
-
         mockMvc.perform(MockMvcRequestBuilders.delete("/tickets/{ticketId}", ticketId))
                 .andExpect(status().isNotFound());
     }

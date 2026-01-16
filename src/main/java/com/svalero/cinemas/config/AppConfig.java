@@ -1,7 +1,9 @@
 package com.svalero.cinemas.config;
 
 import com.svalero.cinemas.domain.Screening;
+import com.svalero.cinemas.domain.Seat;
 import com.svalero.cinemas.domain.dto.ScreeningOutDto;
+import com.svalero.cinemas.domain.dto.SeatOutDto;
 import org.modelmapper.AbstractConverter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
@@ -14,21 +16,17 @@ import java.time.LocalDateTime;
 
 @Configuration
 public class AppConfig {
-//    @Bean
-//    public ModelMapper modelMapper() {
-//        return new ModelMapper();
-//    }
+
 @Bean
 public ModelMapper modelMapper() {
     ModelMapper modelMapper = new ModelMapper();
 
-    // 1. Configuración para saltar nulos (vital para PATCH)
+    //Configuración para saltar nulos (para PATCH)
     modelMapper.getConfiguration().setSkipNullEnabled(true);
     modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-    //Mapa especifico para Screening, problemas con el mapeo, hay que ayudarle para que lo entienda
+    //Mapa para Screening
     TypeMap<Screening, ScreeningOutDto> typeMap = modelMapper.createTypeMap(Screening.class, ScreeningOutDto.class);
-    // Le decimos explícitamente de dónde sacar los IDs y los Títulos
     typeMap.addMappings(mapper -> {
         mapper.map(src -> src.getMovie().getId(), ScreeningOutDto::setMovieId);
         mapper.map(src -> src.getMovie().getMovieTitle(), ScreeningOutDto::setMovieTitle);
@@ -36,7 +34,14 @@ public ModelMapper modelMapper() {
         mapper.map(src -> src.getRoom().getRoomName(), ScreeningOutDto::setRoomName);
     });
 
-    // 2. Conversor manual de String a LocalDate (vital para arreglar error de fecha)
+    //Mapa para Seat
+    TypeMap<Seat, SeatOutDto> typeMap2 = modelMapper.createTypeMap(Seat.class, SeatOutDto.class);
+    typeMap2.addMappings(mapper -> {
+        mapper.map(src -> src.getRoom().getId(), SeatOutDto::setRoomId);
+        mapper.map(src -> src.getRoom().getRoomName(), SeatOutDto::setRoomName);
+    });
+
+    //Conversor manual de String a LocalDate (vital para arreglar error de fecha)
     modelMapper.addConverter(new AbstractConverter<String, LocalDate>() {
         @Override
         protected LocalDate convert(String source) {
