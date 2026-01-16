@@ -45,13 +45,10 @@ public class RateControllerTests {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // ---------------------------------------------------------------------------------
-    // TEST GET ALL
-    // ---------------------------------------------------------------------------------
 
+    // TEST GET ALL
     @Test
     public void testGetAllRates() throws Exception {
-        // Preparamos la lista que devolverá el servicio
         List<RateOutDto> ratesOutDto = List.of(
                 new RateOutDto(1L, LocalDate.now(), "Día del Espectador", BigDecimal.valueOf(5.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(1.0), BigDecimal.valueOf(1.0), BigDecimal.valueOf(1.0), true),
                 new RateOutDto(2L, LocalDate.now().plusDays(1), "Fin de Semana", BigDecimal.valueOf(9.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(0.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), false)
@@ -72,14 +69,12 @@ public class RateControllerTests {
         assertEquals("Día del Espectador", responseList.getFirst().getNameDayRate());
     }
 
-    // ---------------------------------------------------------------------------------
-    // TEST GET BY ID
-    // ---------------------------------------------------------------------------------
 
-    @Test // Caso 200 OK
+    // TEST GET BY ID
+    // Caso 200 OK
+    @Test
     public void testGetRateById() throws Exception {
         Long rateId = 1L;
-        // Según tus patrones anteriores, el GET by ID del controller devuelve la Entidad Rate
         Rate rate = new Rate();
         rate.setId(rateId);
         rate.setRateDate(LocalDate.now());
@@ -99,7 +94,8 @@ public class RateControllerTests {
                 });
     }
 
-    @Test // Caso 404 Not Found
+    // Caso 404 Not Found
+    @Test
     public void testGetRateByIdNotFound() throws Exception {
         Long rateId = 99L;
         when(rateService.get(rateId)).thenThrow(new RateNotFoundException("Rate not found"));
@@ -109,29 +105,24 @@ public class RateControllerTests {
                 .andExpect(status().isNotFound());
     }
 
-    // ---------------------------------------------------------------------------------
-    // TEST POST (ADD RATE)
-    // ---------------------------------------------------------------------------------
 
-    @Test // Caso 201 Created
+    // TEST POST
+    // Caso 201 Created
+    @Test
     public void testAddRate() throws Exception {
-        // 1. Input válido (cumpliendo @NotNull en rateDate)
+        //Input válido (cumpliendo @NotNull en rateDate)
         RateInDto inputDto = new RateInDto();
         inputDto.setRateDate(LocalDate.now());
         inputDto.setNameDayRate("Fiesta del Cine");
         inputDto.setPromoDay(true);
-        // ... (resto de campos opcionales)
-
-        // 2. Output esperado
+        //Output esperado
         RateOutDto outputDto = new RateOutDto();
         outputDto.setId(1L);
         outputDto.setRateDate(inputDto.getRateDate());
         outputDto.setNameDayRate("Fiesta del Cine");
-
-        // 3. Mock
+        //Mock
         when(rateService.add(any(RateInDto.class))).thenReturn(outputDto);
-
-        // 4. Ejecución
+        //Ejecución
         mockMvc.perform(MockMvcRequestBuilders.post("/rates")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDto))
@@ -144,12 +135,12 @@ public class RateControllerTests {
                 });
     }
 
-    @Test // Caso 400 Bad Request
+    // Caso 400 Bad Request
+    @Test
     public void testAddRateBadRequest() throws Exception {
         // Enviamos objeto inválido: rateDate es null (fallará @NotNull)
         RateInDto invalidDto = new RateInDto();
         invalidDto.setNameDayRate("Sin Fecha");
-        // No seteamos rateDate
 
         mockMvc.perform(MockMvcRequestBuilders.post("/rates")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -158,29 +149,23 @@ public class RateControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
-    // ---------------------------------------------------------------------------------
-    // TEST PUT (MODIFY RATE)
-    // ---------------------------------------------------------------------------------
-
-    @Test // Caso 200 OK
+    // TEST PUT
+    // Caso 200 OK
+    @Test
     public void testModifyRate() throws Exception {
         Long rateId = 1L;
-
-        // 1. Input válido
+        //Input válido
         RateInDto inputDto = new RateInDto();
         inputDto.setRateDate(LocalDate.now().plusDays(5));
         inputDto.setNameDayRate("Modificado");
-
-        // 2. Output esperado
+        //Output esperado
         RateOutDto outputDto = new RateOutDto();
         outputDto.setId(rateId);
         outputDto.setRateDate(inputDto.getRateDate());
         outputDto.setNameDayRate("Modificado");
-
-        // 3. Mock
+        //Mock
         when(rateService.modify(eq(rateId), any(RateInDto.class))).thenReturn(outputDto);
-
-        // 4. Ejecución
+        //Ejecución
         mockMvc.perform(MockMvcRequestBuilders.put("/rates/{id}", rateId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDto))
@@ -192,7 +177,8 @@ public class RateControllerTests {
                 });
     }
 
-    @Test // Caso 404 Not Found
+    // Caso 404 Not Found
+    @Test
     public void testModifyRateNotFound() throws Exception {
         Long rateId = 99L;
 
@@ -211,7 +197,8 @@ public class RateControllerTests {
                 .andExpect(status().isNotFound());
     }
 
-    @Test // Caso 400 Bad Request
+    // Caso 400 Bad Request
+    @Test
     public void testModifyRateBadRequest() throws Exception {
         Long rateId = 1L;
         // Objeto inválido (sin rateDate)
@@ -224,26 +211,22 @@ public class RateControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST DELETE
-    // ---------------------------------------------------------------------------------
-
-    @Test // Caso 204 No Content
+    // Caso 204 No Content
+    @Test
     public void testDeleteRate() throws Exception {
         Long rateId = 1L;
         // Mock implícito (doNothing)
-
         mockMvc.perform(MockMvcRequestBuilders.delete("/rates/{id}", rateId))
                 .andExpect(status().isNoContent());
     }
 
-    @Test // Caso 404 Not Found
+    // Caso 404 Not Found
+    @Test
     public void testDeleteRateNotFound() throws Exception {
         Long rateId = 99L;
-
         doThrow(new RateNotFoundException("Rate not found"))
                 .when(rateService).delete(rateId);
-
         mockMvc.perform(MockMvcRequestBuilders.delete("/rates/{id}", rateId))
                 .andExpect(status().isNotFound());
     }

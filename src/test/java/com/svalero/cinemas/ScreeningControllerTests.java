@@ -43,22 +43,17 @@ public class ScreeningControllerTests {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // ---------------------------------------------------------------------------------
-    // TEST GET ALL
-    // ---------------------------------------------------------------------------------
 
+    // TEST GET ALL
     @Test
     public void testGetAllScreenings() throws Exception {
-        // Preparamos datos de prueba
         List<ScreeningOutDto> screeningsOutDto = List.of(
                 new ScreeningOutDto(1L, LocalDateTime.now().plusDays(1), 9.50, false, 1L, 1L, "Avatar", "Sala 1"),
                 new ScreeningOutDto(2L, LocalDateTime.now().plusDays(2), 10.00, true, 2L, 2L, "Dune", "Sala 2")
         );
 
-        // Mockeamos el servicio
         when(screeningService.findAll(any(), any(), any())).thenReturn(screeningsOutDto);
 
-        // Ejecutamos la petición
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/screenings")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -67,17 +62,14 @@ public class ScreeningControllerTests {
         // Verificamos
         String jsonResponse = result.getResponse().getContentAsString();
         List<ScreeningOutDto> responseList = objectMapper.readValue(jsonResponse, new TypeReference<>(){});
-
         assertNotNull(responseList);
         assertEquals(2, responseList.size());
         assertEquals("Avatar", responseList.getFirst().getMovieTitle());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST GET BY ID
-    // ---------------------------------------------------------------------------------
-
-    @Test // Caso 200 OK
+    // Caso 200 OK
+    @Test
     public void testGetScreeningById() throws Exception {
         Long screeningId = 1L;
         ScreeningOutDto outDto = new ScreeningOutDto(screeningId, LocalDateTime.now(), 8.50, false, 1L, 1L, "Titanic", "Sala A");
@@ -95,7 +87,8 @@ public class ScreeningControllerTests {
                 });
     }
 
-    @Test // Caso 404 Not Found
+    // Caso 404 Not Found
+    @Test
     public void testGetScreeningByIdNotFound() throws Exception {
         Long screeningId = 99L;
         when(screeningService.findById(screeningId)).thenThrow(new ScreeningNotFoundException("Screening not found"));
@@ -105,27 +98,22 @@ public class ScreeningControllerTests {
                 .andExpect(status().isNotFound());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST POST (CREATE)
-    // ---------------------------------------------------------------------------------
-
-    @Test // Caso 201 Created
+    // Caso 201 Created
+    @Test
     public void testAddScreening() throws Exception {
-        // 1. Input válido (cumpliendo @NotNull)
+        //Input válido (cumpliendo @NotNull)
         ScreeningInDto inputDto = new ScreeningInDto();
         inputDto.setScreeningTime(LocalDateTime.now().plusDays(1));
         inputDto.setTicketPrice(12.00);
         inputDto.setMovieId(1L);
         inputDto.setRoomId(1L);
         inputDto.setSubtitled(true);
-
-        // 2. Output esperado
+        //Output esperado
         ScreeningOutDto outputDto = new ScreeningOutDto(1L, inputDto.getScreeningTime(), 12.00, true, 1L, 1L, "Movie", "Room");
-
-        // 3. Mock
+        //Mock
         when(screeningService.add(any(ScreeningInDto.class))).thenReturn(outputDto);
-
-        // 4. Ejecución
+        //Ejecución
         mockMvc.perform(MockMvcRequestBuilders.post("/screenings")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDto))
@@ -137,7 +125,8 @@ public class ScreeningControllerTests {
                 });
     }
 
-    @Test // Caso 400 Bad Request
+    // Caso 400 Bad Request
+    @Test
     public void testAddScreeningBadRequest() throws Exception {
         // Envio objeto vacío para provocar fallo de validación
         ScreeningInDto invalidDto = new ScreeningInDto();
@@ -149,28 +138,23 @@ public class ScreeningControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST PUT (UPDATE)
-    // ---------------------------------------------------------------------------------
-
-    @Test // Caso 200 OK
+    // Caso 200 OK
+    @Test
     public void testModifyScreening() throws Exception {
         Long screeningId = 1L;
 
-        // 1. Input válido
+        //Input válido
         ScreeningInDto inputDto = new ScreeningInDto();
         inputDto.setScreeningTime(LocalDateTime.now().plusDays(5));
         inputDto.setTicketPrice(15.00);
         inputDto.setMovieId(2L);
         inputDto.setRoomId(2L);
-
-        // 2. Output esperado
+        //Output esperado
         ScreeningOutDto outputDto = new ScreeningOutDto(screeningId, inputDto.getScreeningTime(), 15.00, false, 2L, 2L, "New Movie", "New Room");
-
-        // 3. Mock
+        //Mock
         when(screeningService.modify(eq(screeningId), any(ScreeningInDto.class))).thenReturn(outputDto);
-
-        // 4. Ejecución
+        //Ejecución
         mockMvc.perform(MockMvcRequestBuilders.put("/screenings/{id}", screeningId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDto))
@@ -183,7 +167,8 @@ public class ScreeningControllerTests {
                 });
     }
 
-    @Test // Caso 404 Not Found
+    // Caso 404 Not Found
+    @Test
     public void testModifyScreeningNotFound() throws Exception {
         Long screeningId = 99L;
 
@@ -203,12 +188,12 @@ public class ScreeningControllerTests {
                 .andExpect(status().isNotFound());
     }
 
-    @Test // Caso 400 Bad Request
+    // Caso 400 Bad Request
+    @Test
     public void testModifyScreeningBadRequest() throws Exception {
         Long screeningId = 1L;
         // Objeto vacío para que salten los @NotNull
         ScreeningInDto invalidDto = new ScreeningInDto();
-
         mockMvc.perform(MockMvcRequestBuilders.put("/screenings/{id}", screeningId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto))
@@ -216,26 +201,22 @@ public class ScreeningControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST DELETE
-    // ---------------------------------------------------------------------------------
-
-    @Test // Caso 204 No Content
+    // Caso 204 No Content
+    @Test
     public void testDeleteScreening() throws Exception {
         Long screeningId = 1L;
         // Mock implícito (doNothing)
-
         mockMvc.perform(MockMvcRequestBuilders.delete("/screenings/{id}", screeningId))
                 .andExpect(status().isNoContent());
     }
 
-    @Test // Caso 404 Not Found
+    // Caso 404 Not Found
+    @Test
     public void testDeleteScreeningNotFound() throws Exception {
         Long screeningId = 99L;
-
         doThrow(new ScreeningNotFoundException("Screening not found"))
                 .when(screeningService).delete(screeningId);
-
         mockMvc.perform(MockMvcRequestBuilders.delete("/screenings/{id}", screeningId))
                 .andExpect(status().isNotFound());
     }

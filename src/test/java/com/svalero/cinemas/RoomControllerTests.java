@@ -44,10 +44,8 @@ public class RoomControllerTests {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // ---------------------------------------------------------------------------------
-    // TEST GET ALL (Con parámetros opcionales)
-    // ---------------------------------------------------------------------------------
 
+    // TEST GET ALL
     @Test
     public void testGetAllRooms() throws Exception {
         List<RoomOutDto> roomsOutDto = List.of(
@@ -55,7 +53,6 @@ public class RoomControllerTests {
                 new RoomOutDto(2L, "Sala 2", LocalDate.now(), 150, true, true, true)
         );
 
-        // Mockeo la llamada con nulos (sin filtros)
         when(roomService.getAll(null, null, null)).thenReturn(roomsOutDto);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/rooms")
@@ -71,11 +68,9 @@ public class RoomControllerTests {
         assertEquals("Sala 1", responseList.getFirst().getRoomName());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST GET BY ID
-    // ---------------------------------------------------------------------------------
-
-    @Test // Caso 200 OK
+    // Caso 200 OK
+    @Test
     public void testGetRoomById() throws Exception {
         Long roomId = 1L;
         Room room = new Room();
@@ -97,7 +92,8 @@ public class RoomControllerTests {
                 });
     }
 
-    @Test // Caso 404 Not Found
+    // Caso 404 Not Found
+    @Test
     public void testGetRoomByIdNotFound() throws Exception {
         Long roomId = 99L;
         when(roomService.get(roomId)).thenThrow(new RoomNotFoundException("Room not found"));
@@ -107,26 +103,22 @@ public class RoomControllerTests {
                 .andExpect(status().isNotFound());
     }
 
-    // ---------------------------------------------------------------------------------
-    // TEST POST (ADD ROOM)
-    // ---------------------------------------------------------------------------------
 
-    @Test // Caso 201 Created
+    // TEST POST (ADD ROOM)
+    // Caso 201 Created
+    @Test
     public void testAddRoom() throws Exception {
-        // 1. Input válido (cumpliendo @NotBlank y @NotNull)
+        //Input válido (cumpliendo @NotBlank y @NotNull)
         RoomInDto inputDto = new RoomInDto();
         inputDto.setRoomName("Sala Nueva");
         inputDto.setCapacity(120);
         inputDto.setOpeningDate(LocalDate.now());
         inputDto.setRoom3d(true);
-
-        // 2. Output esperado
+        //Output esperado
         RoomOutDto outputDto = new RoomOutDto(1L, "Sala Nueva", LocalDate.now(), 120, true, false, false);
-
-        // 3. Mock
+        //Mock
         when(roomService.add(any(RoomInDto.class))).thenReturn(outputDto);
-
-        // 4. Ejecución
+        //Ejecución
         mockMvc.perform(MockMvcRequestBuilders.post("/rooms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDto))
@@ -139,7 +131,8 @@ public class RoomControllerTests {
                 });
     }
 
-    @Test // Caso 400 Bad Request
+    // Caso 400 Bad Request
+    @Test
     public void testAddRoomBadRequest() throws Exception {
         // Envio objeto vacío para provocar fallo de validación
         RoomInDto invalidDto = new RoomInDto();
@@ -151,27 +144,23 @@ public class RoomControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
-    // ---------------------------------------------------------------------------------
-    // TEST PUT (MODIFY ROOM)
-    // ---------------------------------------------------------------------------------
 
-    @Test // Caso 200 OK
+    // TEST PUT
+    // Caso 200 OK
+    @Test
     public void testModifyRoom() throws Exception {
         Long roomId = 1L;
 
-        // 1. Input válido
+        //Input válido
         RoomInDto inputDto = new RoomInDto();
         inputDto.setRoomName("Sala Modificada");
         inputDto.setCapacity(150);
         inputDto.setOpeningDate(LocalDate.now());
-
-        // 2. Output esperado
+        //Output esperado
         RoomOutDto outputDto = new RoomOutDto(roomId, "Sala Modificada", LocalDate.now(), 150, false, false, false);
-
-        // 3. Mock
+        //Mock
         when(roomService.modify(eq(roomId), any(RoomInDto.class))).thenReturn(outputDto);
-
-        // 4. Ejecución
+        //Ejecución
         mockMvc.perform(MockMvcRequestBuilders.put("/rooms/{roomId}", roomId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDto))
@@ -184,7 +173,8 @@ public class RoomControllerTests {
                 });
     }
 
-    @Test // Caso 404 Not Found
+    // Caso 404 Not Found
+    @Test
     public void testModifyRoomNotFound() throws Exception {
         Long roomId = 99L;
 
@@ -203,7 +193,8 @@ public class RoomControllerTests {
                 .andExpect(status().isNotFound());
     }
 
-    @Test // Caso 400 Bad Request
+    // Caso 400 Bad Request
+    @Test
     public void testModifyRoomBadRequest() throws Exception {
         Long roomId = 1L;
         // Objeto vacío para que salten los @NotBlank/@NotNull
@@ -216,26 +207,22 @@ public class RoomControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST DELETE
-    // ---------------------------------------------------------------------------------
-
-    @Test // Caso 204 No Content
+    // Caso 204 No Content
+    @Test
     public void testDeleteRoom() throws Exception {
         Long roomId = 1L;
         // Mock implícito (doNothing)
-
         mockMvc.perform(MockMvcRequestBuilders.delete("/rooms/{roomId}", roomId))
                 .andExpect(status().isNoContent());
     }
 
-    @Test // Caso 404 Not Found
+    // Caso 404 Not Found
+    @Test
     public void testDeleteRoomNotFound() throws Exception {
         Long roomId = 99L;
-
         doThrow(new RoomNotFoundException("Room not found"))
                 .when(roomService).delete(roomId);
-
         mockMvc.perform(MockMvcRequestBuilders.delete("/rooms/{roomId}", roomId))
                 .andExpect(status().isNotFound());
     }

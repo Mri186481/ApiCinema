@@ -35,13 +35,10 @@ public class CustomerServiceTests {
     @Mock
     private ModelMapper modelMapper;
 
-    // ---------------------------------------------------------------------------------
     // TEST GET ALL (Lógica de filtros)
-    // ---------------------------------------------------------------------------------
-
     @Test
     public void testGetAll_NoFilters() {
-        // Datos Mock
+        //Datos Mock
         List<Customer> mockCustomers = List.of(
                 new Customer(1L, "Juan", "Perez", "Calle A", 0.0, 0.0, LocalDate.now(), "juan@mail.com", false, false, false, false, false, null),
                 new Customer(2L, "Maria", "Lopez", "Calle B", 0.0, 0.0, LocalDate.now(), "maria@mail.com", true, false, false, false, false, null)
@@ -86,10 +83,7 @@ public class CustomerServiceTests {
         verify(customerRepository, times(0)).findAll();
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST GET BY ID
-    // ---------------------------------------------------------------------------------
-
     @Test
     public void testGet_Success() throws CustomerNotFoundException {
         Long id = 1L;
@@ -112,10 +106,7 @@ public class CustomerServiceTests {
         assertThrows(CustomerNotFoundException.class, () -> customerService.get(id));
     }
 
-    // ---------------------------------------------------------------------------------
-    // TEST GET ALL AD (Método específico)
-    // ---------------------------------------------------------------------------------
-
+    // TEST GET ALL AD
     @Test
     public void testGetAllAd() {
         boolean admitsAd = true;
@@ -131,10 +122,7 @@ public class CustomerServiceTests {
         verify(customerRepository, times(1)).findAllUsersByAdmitsAdvertising(admitsAd);
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST ADD (CREATE)
-    // ---------------------------------------------------------------------------------
-
     @Test
     public void testAdd_Success() {
         CustomerInDto inDto = new CustomerInDto("Luis", "Gomez", "Avda 1", LocalDate.now(), "luis@mail.com", 0.0, 0.0, true, false, false, false, false);
@@ -149,11 +137,11 @@ public class CustomerServiceTests {
         outDto.setId(1L);
         outDto.setName("Luis");
 
-        // 1. Map DTO -> Entity
+        //Map DTO -> Entity
         when(modelMapper.map(inDto, Customer.class)).thenReturn(customerEntity);
-        // 2. Save
+        //Save
         when(customerRepository.save(customerEntity)).thenReturn(savedCustomer);
-        // 3. Map Entity -> OutDto
+        //Map Entity -> OutDto
         when(modelMapper.map(savedCustomer, CustomerOutDto.class)).thenReturn(outDto);
 
         CustomerOutDto result = customerService.add(inDto);
@@ -164,10 +152,7 @@ public class CustomerServiceTests {
         verify(customerRepository, times(1)).save(customerEntity);
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST MODIFY (UPDATE)
-    // ---------------------------------------------------------------------------------
-
     @Test
     public void testModify_Success() throws CustomerNotFoundException {
         Long id = 1L;
@@ -181,18 +166,14 @@ public class CustomerServiceTests {
         outDto.setId(id);
         outDto.setName("Luis Modificado");
 
-        // 1. Buscar existente
+        //Buscar existente
         when(customerRepository.findById(id)).thenReturn(Optional.of(existingCustomer));
-
-        // 2. Map void (Volcar datos del DTO a la entidad existente)
+        // Map void (Volcar datos del DTO a la entidad existente)
         doNothing().when(modelMapper).map(inDto, existingCustomer);
-
-        // 3. Save
+        //Save
         when(customerRepository.save(existingCustomer)).thenReturn(existingCustomer);
-
-        // 4. Map salida
+        // Map salida
         when(modelMapper.map(existingCustomer, CustomerOutDto.class)).thenReturn(outDto);
-
         CustomerOutDto result = customerService.modify(id, inDto);
 
         assertEquals("Luis Modificado", result.getName());
@@ -213,17 +194,13 @@ public class CustomerServiceTests {
         verify(customerRepository, times(0)).save(any());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST DELETE
-    // ---------------------------------------------------------------------------------
-
     @Test
     public void testDelete_Success() throws CustomerNotFoundException {
         Long id = 1L;
         Customer customer = new Customer();
         customer.setId(id);
 
-        // El método delete hace findById primero
         when(customerRepository.findById(id)).thenReturn(Optional.of(customer));
 
         customerService.delete(id);

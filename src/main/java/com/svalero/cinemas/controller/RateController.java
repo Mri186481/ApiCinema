@@ -28,9 +28,8 @@ public class RateController {
     @Autowired
     private RateService rateService;
 
-    //defino el objeto logger basado en la clase Logger
     private final Logger logger = LoggerFactory.getLogger(RateController.class);
-    // Obtener todos las tarifas
+    // Obtener todos las tarifas con filtros
     @GetMapping
     public ResponseEntity<List<RateOutDto>> getAll(@RequestParam(value = "rateDate", required = false) LocalDate rateDate,
                                                    @RequestParam(value = "nameDayRate", required = false) String nameDayRate,
@@ -40,6 +39,7 @@ public class RateController {
         logger.info("End all Rates");
         return new ResponseEntity<>(rates, HttpStatus.OK);
     }
+
     // Obtener una tarifa por ID
     @GetMapping("/{rateId}")
     public ResponseEntity<Rate> getRateById(@PathVariable Long rateId) throws RateNotFoundException {
@@ -48,6 +48,7 @@ public class RateController {
         logger.info("Fetching Rate with id: {}", rateId);
         return new ResponseEntity<>(rate, HttpStatus.OK);
     }
+
     // Agregar un nueva tarifa
     @PostMapping
     public ResponseEntity<RateOutDto> addRate( @Valid @RequestBody RateInDto rateInDto) {
@@ -66,6 +67,7 @@ public class RateController {
         logger.info("End Modify Rate");
         return ResponseEntity.ok(modifiedRate);
     }
+
     // Modificar una tarifa parcialmente
     @PatchMapping("/{rateId}")
     public ResponseEntity<RateOutDto> modifyRatePartial(@PathVariable long rateId, @RequestBody Map<String, Object> updates)
@@ -75,6 +77,7 @@ public class RateController {
         logger.info("End ModifyRatePartial");
         return ResponseEntity.ok(modifiedRate);
     }
+
     // Borrar una tarifa
     @DeleteMapping("/{rateId}")
     public ResponseEntity<Rate> deleteRate(@PathVariable long rateId) throws RateNotFoundException {
@@ -89,6 +92,7 @@ public class RateController {
         logger.error(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+
     // Manejo de excepciones por validaciones incorrectas
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> MethodArgumentNotValidException(MethodArgumentNotValidException exception) {
@@ -102,12 +106,11 @@ public class RateController {
 
         return new ResponseEntity<>(ErrorResponse.validationError(errors), HttpStatus.BAD_REQUEST);
     }
+
     // Manejo de error genérico
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception exception) {
-        // al usuario le digo esto
         ErrorResponse error = ErrorResponse.generalError(500, "Internal Server Error");
-        //pero yo en mi log me lo guardo de verdad, para no dar detalle y no tener brecha
         logger.error(exception.getMessage(), exception);
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

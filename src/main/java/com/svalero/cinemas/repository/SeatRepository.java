@@ -8,8 +8,8 @@ import java.util.Optional;
 
 public interface SeatRepository extends CrudRepository<Seat, Long> {
 
-    // Método para obtener todos los usuarios
     List<Seat> findAll();
+
     List<Seat> findBySeatRow(Integer seatRow);
 
     List<Seat> findBySeatColumn(Integer seatColumn);
@@ -26,9 +26,7 @@ public interface SeatRepository extends CrudRepository<Seat, Long> {
 
     Optional<Seat> findById(Long id);
 
-    // Método para buscar por fila y columna
     Seat findBySeatRowAndSeatColumn(int seatRow, int seatColumn);
 
     List<Seat> findBySeatAccesible(boolean seatAccesible);
-
 }

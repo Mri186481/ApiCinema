@@ -11,7 +11,6 @@ public interface ScreeningRepository extends CrudRepository<Screening, Long> {
 
     List<Screening> findAll();
 
-    // Método para buscar un usuario por su nopmbre
     List<Screening> findByMovieId(Long movieId);
 
     List<Screening> findBySubtitled(boolean subtitled);
@@ -25,5 +24,4 @@ public interface ScreeningRepository extends CrudRepository<Screening, Long> {
     List<Screening> findByMovieIdAndRoomId(Long movieId, Long roomId);
 
     List<Screening> findBySubtitledAndRoomId(boolean subtitled, Long roomId);
-
 }

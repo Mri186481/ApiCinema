@@ -67,22 +67,23 @@ public class TicketService {
                 .orElseThrow(() -> new TicketNotFoundException("Ticket with ID " + id + " not found"));
         return convertToOutDto(ticket);
     }
+
     // Añadir Ticket
     public TicketOutDto add(TicketInDto ticketInDto) throws ScreeningNotFoundException, CustomerNotFoundException, RateNotFoundException, SeatNotFoundException {
-        // 1A. Buscar screening
+        //Buscar screening
         Screening screening = screeningRepository.findById(ticketInDto.getScreeningId())
                 .orElseThrow(() -> new ScreeningNotFoundException("Screening not found"));
 
-        // 1B. Buscar Customer
+        //Buscar Customer
         Customer customer = customerRepository.findById(ticketInDto.getCustomerId())
                 .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
-        // 1C. Buscar Rate
+        //Buscar Rate
         Rate rate = rateRepository.findById(ticketInDto.getRateId())
                 .orElseThrow(() -> new RateNotFoundException("Rate not found"));
-        // 1D. Buscar Seat
+        //Buscar Seat
         Seat seat = seatRepository.findById(ticketInDto.getSeatId())
                 .orElseThrow(() -> new CustomerNotFoundException("Seat not found"));
-        // 2. Crear manualmente la entidad ticket
+        //Crear manualmente la entidad ticket
         Ticket ticket = new Ticket();
         ticket.setId(null);
         ticket.setSaleDate(LocalDateTime.now());
@@ -94,31 +95,29 @@ public class TicketService {
         ticket.setRate(rate);
         ticket.setScreening(screening);
         ticket.setSeat(seat);
-
-        // 3. Guardar en BD
+        //Guardar en BD
         Ticket savedTicket = ticketRepository.save(ticket);
-
-        // 4. Crear DTO de salida manualmente
+        //Crear DTO de salida manualmente
         return convertToOutDto(savedTicket);
     }
+
     //Modificar ticket
     public TicketOutDto modify(Long id, TicketInDto ticketInDto) throws TicketNotFoundException, ScreeningNotFoundException, CustomerNotFoundException, RateNotFoundException, SeatNotFoundException {
         ticketRepository.findById(id)
                 .orElseThrow(() -> new TicketNotFoundException("Ticket with ID " + id + " not found"));
-        // 1A. Buscar screening
+        //Buscar screening
         Screening screening = screeningRepository.findById(ticketInDto.getScreeningId())
                 .orElseThrow(() -> new ScreeningNotFoundException("Screening not found"));
-
-        // 1B. Buscar Customer
+        //Buscar Customer
         Customer customer = customerRepository.findById(ticketInDto.getCustomerId())
                 .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
-        // 1C. Buscar Rate
+        //Buscar Rate
         Rate rate = rateRepository.findById(ticketInDto.getRateId())
                 .orElseThrow(() -> new RateNotFoundException("Rate not found"));
-        // 1C. Buscar Seat
+        //Buscar Seat
         Seat seat = seatRepository.findById(ticketInDto.getSeatId())
                 .orElseThrow(() -> new CustomerNotFoundException("Seat not found"));
-        // 2. Crear manualmente la entidad ticket
+        //Crear manualmente la entidad ticket
         Ticket ticket = new Ticket();
         ticket.setId(id);//LO PRESERVO PARA EL UPDATE
         ticket.setSaleDate(LocalDateTime.now());
@@ -130,21 +129,18 @@ public class TicketService {
         ticket.setRate(rate);
         ticket.setScreening(screening);
         ticket.setSeat(seat);
-
-        // 3. Guardar en BD
+        //Guardar en BD
         Ticket savedTicket = ticketRepository.save(ticket);
-
-        // 4. Crear DTO de salida manualmente
+        // Crear DTO de salida manualmente
         return convertToOutDto(savedTicket);
-
     }
 
     // Modificacion parcial(hecha con modelMapper)
     //Al final he realizado una manual y otra con modelMapper
     public TicketOutDto modifyPartial(Long ticketId, Map<String, Object> updates) {
         Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(TicketNotFoundException::new);
-        // --- BLOQUE DE AYUDA MANUAL PARA RELACIONES CON MODELLMAPER ---
-        // 1A.Screening
+        // --- BLOQUE DE AYUDA MANUAL PARA RELACIONES CON MODELMAPPER ---
+        //Screening
         if (updates.containsKey("screeningId")) {
             Long newScreeningId = ((Number) updates.get("screeningId")).longValue();
             Screening screening = screeningRepository.findById(newScreeningId)
@@ -152,7 +148,7 @@ public class TicketService {
             ticket.setScreening(screening);
             updates.remove("screeningId");
         }
-        // 1B.Customer
+        //Customer
         if (updates.containsKey("customerId")) {
             // Obtenemos el ID del mapa (asegurando que sea Long)
             Long newCustomerId = ((Number) updates.get("customerId")).longValue();
@@ -164,7 +160,7 @@ public class TicketService {
             // Borramos la clave del mapa para que ModelMapper no intente tocarla
             updates.remove("customerId");
         }
-        // 1C.Rate
+        //Rate
         if (updates.containsKey("rateId")) {
             Long newRateId = ((Number) updates.get("rateId")).longValue();
             Rate rate = rateRepository.findById(newRateId)
@@ -172,7 +168,7 @@ public class TicketService {
             ticket.setRate(rate);
             updates.remove("rateId");
         }
-        // 1D.Seat
+        //Seat
         if (updates.containsKey("seatId")) {
             Long newSeatId = ((Number) updates.get("seatId")).longValue();
             Seat seat = seatRepository.findById(newSeatId)
@@ -180,20 +176,15 @@ public class TicketService {
             ticket.setSeat(seat);
             updates.remove("seatId");
         }
-
-        // 2. Crea automaticamnete con modelMapper ticket
+        //Crea automaticamnete con modelMapper ticket
         modelMapper.map(updates, ticket);
-
-        // 3. Guardar en BD
+        //Guardar en BD
         Ticket savedTicket = ticketRepository.save(ticket);
-
-        // 4. Creo DTO de salida manualmente
+        //Creo DTO de salida manualmente
         return convertToOutDto(savedTicket);
-
     }
 
     // eliminar un ticket
-
     public void delete(long ticketId) throws TicketNotFoundException {
         Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(TicketNotFoundException::new);
         ticketRepository.delete(ticket);

@@ -43,10 +43,8 @@ public class CustomerControllerTests {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // ---------------------------------------------------------------------------------
-    // TEST GET ALL
-    // ---------------------------------------------------------------------------------
 
+    // TEST GET ALL
     @Test
     public void testGetAllCustomers() throws Exception {
         List<CustomerOutDto> customersOutDto = List.of(
@@ -71,10 +69,7 @@ public class CustomerControllerTests {
         assertEquals("Juan", responseList.getFirst().getName());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST GET BY ID
-    // ---------------------------------------------------------------------------------
-
     @Test // Caso 200 OK
     public void testGetUserById() throws Exception {
         Long customerId = 1L;
@@ -99,7 +94,8 @@ public class CustomerControllerTests {
                 });
     }
 
-    @Test // Caso 404 Not Found
+    // Caso 404 Not Found
+    @Test
     public void testGetUserByIdNotFound() throws Exception {
         Long customerId = 99L;
         when(customerService.get(customerId)).thenThrow(new CustomerNotFoundException("Customer not found"));
@@ -109,10 +105,7 @@ public class CustomerControllerTests {
                 .andExpect(status().isNotFound());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST GET BY ADVERTISING (Endpoint Extra)
-    // ---------------------------------------------------------------------------------
-
     @Test
     public void testGetUserByAd() throws Exception {
         boolean admitsAd = true;
@@ -133,13 +126,10 @@ public class CustomerControllerTests {
                 });
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST POST (ADD USER)
-    // ---------------------------------------------------------------------------------
-
     @Test // Caso 201 Created
     public void testAddUser() throws Exception {
-        // 1. Input válido (Cumpliendo @NotBlank y @NotNull)
+        //Input válido (Cumpliendo @NotBlank y @NotNull)
         CustomerInDto inputDto = new CustomerInDto();
         inputDto.setName("Laura");
         inputDto.setSurname("Gomez");
@@ -147,14 +137,11 @@ public class CustomerControllerTests {
         inputDto.setMail("laura@test.com");
         inputDto.setBirthDate(LocalDate.of(2000, 1, 1));
         inputDto.setStudent(true);
-
-        // 2. Output esperado
+        //Output esperado
         CustomerOutDto outputDto = new CustomerOutDto(1L, "Laura", "Gomez", "Avenida Principal", 0.0, 0.0, LocalDate.of(2000, 1, 1), "laura@test.com", false, false, true, false, false);
-
-        // 3. Mock
+        //Mock
         when(customerService.add(any(CustomerInDto.class))).thenReturn(outputDto);
-
-        // 4. Ejecución
+        //Ejecución
         mockMvc.perform(MockMvcRequestBuilders.post("/customers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDto))
@@ -167,7 +154,8 @@ public class CustomerControllerTests {
                 });
     }
 
-    @Test // Caso 400 Bad Request
+    // Caso 400 Bad Request
+    @Test
     public void testAddUserBadRequest() throws Exception {
         // Envio objeto vacío para provocar fallo de validación
         CustomerInDto invalidDto = new CustomerInDto();
@@ -179,29 +167,22 @@ public class CustomerControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST PUT (MODIFY USER)
-    // ---------------------------------------------------------------------------------
-
     @Test // Caso 200 OK
     public void testModifyUser() throws Exception {
         Long customerId = 1L;
-
-        // 1. Input válido
+        //Input válido
         CustomerInDto inputDto = new CustomerInDto();
         inputDto.setName("Laura Editada");
         inputDto.setSurname("Gomez");
         inputDto.setAddress("Nueva Dirección");
         inputDto.setMail("laura@test.com");
         inputDto.setBirthDate(LocalDate.of(2000, 1, 1));
-
-        // 2. Output esperado
+        //Output esperado
         CustomerOutDto outputDto = new CustomerOutDto(customerId, "Laura Editada", "Gomez", "Nueva Dirección", 0.0, 0.0, LocalDate.of(2000, 1, 1), "laura@test.com", false, false, false, false, false);
-
-        // 3. Mock
+        //Mock
         when(customerService.modify(eq(customerId), any(CustomerInDto.class))).thenReturn(outputDto);
-
-        // 4. Ejecución
+        //Ejecución
         mockMvc.perform(MockMvcRequestBuilders.put("/customers/{customerId}", customerId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDto))
@@ -214,7 +195,8 @@ public class CustomerControllerTests {
                 });
     }
 
-    @Test // Caso 404 Not Found
+    // Caso 404 Not Found
+    @Test
     public void testModifyUserNotFound() throws Exception {
         Long customerId = 99L;
 
@@ -235,7 +217,8 @@ public class CustomerControllerTests {
                 .andExpect(status().isNotFound());
     }
 
-    @Test // Caso 400 Bad Request
+    // Caso 400 Bad Request
+    @Test
     public void testModifyUserBadRequest() throws Exception {
         Long customerId = 1L;
         // Objeto vacío para que salten los @NotBlank/@NotNull
@@ -248,15 +231,11 @@ public class CustomerControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST DELETE
-    // ---------------------------------------------------------------------------------
-
     @Test // Caso 204 No Content
     public void testDeleteUser() throws Exception {
         Long customerId = 1L;
         // Mock implícito (doNothing)
-
         mockMvc.perform(MockMvcRequestBuilders.delete("/customers/{customerId}", customerId))
                 .andExpect(status().isNoContent());
     }
@@ -264,10 +243,8 @@ public class CustomerControllerTests {
     @Test // Caso 404 Not Found
     public void testDeleteUserNotFound() throws Exception {
         Long customerId = 99L;
-
         doThrow(new CustomerNotFoundException("Customer not found"))
                 .when(customerService).delete(customerId);
-
         mockMvc.perform(MockMvcRequestBuilders.delete("/customers/{customerId}", customerId))
                 .andExpect(status().isNotFound());
     }

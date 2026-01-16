@@ -34,13 +34,9 @@ public class RoomServiceTests {
     @Mock
     private ModelMapper modelMapper;
 
-    // ---------------------------------------------------------------------------------
     // TEST GET ALL
-    // ---------------------------------------------------------------------------------
-
     @Test
     public void testGetAll_NoFilters() {
-        // Mock de datos
         List<Room> mockRooms = List.of(
                 new Room(1L, "Sala 1", LocalDate.now(), 100, true, false, false, null, null),
                 new Room(2L, "Sala 2", LocalDate.now(), 150, true, true, true, null, null)
@@ -50,7 +46,6 @@ public class RoomServiceTests {
                 new RoomOutDto(2L, "Sala 2", LocalDate.now(), 150, true, true, true)
         );
 
-        // Cuando se llame sin filtros, debe ir al findAll() general
         when(roomRepository.findAll()).thenReturn(mockRooms);
         when(modelMapper.map(mockRooms, new TypeToken<List<RoomOutDto>>() {}.getType())).thenReturn(mockOutDtos);
 
@@ -58,15 +53,13 @@ public class RoomServiceTests {
 
         assertEquals(2, result.size());
         assertEquals("Sala 1", result.getFirst().getRoomName());
-
         verify(roomRepository, times(1)).findAll();
-        //NO llamó a ningún método con filtros
         verify(roomRepository, times(0)).findByRoom3d(anyBoolean());
     }
 
+    // Mock de datos filtrados
     @Test
     public void testGetAll_WithFilter3D() {
-        // Mock de datos filtrados
         List<Room> mockRooms = List.of(
                 new Room(1L, "Sala 3D", LocalDate.now(), 100, true, false, false, null, null)
         );
@@ -82,16 +75,11 @@ public class RoomServiceTests {
 
         assertEquals(1, result.size());
         assertEquals("Sala 3D", result.getFirst().getRoomName());
-
-        // Verificamos que se llamó al método específico y NO al general
         verify(roomRepository, times(1)).findByRoom3d(true);
         verify(roomRepository, times(0)).findAll();
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST GET BY ID
-    // ---------------------------------------------------------------------------------
-
     @Test
     public void testGetById_Success() throws RoomNotFoundException {
         Long id = 1L;
@@ -114,10 +102,7 @@ public class RoomServiceTests {
         assertThrows(RoomNotFoundException.class, () -> roomService.get(id));
     }
 
-    // ---------------------------------------------------------------------------------
-    // TEST ADD (CREATE)
-    // ---------------------------------------------------------------------------------
-
+    // TEST ADD
     @Test
     public void testAdd_Success() {
         RoomInDto inDto = new RoomInDto("Sala Nueva", LocalDate.now(), 200, true, true, true);
@@ -125,13 +110,12 @@ public class RoomServiceTests {
         Room savedRoom = new Room(1L, "Sala Nueva", LocalDate.now(), 200, true, true, true, null, null);
         RoomOutDto outDto = new RoomOutDto(1L, "Sala Nueva", LocalDate.now(), 200, true, true, true);
 
-        // 1. Map DTO -> Entity
+        //Map DTO -> Entity
         when(modelMapper.map(inDto, Room.class)).thenReturn(roomEntity);
-        // 2. Save
+        //Save
         when(roomRepository.save(roomEntity)).thenReturn(savedRoom);
-        // 3. Map Entity -> OutDto
+        //Map Entity -> OutDto
         when(modelMapper.map(savedRoom, RoomOutDto.class)).thenReturn(outDto);
-
         RoomOutDto result = roomService.add(inDto);
 
         assertNotNull(result);
@@ -152,10 +136,7 @@ public class RoomServiceTests {
         assertThrows(RuntimeException.class, () -> roomService.add(inDto));
     }
 
-    // ---------------------------------------------------------------------------------
-    // TEST MODIFY (UPDATE)
-    // ---------------------------------------------------------------------------------
-
+    // TEST MODIFY
     @Test
     public void testModify_Success() throws RoomNotFoundException {
         Long id = 1L;
@@ -163,27 +144,20 @@ public class RoomServiceTests {
         Room existingRoom = new Room(id, "Sala Vieja", LocalDate.now(), 100, false, false, false, null, null);
         RoomOutDto outDto = new RoomOutDto(id, "Sala Modificada", LocalDate.now(), 120, false, false, false);
 
-        // 1. Buscar existente
+        //Buscar existente
         when(roomRepository.findById(id)).thenReturn(Optional.of(existingRoom));
-
-        // 2. Mapear cambios
+        //Mapear cambios
         doNothing().when(modelMapper).map(inDto, existingRoom);
-
-        // 3. Guardar
+        //Guardar
         when(roomRepository.save(existingRoom)).thenReturn(existingRoom);
-
-        // 4. Convertir a salida
+        //Convertir a salida
         when(modelMapper.map(existingRoom, RoomOutDto.class)).thenReturn(outDto);
-
-        // Ejecución
+        //Ejecución
         RoomOutDto result = roomService.modify(id, inDto);
-
-        // Verificaciones
+        //Verificaciones
         assertEquals("Sala Modificada", result.getRoomName());
-
         verify(roomRepository, times(1)).findById(id);
         verify(roomRepository, times(1)).save(existingRoom);
-
         verify(modelMapper, times(1)).map(inDto, existingRoom);
     }
 
@@ -191,28 +165,19 @@ public class RoomServiceTests {
     public void testModify_NotFound() {
         Long id = 99L;
         RoomInDto inDto = new RoomInDto("Sala", LocalDate.now(), 100, false, false, false);
-
         when(roomRepository.findById(id)).thenReturn(Optional.empty());
-
         assertThrows(Exception.class, () -> roomService.modify(id, inDto));
-
         verify(roomRepository, times(0)).save(any());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST DELETE
-    // ---------------------------------------------------------------------------------
-
     @Test
     public void testDelete_Success() throws RoomNotFoundException {
         Long id = 1L;
         Room room = new Room();
         room.setId(id);
-
         when(roomRepository.findById(id)).thenReturn(Optional.of(room));
-
         roomService.delete(id);
-
         verify(roomRepository, times(1)).findById(id);
         verify(roomRepository, times(1)).delete(room);
     }
@@ -221,9 +186,7 @@ public class RoomServiceTests {
     public void testDelete_NotFound() {
         Long id = 99L;
         when(roomRepository.findById(id)).thenReturn(Optional.empty());
-
         assertThrows(RoomNotFoundException.class, () -> roomService.delete(id));
-
         verify(roomRepository, times(0)).delete(any());
     }
 }

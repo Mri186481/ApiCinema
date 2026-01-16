@@ -35,7 +35,7 @@ public class ScreeningService {
 
     public List<ScreeningOutDto> findAll(Long movieId, Boolean subtitled, Long roomId) {
         List<Screening> screeningList;
-//
+
         boolean hasMovieId = movieId != null;
         boolean hasSubtitled = subtitled != null;
         boolean hasRoomId = roomId != null;
@@ -109,15 +109,13 @@ public class ScreeningService {
     public ScreeningOutDto modify(Long id, ScreeningInDto screeningInDto) throws ScreeningNotFoundException, RoomNotFoundException{
         screeningRepository.findById(id)
                 .orElseThrow(() -> new ScreeningNotFoundException("Screening with ID " + id + " not found"));
-        //Esta bien pues hay que buscarlo otra vez a ver si existen en la BD
-        // 1. Buscar película
+        //Buscar película
         Movie movie = movieRepository.findById(screeningInDto.getMovieId())
                 .orElseThrow(() -> new ScreeningNotFoundException("Movie not found"));
-
-        // 1. Buscar sala
+        //Buscar sala
         Room room = roomRepository.findById(screeningInDto.getRoomId())
                 .orElseThrow(() -> new RoomNotFoundException("Room not found"));
-        // 2. Crear manualmente la entidad Screening
+        //Crear manualmente la entidad Screening
         //La unica diferencia es que aqui SI QUE TENGO EL ID
         Screening screening = new Screening();
         screening.setId(id);//tengo el ID, lo preservo para el update
@@ -127,10 +125,10 @@ public class ScreeningService {
         screening.setMovie(movie);
         screening.setRoom(room);
 
-        // 3. Guardar en BD
+        //Guardar en BD
         Screening savedScreening = screeningRepository.save(screening);
 
-        // 4. Crear DTO de salida manualmente
+        //Crear DTO de salida manualmente
         ScreeningOutDto outDto = new ScreeningOutDto();
         outDto.setId(savedScreening.getId());
         outDto.setScreeningTime(savedScreening.getScreeningTime());
@@ -144,12 +142,10 @@ public class ScreeningService {
         return outDto;
 
     }
-
 //        No funciona bien, si lo muevo manualmente va bien
-//        Posteriormente he ayudado al modelmapper creando un mapa especifico para que no se lie y parece que va bien;
+//        Posteriormente he ayudado al modelmapper creando un mapa especifico y parece que va bien;
 //        ahora lee y entiende LocalDate y LocalDateTime y hay que ayudarle tb con los ID
 //        Estan implementados ahora dos formas de hacer lo mismo, manualmente y con modelmapper
-
 
     // Modificacion parcial de una screening
     public ScreeningOutDto modifyPartial(Long id, Map<String, Object> updates) {
@@ -190,7 +186,6 @@ public class ScreeningService {
                 .orElseThrow(() -> new ScreeningNotFoundException("Screening with ID " + id + " not found"));
         screeningRepository.deleteById(id);
     }
-
 
     private ScreeningOutDto convertToOutDto(Screening screening) {
         ScreeningOutDto dto = modelMapper.map(screening, ScreeningOutDto.class);

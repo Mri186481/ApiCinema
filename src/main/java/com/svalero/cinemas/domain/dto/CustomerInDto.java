@@ -15,24 +15,18 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class CustomerInDto {
 
-
     @NotBlank(message = "Name is a mandatory field")
     private String name;
-
     @NotBlank(message = "Username is a mandatory field")
     private String surname;
-
     @NotBlank(message = "Address is a mandatory field")
     private String address;
-
     @NotNull(message = "Birthdate is a mandatory field")
     private LocalDate birthDate;
-
     @NotBlank(message = "Mail is a mandatory field")
     private String mail;
     private double latitude;
     private double longitude;
-    // Por defecto son false
     private boolean admitsAdvertising;
     private boolean young;
     private boolean student;

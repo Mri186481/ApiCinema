@@ -11,18 +11,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ScreeningInDto {
-
     @NotNull(message = "Screening time is required")
     private LocalDateTime screeningTime;
-
     @NotNull(message = "Ticket price is required")
     private Double ticketPrice;
-
     private boolean subtitled;
-
     @NotNull(message = "Movie ID is required")
     private Long movieId;
-
     @NotNull(message = "Room ID is required")
     private Long roomId;
 }

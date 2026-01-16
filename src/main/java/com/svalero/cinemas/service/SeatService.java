@@ -71,6 +71,7 @@ public class SeatService {
 
         return modelMapper.map(newSeat, SeatOutDto.class);
     }
+
     // Modificar una butaca
     public SeatOutDto modify(long seatId, SeatInDto seatInDto) throws SeatNotFoundException {
         Seat seat = seatRepository.findById(seatId).orElseThrow(SeatNotFoundException::new);
@@ -78,6 +79,7 @@ public class SeatService {
         seatRepository.save(seat);
         return modelMapper.map(seat, SeatOutDto.class);
     }
+
     // Modificacion parcial de una butaca
     public SeatOutDto modifyPartial(Long seatId, Map<String, Object> updates) {
         Seat seat = seatRepository.findById(seatId).orElseThrow(SeatNotFoundException::new);
@@ -86,6 +88,7 @@ public class SeatService {
         return modelMapper.map(seat, SeatOutDto.class);
 
     }
+
     // eliminar una butaca
     public void delete(long seatId) throws SeatNotFoundException {
         Seat seat = seatRepository.findById(seatId).orElseThrow(SeatNotFoundException::new);

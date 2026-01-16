@@ -40,13 +40,10 @@ public class SeatServiceTests {
     @Mock
     private ModelMapper modelMapper;
 
-    // ---------------------------------------------------------------------------------
-    // TEST GET ALL
-    // ---------------------------------------------------------------------------------
 
+    // TEST GET ALL
     @Test
     public void testGetAll() {
-        // Datos Mock
         List<Seat> mockSeats = List.of(
                 new Seat(1L, 1, 1, true, "OPERATIONAL", BigDecimal.ZERO, LocalDate.now(), null, null),
                 new Seat(2L, 1, 2, false, "BROKEN", BigDecimal.ZERO, LocalDate.now(), null, null)
@@ -56,18 +53,14 @@ public class SeatServiceTests {
                 new SeatOutDto(2L, 1, 2, false, "BROKEN", 0.0, LocalDate.now(), 1L, "Room A")
         );
 
-        // Cuando no hay filtros (null, null, ""), debe llamar a findAll
         when(seatRepository.findAll()).thenReturn(mockSeats);
         when(modelMapper.map(mockSeats, new TypeToken<List<SeatOutDto>>() {}.getType())).thenReturn(mockOutDtos);
 
-        // Ejecución con filtros vacíos/nulos
         List<SeatOutDto> result = seatService.getAll(null, null, "");
 
         assertEquals(2, result.size());
         assertEquals("OPERATIONAL", result.get(0).getStatus());
-
         verify(seatRepository, times(1)).findAll();
-        // Verificar que NO llamó a métodos con filtros
         verify(seatRepository, times(0)).findBySeatRow(anyInt());
     }
 
@@ -82,7 +75,6 @@ public class SeatServiceTests {
         when(seatRepository.findBySeatRow(row)).thenReturn(mockSeats);
         when(modelMapper.map(mockSeats, new TypeToken<List<SeatOutDto>>() {}.getType())).thenReturn(mockOutDtos);
 
-        // Ejecución con filtro de fila
         List<SeatOutDto> result = seatService.getAll(row, null, "");
 
         assertEquals(1, result.size());
@@ -95,7 +87,6 @@ public class SeatServiceTests {
         Integer row = 5;
         Integer col = 10;
 
-        // Datos Mock
         List<Seat> mockSeats = List.of(new Seat(1L, row, col, true, "OPERATIONAL", BigDecimal.ZERO, LocalDate.now(), null, null));
         List<SeatOutDto> mockOutDtos = List.of(new SeatOutDto(1L, row, col, true, "OPERATIONAL", 0.0, LocalDate.now(), 1L, "Room A"));
 
@@ -103,7 +94,6 @@ public class SeatServiceTests {
         when(seatRepository.findBySeatRowAndSeatColumn(row, col)).thenReturn(mockSeats);
         when(modelMapper.map(mockSeats, new TypeToken<List<SeatOutDto>>() {}.getType())).thenReturn(mockOutDtos);
 
-        // Ejecución con filtro de fila y columna
         List<SeatOutDto> result = seatService.getAll(row, col, "");
 
         verify(seatRepository, times(1)).findBySeatRowAndSeatColumn(row, col);
@@ -125,10 +115,7 @@ public class SeatServiceTests {
         verify(seatRepository, times(1)).findByStatus(status);
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST GET BY ID (Devuelve Entity)
-    // ---------------------------------------------------------------------------------
-
     @Test
     public void testGet_Success() throws SeatNotFoundException {
         Long id = 1L;
@@ -151,10 +138,7 @@ public class SeatServiceTests {
         assertThrows(SeatNotFoundException.class, () -> seatService.get(id));
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST ADD (CREATE)
-    // ---------------------------------------------------------------------------------
-
     @Test
     public void testAdd_Success() throws SeatNotFoundException {
         Long roomId = 10L;
@@ -164,17 +148,17 @@ public class SeatServiceTests {
         mockRoom.setId(roomId);
         mockRoom.setRoomName("Sala A");
 
-        Seat seatEntity = new Seat(); // Entidad antes de guardar
+        Seat seatEntity = new Seat();
         Seat savedSeat = new Seat(1L, 1, 1, true, "OPERATIONAL", BigDecimal.ZERO, LocalDate.now(), mockRoom, null);
         SeatOutDto outDto = new SeatOutDto(1L, 1, 1, true, "OPERATIONAL", 0.0, LocalDate.now(), roomId, "Sala A");
 
-        // 1. Buscar Room
+        //Buscar Room
         when(roomRepository.findById(roomId)).thenReturn(Optional.of(mockRoom));
-        // 2. Map DTO -> Entity
+        //Map DTO -> Entity
         when(modelMapper.map(inDto, Seat.class)).thenReturn(seatEntity);
-        // 3. Save
+        //Save
         when(seatRepository.save(seatEntity)).thenReturn(savedSeat);
-        // 4. Map Entity -> OutDto
+        //Map Entity -> OutDto
         when(modelMapper.map(savedSeat, SeatOutDto.class)).thenReturn(outDto);
 
         SeatOutDto result = seatService.add(roomId, inDto);
@@ -185,7 +169,6 @@ public class SeatServiceTests {
         // Verificaciones
         verify(roomRepository, times(1)).findById(roomId);
         verify(seatRepository, times(1)).save(seatEntity);
-        // Verificar que se asignó la sala a la butaca
         assertEquals(mockRoom, seatEntity.getRoom());
     }
 
@@ -193,18 +176,12 @@ public class SeatServiceTests {
     public void testAdd_RoomNotFound() {
         Long roomId = 99L;
         SeatInDto inDto = new SeatInDto();
-
         when(roomRepository.findById(roomId)).thenReturn(Optional.empty());
-
         assertThrows(SeatNotFoundException.class, () -> seatService.add(roomId, inDto));
-
         verify(seatRepository, times(0)).save(any());
     }
 
-    // ---------------------------------------------------------------------------------
-    // TEST MODIFY (UPDATE)
-    // ---------------------------------------------------------------------------------
-
+    // TEST MODIFY
     @Test
     public void testModify_Success() throws SeatNotFoundException {
         Long seatId = 1L;
@@ -212,16 +189,13 @@ public class SeatServiceTests {
         Seat existingSeat = new Seat(seatId, 2, 2, true, "OPERATIONAL", BigDecimal.ZERO, LocalDate.now(), null, null);
         SeatOutDto outDto = new SeatOutDto(seatId, 2, 2, false, "BROKEN", 0.0, LocalDate.now(), 1L, "Room A");
 
-        // 1. Buscar Existente
+        //Buscar Existente
         when(seatRepository.findById(seatId)).thenReturn(Optional.of(existingSeat));
-
-        // 2. Mapear void (Importante para verificar que se actualizan los datos)
+        //Mapear void (Importante para verificar que se actualizan los datos)
         doNothing().when(modelMapper).map(inDto, existingSeat);
-
-        // 3. Guardar
+        //Guardar
         when(seatRepository.save(existingSeat)).thenReturn(existingSeat);
-
-        // 4. Mapear salida
+        //Mapear salida
         when(modelMapper.map(existingSeat, SeatOutDto.class)).thenReturn(outDto);
 
         SeatOutDto result = seatService.modify(seatId, inDto);
@@ -236,28 +210,19 @@ public class SeatServiceTests {
     public void testModify_NotFound() {
         Long seatId = 99L;
         SeatInDto inDto = new SeatInDto();
-
         when(seatRepository.findById(seatId)).thenReturn(Optional.empty());
-
         assertThrows(SeatNotFoundException.class, () -> seatService.modify(seatId, inDto));
-
         verify(seatRepository, times(0)).save(any());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST DELETE
-    // ---------------------------------------------------------------------------------
-
     @Test
     public void testDelete_Success() throws SeatNotFoundException {
         Long seatId = 1L;
         Seat seat = new Seat();
         seat.setId(seatId);
-
         when(seatRepository.findById(seatId)).thenReturn(Optional.of(seat));
-
         seatService.delete(seatId);
-
         verify(seatRepository, times(1)).findById(seatId);
         verify(seatRepository, times(1)).delete(seat);
     }
@@ -265,11 +230,8 @@ public class SeatServiceTests {
     @Test
     public void testDelete_NotFound() {
         Long seatId = 99L;
-
         when(seatRepository.findById(seatId)).thenReturn(Optional.empty());
-
         assertThrows(SeatNotFoundException.class, () -> seatService.delete(seatId));
-
         verify(seatRepository, times(0)).delete(any());
     }
 }

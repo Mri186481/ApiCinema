@@ -35,13 +35,9 @@ public class RateServiceTests {
     @Mock
     private ModelMapper modelMapper;
 
-    // ---------------------------------------------------------------------------------
     // TEST GET ALL
-    // ---------------------------------------------------------------------------------
-
     @Test
     public void testGetAll_NoFilters() {
-        // Datos Mock
         List<Rate> mockRates = List.of(
                 new Rate(1L, LocalDate.now(), "Dia del Espectador", BigDecimal.valueOf(5.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(1.0), BigDecimal.valueOf(1.0), BigDecimal.valueOf(1.0), true, null),
                 new Rate(2L, LocalDate.now().plusDays(1), "Normal", BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(0.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), false, null)
@@ -50,7 +46,6 @@ public class RateServiceTests {
                 new RateOutDto(1L, LocalDate.now(), "Dia del Espectador", BigDecimal.valueOf(5.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(1.0), BigDecimal.valueOf(1.0), BigDecimal.valueOf(1.0), true),
                 new RateOutDto(2L, LocalDate.now().plusDays(1), "Normal", BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(0.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), BigDecimal.valueOf(2.0), false)
         );
-
         // Cuando nameDayRate es "" y los otros null, va al findAll() general
         when(rateRepository.findAll()).thenReturn(mockRates);
         when(modelMapper.map(mockRates, new TypeToken<List<RateOutDto>>() {}.getType())).thenReturn(mockOutDtos);
@@ -65,9 +60,10 @@ public class RateServiceTests {
         verify(rateRepository, times(0)).findByRateDate(any());
     }
 
+    // Mock solo por nombre
     @Test
     public void testGetAll_FilterByName() {
-        // Mock solo por nombre
+
         List<Rate> mockRates = List.of(
                 new Rate(1L, LocalDate.now(), "Promo", BigDecimal.TEN, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, true, null)
         );
@@ -86,10 +82,7 @@ public class RateServiceTests {
         verify(rateRepository, times(0)).findAll();
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST GET BY ID
-    // ---------------------------------------------------------------------------------
-
     @Test
     public void testGet_Success() throws RateNotFoundException {
         Long id = 1L;
@@ -115,10 +108,8 @@ public class RateServiceTests {
         assertThrows(RateNotFoundException.class, () -> rateService.get(id));
     }
 
-    // ---------------------------------------------------------------------------------
-    // TEST ADD (CREATE)
-    // ---------------------------------------------------------------------------------
 
+    // TEST ADD (CREATE)
     @Test
     public void testAdd_Success() {
         RateInDto inDto = new RateInDto();
@@ -137,11 +128,11 @@ public class RateServiceTests {
         outDto.setId(1L);
         outDto.setNameDayRate("Estreno");
 
-        // 1. Map DTO -> Entity
+        //Map DTO -> Entity
         when(modelMapper.map(inDto, Rate.class)).thenReturn(rateEntity);
-        // 2. Save
+        //Save
         when(rateRepository.save(rateEntity)).thenReturn(savedRate);
-        // 3. Map Entity -> OutDto
+        //Map Entity -> OutDto
         when(modelMapper.map(savedRate, RateOutDto.class)).thenReturn(outDto);
 
         RateOutDto result = rateService.add(inDto);
@@ -152,10 +143,7 @@ public class RateServiceTests {
         verify(rateRepository, times(1)).save(rateEntity);
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST MODIFY (UPDATE)
-    // ---------------------------------------------------------------------------------
-
     @Test
     public void testModify_Success() throws RateNotFoundException {
         Long id = 1L;
@@ -169,21 +157,15 @@ public class RateServiceTests {
         RateOutDto outDto = new RateOutDto();
         outDto.setId(id);
         outDto.setNameDayRate("Modificado");
-
-        // 1. Buscar existente
+        //Buscar existente
         when(rateRepository.findById(id)).thenReturn(Optional.of(existingRate));
-
-        // 2. Map void (Volcar datos del DTO a la entidad existente)
+        //Map void (Volcar datos del DTO a la entidad existente)
         doNothing().when(modelMapper).map(inDto, existingRate);
-
-        // 3. Save
+        //Save
         when(rateRepository.save(existingRate)).thenReturn(existingRate);
-
-        // 4. Map salida
+        //Map salida
         when(modelMapper.map(existingRate, RateOutDto.class)).thenReturn(outDto);
-
         RateOutDto result = rateService.modify(id, inDto);
-
         assertEquals("Modificado", result.getNameDayRate());
         verify(rateRepository, times(1)).findById(id);
         verify(rateRepository, times(1)).save(existingRate);
@@ -194,28 +176,19 @@ public class RateServiceTests {
     public void testModify_NotFound() {
         Long id = 99L;
         RateInDto inDto = new RateInDto();
-
         when(rateRepository.findById(id)).thenReturn(Optional.empty());
-
         assertThrows(RateNotFoundException.class, () -> rateService.modify(id, inDto));
-
         verify(rateRepository, times(0)).save(any());
     }
 
-    // ---------------------------------------------------------------------------------
     // TEST DELETE
-    // ---------------------------------------------------------------------------------
-
     @Test
     public void testDelete_Success() throws RateNotFoundException {
         Long id = 1L;
         Rate rate = new Rate();
         rate.setId(id);
-
         when(rateRepository.findById(id)).thenReturn(Optional.of(rate));
-
         rateService.delete(id);
-
         verify(rateRepository, times(1)).findById(id);
         verify(rateRepository, times(1)).delete(rate);
     }
@@ -224,9 +197,7 @@ public class RateServiceTests {
     public void testDelete_NotFound() {
         Long id = 99L;
         when(rateRepository.findById(id)).thenReturn(Optional.empty());
-
         assertThrows(RateNotFoundException.class, () -> rateService.delete(id));
-
         verify(rateRepository, times(0)).delete(any());
     }
 }
