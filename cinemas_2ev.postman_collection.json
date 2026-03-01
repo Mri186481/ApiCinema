@@ -1,0 +1,984 @@
+{
+  "info": {
+    "_postman_id": "2428eee0-7122-45ea-a3e6-feb4e8272ca7",
+    "name": "cinemas_2ev",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "49190331",
+    "_collection_link": "https://go.postman.co/collection/49190331-2428eee0-7122-45ea-a3e6-feb4e8272ca7?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "movies",
+      "item": [
+        {
+          "name": "movies",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"status code is 201\", () => {",
+                  "  pm.expect(pm.response.code).to.eql(201);",
+                  "});",
+                  "",
+                  "pm.test(\"response structure is ok\", () => {",
+                  "  const responseJson = pm.response.json();",
+                  "  pm.expect(responseJson).to.have.property('id');",
+                  "  pm.expect(responseJson).to.have.property('movieTitle');",
+                  "  pm.expect(responseJson).to.have.property('genre');",
+                  "  pm.expect(responseJson).to.have.property('durationMinutes');",
+                  "  pm.expect(responseJson).to.have.property('filmingLatitude');",
+                  "  pm.expect(responseJson).to.have.property('filmingLongitude');",
+                  "  pm.expect(responseJson).to.have.property('releaseDate');",
+                  "  pm.expect(responseJson).to.have.property('currentlyShowing');",
+                  "  ",
+                  "  pm.collectionVariables.set(\"movieId\", responseJson.id);",
+                  "  ",
+                  "  pm.expect(responseJson.id).to.be.a('number');",
+                  "  pm.expect(responseJson.movieTitle).to.be.a('string');",
+                  "  pm.expect(responseJson.genre).to.be.a('string');",
+                  "  pm.expect(responseJson.durationMinutes).to.be.a('number');",
+                  "  pm.expect(responseJson.filmingLatitude).to.be.a('number');",
+                  "  pm.expect(responseJson.filmingLongitude).to.be.a('number');",
+                  "  pm.expect(responseJson.releaseDate).to.be.a('string');",
+                  "  pm.expect(responseJson.currentlyShowing).to.be.a('boolean');",
+                  "});",
+                  "",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"movieTitle\": \"{{movieTitle}}\",\n  \"genre\": \"{{genre}}\",\n  \"durationMinutes\": {{durationMinutes}},\n  \"filmingLatitude\": {{filmingLatitude}},\n  \"filmingLongitude\": {{filmingLongitude}},\n  \"releaseDate\": \"{{releaseDate}}\",\n  \"currentlyShowing\": {{currentlyShowing}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/movies",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "movies"
+              ]
+            },
+            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+          },
+          "response": []
+        },
+        {
+          "name": "movies/{id}",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"status code is 200\", () => {\r",
+                  "  pm.expect(pm.response.code).to.eql(200);\r",
+                  "});\r",
+                  "pm.test(\"response structure is ok\", () => {\r",
+                  "  const responseJson = pm.response.json();\r",
+                  "  pm.expect(responseJson).to.have.property('id');\r",
+                  "  pm.expect(responseJson).to.have.property('movieTitle');\r",
+                  "  pm.expect(responseJson).to.have.property('genre');\r",
+                  "  pm.expect(responseJson).to.have.property('durationMinutes');\r",
+                  "  pm.expect(responseJson).to.have.property('filmingLatitude');\r",
+                  "  pm.expect(responseJson).to.have.property('filmingLongitude');\r",
+                  "  pm.expect(responseJson).to.have.property('releaseDate');\r",
+                  "  pm.expect(responseJson).to.have.property('currentlyShowing');\r",
+                  "\r",
+                  "  pm.expect(responseJson.id).to.be.a('number');\r",
+                  "  pm.expect(responseJson.movieTitle).to.be.a('string');\r",
+                  "  pm.expect(responseJson.genre).to.be.a('string');\r",
+                  "  pm.expect(responseJson.durationMinutes).to.be.a('number');\r",
+                  "  pm.expect(responseJson.filmingLatitude).to.be.a('number');\r",
+                  "  pm.expect(responseJson.filmingLongitude).to.be.a('number');\r",
+                  "  pm.expect(responseJson.releaseDate).to.be.a('string');\r",
+                  "  pm.expect(responseJson.currentlyShowing).to.be.a('boolean');\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/movies/{{movieId}}",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "movies",
+                "{{movieId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "movies/{id} 404",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"status code is 404\", () => {\r",
+                  "  pm.expect(pm.response.code).to.eql(404);\r",
+                  "});\r",
+                  "pm.test(\"error message is ok\", () => {\r",
+                  "  const responseText = pm.response.text();\r",
+                  "  pm.expect(responseText).to.eql('Movie with ID 999 not found');\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/movies/999",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "movies",
+                "999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "movies",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"status code is 201\", () => {",
+                  "  pm.expect(pm.response.code).to.eql(201);",
+                  "});",
+                  "",
+                  "pm.test(\"response structure is ok\", () => {",
+                  "  const responseJson = pm.response.json();",
+                  "  pm.expect(responseJson).to.have.property('id');",
+                  "  pm.expect(responseJson).to.have.property('movieTitle');",
+                  "  pm.expect(responseJson).to.have.property('genre');",
+                  "  pm.expect(responseJson).to.have.property('durationMinutes');",
+                  "  pm.expect(responseJson).to.have.property('filmingLatitude');",
+                  "  pm.expect(responseJson).to.have.property('filmingLongitude');",
+                  "  pm.expect(responseJson).to.have.property('releaseDate');",
+                  "  pm.expect(responseJson).to.have.property('currentlyShowing');",
+                  "  ",
+                  "  pm.collectionVariables.set(\"movieId\", responseJson.id);",
+                  "  pm.expect(responseJson.id).to.be.a('number');",
+                  "  pm.expect(responseJson.movieTitle).to.be.a('string');",
+                  "  pm.expect(responseJson.genre).to.be.a('string');",
+                  "  pm.expect(responseJson.durationMinutes).to.be.a('number');",
+                  "  pm.expect(responseJson.filmingLatitude).to.be.a('number');",
+                  "  pm.expect(responseJson.filmingLongitude).to.be.a('number');",
+                  "  pm.expect(responseJson.releaseDate).to.be.a('string');",
+                  "  pm.expect(responseJson.currentlyShowing).to.be.a('boolean');",
+                  "});",
+                  "",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"movieTitle\": \"{{movieTitle2}}\",\n  \"genre\": \"{{genre2}}\",\n  \"durationMinutes\": {{durationMinutes2}},\n  \"filmingLatitude\": {{filmingLatitude}},\n  \"filmingLongitude\": {{filmingLongitude}},\n  \"releaseDate\": \"{{releaseDate2}}\",\n  \"currentlyShowing\": {{currentlyShowing}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/movies",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "movies"
+              ]
+            },
+            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+          },
+          "response": []
+        },
+        {
+          "name": "movies 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();",
+                  "pm.test(\"status code is 400\", () => {",
+                  "  pm.expect(pm.response.code).to.eql(400);",
+                  "});",
+                  "",
+                  "pm.test(\"response structure is ok\", () => {",
+                  "  pm.expect(responseJson).to.have.property('code');",
+                  "  pm.expect(responseJson).to.have.property('message');",
+                  "  pm.expect(responseJson).to.have.property('errorMessages');",
+                  "  pm.expect(responseJson.errorMessages).to.have.property('movieTitle');",
+                  "});",
+                  "",
+                  "pm.test(\"error values is ok\", () => {",
+                  "  pm.expect(responseJson.code).to.eql(400);",
+                  "  pm.expect(responseJson.message).to.eql('Bad Request');",
+                  "  pm.expect(responseJson.errorMessages.movieTitle).to.eql('must not be blank');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "en",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"genre\": \"{{genre2}}\",\n  \"durationMinutes\": {{durationMinutes2}},\n  \"filmingLatitude\": {{filmingLatitude}},\n  \"filmingLongitude\": {{filmingLongitude}},\n  \"releaseDate\": \"{{releaseDate2}}\",\n  \"currentlyShowing\": {{currentlyShowing}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/movies",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "movies"
+              ]
+            },
+            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+          },
+          "response": []
+        },
+        {
+          "name": "movies",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"response has two items\", function () {",
+                  "    pm.expect(pm.response.json().length).to.eql(2);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/movies",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "movies"
+              ],
+              "query": [
+                {
+                  "key": "movieTitle",
+                  "value": "La Guerra de las Galaxias",
+                  "disabled": true
+                },
+                {
+                  "key": "genre",
+                  "value": "Scifi",
+                  "disabled": true
+                },
+                {
+                  "key": "durationMinutes",
+                  "value": "121",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+          },
+          "response": []
+        },
+        {
+          "name": "movies/{id}",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"response structure is ok\", () => {\r",
+                  "  pm.expect(responseJson).to.have.property('id');\r",
+                  "  pm.expect(responseJson).to.have.property('movieTitle');\r",
+                  "  pm.expect(responseJson).to.have.property('genre');\r",
+                  "  pm.expect(responseJson).to.have.property('durationMinutes');\r",
+                  "  pm.expect(responseJson).to.have.property('filmingLatitude');\r",
+                  "  pm.expect(responseJson).to.have.property('filmingLongitude');\r",
+                  "  pm.expect(responseJson).to.have.property('releaseDate');\r",
+                  "  pm.expect(responseJson).to.have.property('currentlyShowing');\r",
+                  "\r",
+                  "  pm.expect(responseJson.id).to.be.a('number');\r",
+                  "  pm.expect(responseJson.movieTitle).to.be.a('string');\r",
+                  "  pm.expect(responseJson.genre).to.be.a('string');\r",
+                  "  pm.expect(responseJson.durationMinutes).to.be.a('number');\r",
+                  "  pm.expect(responseJson.filmingLatitude).to.be.a('number');\r",
+                  "  pm.expect(responseJson.filmingLongitude).to.be.a('number');\r",
+                  "  pm.expect(responseJson.releaseDate).to.be.a('string');\r",
+                  "  pm.expect(responseJson.currentlyShowing).to.be.a('boolean');\r",
+                  "});\r",
+                  "pm.test(\"data has changed\", () => { \r",
+                  "    pm.expect(responseJson.movieTitle).eql(pm.collectionVariables.get(\"changedMovieTitle\"));\r",
+                  "});    "
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"movieTitle\": \"{{changedMovieTitle}}\",\r\n  \"genre\": \"{{genre2}}\",\r\n  \"durationMinutes\": {{durationMinutes}},\r\n  \"filmingLatitude\": {{filmingLatitude}},\r\n  \"filmingLongitude\": {{filmingLongitude}},\r\n  \"releaseDate\": \"{{releaseDate}}\",\r\n  \"currentlyShowing\": {{currentlyShowing2}}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/movies/2",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "movies",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "movies/{id} 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();\r",
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"response structure is ok\", () => {\r",
+                  "  pm.expect(responseJson).to.have.property('code');\r",
+                  "  pm.expect(responseJson).to.have.property('message');\r",
+                  "  pm.expect(responseJson).to.have.property('errorMessages');\r",
+                  "  pm.expect(responseJson.errorMessages).to.have.property('movieTitle');\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"error values is ok\", () => {\r",
+                  "  pm.expect(responseJson.code).to.eql(400);\r",
+                  "  pm.expect(responseJson.message).to.eql('Bad Request');\r",
+                  "  pm.expect(responseJson.errorMessages.movieTitle).to.eql('must not be blank');\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "en",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"genre\": \"{{genre2}}\",\r\n  \"durationMinutes\": {{durationMinutes}},\r\n  \"filmingLatitude\": {{filmingLatitude}},\r\n  \"filmingLongitude\": {{filmingLongitude}},\r\n  \"releaseDate\": \"{{releaseDate}}\",\r\n  \"currentlyShowing\": 0\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/movies/2",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "movies",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "movies/{id} 404",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "pm.test(\"error message is ok\", () => {\r",
+                  "  const responseText = pm.response.text();\r",
+                  "  pm.expect(responseText).to.eql('Movie not found with id: 3');\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "en",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"movieTitle\": \"{{changedMovieTitle}}\",\r\n  \"genre\": \"{{genre2}}\",\r\n  \"durationMinutes\": {{durationMinutes}},\r\n  \"filmingLatitude\": {{filmingLatitude}},\r\n  \"filmingLongitude\": {{filmingLongitude}},\r\n  \"releaseDate\": \"{{releaseDate}}\",\r\n  \"currentlyShowing\": 0\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/movies/3",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "movies",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "movies/{id}",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"response structure is ok\", () => {",
+                  "  pm.expect(responseJson).to.have.property('id');",
+                  "  pm.expect(responseJson).to.have.property('movieTitle');",
+                  "  pm.expect(responseJson).to.have.property('genre');",
+                  "  pm.expect(responseJson).to.have.property('durationMinutes');",
+                  "  pm.expect(responseJson).to.have.property('filmingLatitude');",
+                  "  pm.expect(responseJson).to.have.property('filmingLongitude');",
+                  "  pm.expect(responseJson).to.have.property('releaseDate');",
+                  "  pm.expect(responseJson).to.have.property('currentlyShowing');",
+                  "",
+                  "  pm.expect(responseJson.id).to.be.a('number');",
+                  "  pm.expect(responseJson.movieTitle).to.be.a('string');",
+                  "  pm.expect(responseJson.genre).to.be.a('string');",
+                  "  pm.expect(responseJson.durationMinutes).to.be.a('number');",
+                  "  pm.expect(responseJson.filmingLatitude).to.be.a('number');",
+                  "  pm.expect(responseJson.filmingLongitude).to.be.a('number');",
+                  "  pm.expect(responseJson.releaseDate).to.be.a('string');",
+                  "  pm.expect(responseJson.currentlyShowing).to.be.a('boolean');",
+                  "});",
+                  "pm.test(\"data has changed\", () => { ",
+                  "    pm.expect(responseJson.movieTitle).eql(pm.collectionVariables.get(\"changedMovieTitle\"));",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"movieTitle\": \"{{changedMovieTitle}}\",\n  \"genre\": \"{{genre2}}\",\n  \"durationMinutes\": {{durationMinutes}},\n  \"releaseDate\": \"{{releaseDate}}\",\n  \"currentlyShowing\": {{currentlyShowing2}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/movies/2",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "movies",
+                "2"
+              ]
+            },
+            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+          },
+          "response": []
+        },
+        {
+          "name": "movies/{id} 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();\r",
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"response structure is ok\", () => {\r",
+                  "  pm.expect(responseJson).to.have.property('code');\r",
+                  "  pm.expect(responseJson).to.have.property('message');\r",
+                  "  pm.expect(responseJson).to.have.property('errorMessages');\r",
+                  "  pm.expect(responseJson.errorMessages).to.have.property('validation_patch');\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"error values is ok\", () => {\r",
+                  "  pm.expect(responseJson.code).to.eql(400);\r",
+                  "  pm.expect(responseJson.message).to.eql('Bad Request');\r",
+                  "  pm.expect(responseJson.errorMessages.validation_patch).to.eql('Duration must be at least 1 minute');\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "en",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"movieTitle\": \"{{changedMovieTitle}}\",\r\n  \"genre\": \"{{genre2}}\",\r\n  \"durationMinutes\": {{durationMinutes3}},\r\n  \"releaseDate\": \"{{releaseDate}}\",\r\n  \"currentlyShowing\": {{currentlyShowing2}}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/movies/1",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "movies",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "movies/{id} 404",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test(\"error message is ok\", () => {",
+                  "  const responseText = pm.response.text();",
+                  "  pm.expect(responseText).to.eql('Movie not found with id: 3');",
+                  "});",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"movieTitle\": \"{{changedMovieTitle}}\",\n  \"genre\": \"{{genre2}}\",\n  \"durationMinutes\": {{durationMinutes}},\n  \"releaseDate\": \"{{releaseDate}}\",\n  \"currentlyShowing\": {{currentlyShowing2}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/movies/3",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "movies",
+                "3"
+              ]
+            },
+            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+          },
+          "response": []
+        },
+        {
+          "name": "movies?genre=:genre",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();",
+                  "pm.test(\"status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"response has one item\", function () {",
+                  "    pm.expect(pm.response.json().length).to.eql(1);",
+                  "});",
+                  "pm.test(\"data is ok\", () => { ",
+                  "    pm.expect(responseJson[0].movieTitle).eql(pm.collectionVariables.get(\"changedMovieTitle\"));",
+                  "});    "
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/movies?genre={{genre2}}",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "movies"
+              ],
+              "query": [
+                {
+                  "key": "movieTitle",
+                  "value": "La Guerra de las Galaxias",
+                  "disabled": true
+                },
+                {
+                  "key": "genre",
+                  "value": "{{genre2}}"
+                },
+                {
+                  "key": "durationMinutes",
+                  "value": "121",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+          },
+          "response": []
+        },
+        {
+          "name": "movies?genre=:genre (no data)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseJson = pm.response.json();",
+                  "pm.test(\"status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"response has not item\", function () {",
+                  "    pm.expect(pm.response.json().length).to.eql(0);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/movies?genre=no-existe",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "movies"
+              ],
+              "query": [
+                {
+                  "key": "movieTitle",
+                  "value": "La Guerra de las Galaxias",
+                  "disabled": true
+                },
+                {
+                  "key": "genre",
+                  "value": "no-existe"
+                },
+                {
+                  "key": "durationMinutes",
+                  "value": "121",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+          },
+          "response": []
+        },
+        {
+          "name": "movies/{id}",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 204\", function () {\r",
+                  "    pm.response.to.have.status(204);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/movies/{{movieId}}",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "movies",
+                "{{movieId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "movies/{id} 404",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "pm.test(\"error message is ok\", () => {\r",
+                  "  const responseText = pm.response.text();\r",
+                  "  pm.expect(responseText).to.eql('Movie not found with id: 2');\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/movies/{{movieId}}",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "movies",
+                "{{movieId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "movieTitle",
+      "value": "La guerra de las Galaxias"
+    },
+    {
+      "key": "genre",
+      "value": "Scifi"
+    },
+    {
+      "key": "durationMinutes",
+      "value": "99"
+    },
+    {
+      "key": "filmingLatitude",
+      "value": "41.6598777"
+    },
+    {
+      "key": "filmingLongitude",
+      "value": "-0.8897212"
+    },
+    {
+      "key": "releaseDate",
+      "value": "1977-12-19"
+    },
+    {
+      "key": "currentlyShowing",
+      "value": "1"
+    },
+    {
+      "key": "movieId",
+      "value": "2"
+    },
+    {
+      "key": "movieTitle2",
+      "value": "Terminator"
+    },
+    {
+      "key": "releaseDate2",
+      "value": "1984-08-18"
+    },
+    {
+      "key": "genre2",
+      "value": "Action"
+    },
+    {
+      "key": "durationMinutes2",
+      "value": "88"
+    },
+    {
+      "key": "changedMovieTitle",
+      "value": "El señor de los anillos"
+    },
+    {
+      "key": "currentlyShowing2",
+      "value": "0"
+    },
+    {
+      "key": "durationMinutes3",
+      "value": "0"
+    }
+  ]
+}

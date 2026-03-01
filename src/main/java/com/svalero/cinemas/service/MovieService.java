@@ -113,7 +113,24 @@ public class MovieService {
     public MovieOutDto updatePartial(Long id, Map<String, Object> updates) {
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new MovieNotFoundException("Movie not found with id: " + id));
+        //Validaciones manuales al saltarse las validaciones de serie del MovieInDto
+        if (updates.containsKey("durationMinutes")) {
+            Object durationObj = updates.get("durationMinutes");
+            if (durationObj instanceof Number) {
+                int duration = ((Number) durationObj).intValue();
+                if (duration < 1) {
+                    throw new IllegalArgumentException("Duration must be at least 1 minute");
+                    // Or create a custom ValidationException
+                }
+            }
+        }
 
+        if (updates.containsKey("movieTitle")) {
+            Object titleObj = updates.get("movieTitle");
+            if (titleObj == null || String.valueOf(titleObj).trim().isEmpty()) {
+                throw new IllegalArgumentException("Movie title cannot be blank");
+            }
+        }
         modelMapper.map(updates, movie);
         movieRepository.save(movie);
         return modelMapper.map(movie, MovieOutDto.class);

@@ -136,6 +136,15 @@ public class MovieController {
         return new ResponseEntity<>(ErrorResponse.validationError(errors), HttpStatus.BAD_REQUEST);
     }
 
+    // Manejo de excepciones por validaciones manuales (PATCH)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException exception) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("validation_patch", exception.getMessage());
+        logger.error(exception.getMessage(), exception);
+        return new ResponseEntity<>(ErrorResponse.validationError(errors), HttpStatus.BAD_REQUEST);
+    }
+
     // Manejo de error genérico
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception exception) {
